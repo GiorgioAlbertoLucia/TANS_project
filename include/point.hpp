@@ -3,11 +3,14 @@
 
 #include <string>
 
-class Point
+#include <TObject.h>
+
+class tPoint: public TObject
 {
     public:
-        Point();
-        ~Point();
+        inline tPoint(){};
+        inline tPoint(double X, double Y, double Z): fX(X), fY(Y), fZ(Z){};
+        ~tPoint(){};
 
     private:
         double fX;
@@ -16,6 +19,8 @@ class Point
 
         //double phi;
         //double r;
+
+    ClassDef(tPoint, 1);
 
 };
 

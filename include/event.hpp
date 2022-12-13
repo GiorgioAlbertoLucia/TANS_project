@@ -10,7 +10,7 @@
 
 typedef struct
 {
-    Point x;
+    tPoint x;
     int multiplicity;
 } Vertex;
 
@@ -21,14 +21,20 @@ class Event: public TObject
         Event();
         virtual ~Event();
 
-        void PartGeneration(const char * option);
-         PartTransport();
+        /**
+         * @brief Generates primary vertex, multiplicity and fill a TClonesArray with generated particles
+         * 
+         * @param option1 option for multiplicity distr
+         * @param option2 option for eta distr (part)
+         */
+        void PartGeneration(const char * option1, const char * option2);   
+        //TClonesArray PartTransport();               // arg -> detector (class)
 
     private:
         Vertex fPrimaryVertex;              // description for ROOT if this becomes a TObject - probably not necessary
-        TClonesArray fParticleArray;        //
+        TClonesArray* fParticleArray;       //
 
-    Event("Event", 1);
+    ClassDef(Event, 1);
 
 
 };
