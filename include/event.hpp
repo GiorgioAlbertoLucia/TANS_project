@@ -28,7 +28,8 @@ class Event: public TObject
          * @param option2 option for eta distr (part)
          */
         void PartGeneration(const char * option1, const char * option2);   
-        //TClonesArray PartTransport();               // arg -> detector (class)
+        //TClonesArray PartTransport();                 // arg -> detector (class)
+        //void PartTransport(TTree& simulation);        // 
 
     private:
         Vertex fPrimaryVertex;              // description for ROOT if this becomes a TObject - probably not necessary

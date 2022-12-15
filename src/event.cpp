@@ -23,7 +23,7 @@ void Event::PartGeneration(const char * option1, const char * option2)
 {
     if (fPrimaryVertex.multiplicity > 0)    delete fParticleArray;      // to generate new particles, delete the old ones
 
-    const int multiplicity = 4;
+    const int multiplicity = 4;         // from given distr
     fPrimaryVertex = {tPoint(gRandom->Gaus(0., 0.01), gRandom->Gaus(0., 0.01), gRandom->Gaus(0., 5.3)), multiplicity};
 
     fParticleArray = new TClonesArray("Particle", fPrimaryVertex.multiplicity);
