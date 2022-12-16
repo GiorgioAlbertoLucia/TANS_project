@@ -12,8 +12,8 @@ class Simulation
         RunSimulation();
 
     private:
-        std::string fName;          // description for ROOT if this becomes a TObject - probably not necessary
-        std::string fConfigfile;    //
+        std::string fTreeName;          // description for ROOT if this becomes a TObject - probably not necessary
+        std::string fConfigFile;    //
 
 
 };

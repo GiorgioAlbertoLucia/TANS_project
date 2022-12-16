@@ -7,12 +7,8 @@
 #include <TClonesArray.h>
 
 #include "point.hpp"
-
-typedef struct
-{
-    tPoint x;
-    int multiplicity;
-} Vertex;
+#include "detector.hpp"
+#include "vertex.hpp"
 
 
 class Event: public TObject
@@ -21,15 +17,19 @@ class Event: public TObject
         Event();
         virtual ~Event();
 
+        Vertex getVertex() const {return fPrimaryVertex;};
+        TClonesArray getParticleArray() const {return fParticleArray;};
+
+
         /**
          * @brief Generates primary vertex, multiplicity and fill a TClonesArray with generated particles
          * 
          * @param option1 option for multiplicity distr
          * @param option2 option for eta distr (part)
          */
-        void PartGeneration(const char * option1, const char * option2);   
-        //TClonesArray PartTransport();                 // arg -> detector (class)
-        //void PartTransport(TTree& simulation);        // 
+        Vertex PartGeneration(const char * option1, const char * option2);   
+        //TClonesArray PartTransport(Detector& detector);                 // arg -> detector
+
 
     private:
         Vertex fPrimaryVertex;              // description for ROOT if this becomes a TObject - probably not necessary

@@ -34,4 +34,6 @@ void Event::PartGeneration(const char * option1, const char * option2)
         double eta = 0.;        // from given distribution
         new (PartArray[i]) Particle(2.*TMath::Pi()*gRandom->Rndm(), eta);
     }   
+
+    return fPrimaryVertex;
 }
