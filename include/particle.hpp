@@ -3,19 +3,28 @@
 
 #include <string>
 
-#include <TObject.h>
+#include "../intersectionPoint/intersectionPoint.hpp"
+#include "../include/vertex.hpp"
 
-class Particle: public TObject
+class Particle
 {
     public:
-        inline Particle(double Phi, double Eta): fPhi(Phi), fEta(Eta){};
+        Particle();
+        Particle(const double Phi, const double Eta, Vertex vertex);
         ~Particle();
+
+        double getPhi() const {return fPhi;};
+        double getEta() const {return fEta;};
+
+        void updateIntPoint(const double X, const double Y, const double Z);
 
     private:
         double fPhi;
         double fEta;
 
-    ClassDef(Particle, 1);
+        IntersectionPoint fLastIP;  // 
+
+        
 
 };
 

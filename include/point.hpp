@@ -1,20 +1,18 @@
 #ifndef POINT_H
 #define POINT_H
 
-#include <string>
-
-#include <TObject.h>
-
-class tPoint: public TObject
+class Point:
 {
     public:
-        inline tPoint(){};
-        inline tPoint(double X, double Y, double Z): fX(X), fY(Y), fZ(Z){};
-        ~tPoint(){};
+        inline Point(): fX(0.), fY(0.), fZ(0.){};
+        inline Point(const double X, const double Y, const double Z): fX(X), fY(Y), fZ(Z){};
+        ~Point(){};
 
         inline double getX(){return fX;};
         inline double getY(){return fY;};
         inline double getZ(){return fZ;};
+
+        Point operator+(const Point& point);
 
         //void smearing();
 
@@ -22,13 +20,6 @@ class tPoint: public TObject
         double fX;
         double fY;
         double fZ;
-
-        //int fIntersectionLayer;
-
-        //double phi;
-        //double r;
-
-    ClassDef(tPoint, 1);
 
 };
 
