@@ -12,6 +12,12 @@ class Point:
         inline double getY(){return fY;};
         inline double getZ(){return fZ;};
 
+        /**
+         * @brief Vector addition
+         * 
+         * @param point 
+         * @return Point 
+         */
         Point operator+(const Point& point);
 
         //void smearing();

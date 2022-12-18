@@ -7,10 +7,10 @@
 #include <TObject.h>
 
 
-//#include "../include/intersectionPoint.hpp"
-#include "../include/detector.hpp"
-#include "../include/vertex.hpp"
-#include "../include/particle.hpp"
+#include "../hit/hit.hpp"
+#include "../detector/detector.hpp"
+#include "../vertex/vertex.hpp"
+#include "../particle/particle.hpp"
 
 
 class Event: public TObject
@@ -30,7 +30,7 @@ class Event: public TObject
          * @param option2 option for eta distr (part)
          */
         Vertex PartGeneration(/*const char * option1, const char * option2*/);   
-        vector<IntersectionPoint> PartTransport(Detector& detector);                 // arg -> detector
+        vector<Hit> PartTransport(Detector& detector);                 // arg -> detector
 
 
     private:

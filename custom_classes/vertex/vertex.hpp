@@ -1,23 +1,21 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-#include "intersectionPoint.hpp"
+#include "../hit/hit.hpp"
+#include "../point/point.hpp"
 
 /**
  * @brief Class for vertex points. 
  * 
  */
-class Vertex
+class Vertex: public Point
 {
     
     public:
-        Vertex(){};
-        Vertex(double X, double Y, double Z, int multiplicity): fX(X), fY(Y), fZ(Z), fMultiplicity(multiplicity){};
+        Vertex(): Point(0., 0., 0.), fMultiplicity(0){};
+        Vertex(double X, double Y, double Z, int multiplicity): Point(X, Y, Z), fMultiplicity(multiplicity){};
         ~Vertex(){};
 
-        double getX() const {return fX;};
-        double getY() const {return fY;};
-        double getZ() const {return fZ;};
         int getMultiplicity() const {return fMultiplicity;};
 
         //void VertexReconstruction(TBranch1, 2, 3);
@@ -26,9 +24,6 @@ class Vertex
         //Retta(Punto1, 2) ? -> // returns z coord. of the vertex from two points
 
     private:
-        double fX;
-        double fY;
-        double fZ;
         int fMultiplicity;
 };
 

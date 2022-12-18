@@ -1,5 +1,4 @@
 #include "event.hpp"
-//#include "../include/particle.hpp"
 
 #include <TRandom3.h>
 #include <TMath.h>
@@ -38,9 +37,9 @@ Vertex Event::PartGeneration(/*const char * option1, const char * option2*/)
     return fPrimaryVertex;
 }
 
-vector<IntersectionPoint> Event::PartTransport(Detector& detector)
+vector<Hit> Event::PartTransport(Detector& detector)
 {
-    vector<IntersectionPoint> IPvec;
+    vector<Hit> IPvec;
     IPvec.reserve(fPrimaryVertex.getMultiplicity());
 
     
