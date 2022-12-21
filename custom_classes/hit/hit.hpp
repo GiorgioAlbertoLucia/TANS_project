@@ -10,20 +10,22 @@
 class Hit: public TObject, public Point
 {
     public:
-        inline Hit(): TObject(), Point(0., 0., 0.), fHitLayer(0){};
-        inline Hit(const double X, const double Y, const double Z, const int IL): 
+        Hit(): TObject(), Point(0., 0., 0.), fHitLayer(0){};
+        Hit(const double X, const double Y, const double Z, const int IL):  
             TObject(), Point(X, Y, Z), fHitLayer(IL){};
-        ~Hit(){};
+         ~Hit(){};
 
         inline int getHitLayer(){return fHitLayer;};
+        inline double getPhi(){return fPhi;};
 
-        //void smearing();
+        void smearing();
+      
 
     private:
-        int fHitLayer;
-
-        //double phi;
-        //double r;
+        int fHitLayer;      // layer 
+        double fPhi;    // get in point
+        //double rad;    // get in point
+        
 
         ClassDef(Hit, 1)
 

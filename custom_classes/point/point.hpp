@@ -1,7 +1,9 @@
 #ifndef POINT_H
 #define POINT_H
 
-class Point:
+#include <cmath>
+
+class Point
 {
     public:
         inline Point(): fX(0.), fY(0.), fZ(0.){};
@@ -12,6 +14,8 @@ class Point:
         inline double getY(){return fY;};
         inline double getZ(){return fZ;};
 
+        inline double evalRadius(){return (sqrt(fX*fX+fY*fY));};
+        double evalPhi();
         /**
          * @brief Vector addition
          * 
@@ -22,7 +26,7 @@ class Point:
 
         //void smearing();
 
-    private:
+    protected:
         double fX;
         double fY;
         double fZ;
