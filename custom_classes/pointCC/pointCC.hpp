@@ -1,14 +1,18 @@
-#ifndef POINT_H
-#define POINT_H
+#ifndef POINTCC_H
+#define POINTCC_H
 
 #include <cmath>
 
-class Point
+/**
+ * @brief point in a 3d space in cartesian coordinates
+ * 
+ */
+class PointCC
 {
     public:
-        inline Point(): fX(0.), fY(0.), fZ(0.){};
-        inline Point(const double X, const double Y, const double Z): fX(X), fY(Y), fZ(Z){};
-        ~Point(){};
+        inline PointCC(): fX(0.), fY(0.), fZ(0.){};
+        inline PointCC(const double X, const double Y, const double Z): fX(X), fY(Y), fZ(Z){};
+        ~PointCC(){};
 
         inline double getX(){return fX;};
         inline double getY(){return fY;};
@@ -20,9 +24,9 @@ class Point
          * @brief Vector addition
          * 
          * @param point 
-         * @return Point 
+         * @return PointCC 
          */
-        Point operator+(const Point& point);
+        PointCC operator+(const PointCC& point);
 
         //void smearing();
 

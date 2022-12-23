@@ -1,17 +1,17 @@
-#include "point.hpp"
+#include "pointCC.hpp"
 
 #include <TMath.h>
 
-Point Point::operator+(const Point& point)
+PointCC PointCC::operator+(const PointCC& point)
 {
-    Point temp;
+    PointCC temp;
     temp.fX = fX + point.fX;
     temp.fY = fY + point.fY;
     temp.fZ = fZ + point.fZ;
     return temp;
 }
 
-double Point::evalPhi()
+double PointCC::evalPhi()
 {
     if(fX>0) return asin(fY/this->evalRadius());
     return (TMath::Pi()-asin(fY/this->evalRadius()));

@@ -18,7 +18,8 @@ Event::~Event()
 
 }
 
-Vertex Event::PartGeneration(/*const char * option1, const char * option2*/)
+// ADD CUSTOM DISTR
+Vertex Event::partGeneration(/*const char * option1, const char * option2*/)
 {
     // to generate new particles, delete the old ones
     if (fPrimaryVertex.getMultiplicity() > 0)   fParticleArray.clear();      
@@ -31,21 +32,30 @@ Vertex Event::PartGeneration(/*const char * option1, const char * option2*/)
     for (int i=0; i<fPrimaryVertex.getMultiplicity(); i++)
     {
         double eta = 0.;        // from given distribution
-        fParticleArray.push_back(Particle(2.*TMath::Pi()*gRandom->Rndm(), eta));
+        fParticleArray.push_back(Particle(2.*TMath::Pi()*gRandom->Rndm(), eta, fPrimaryVertex));
     }   
 
     return fPrimaryVertex;
 }
 
-vector<Hit> Event::PartTransport(Detector& detector)
+// ADD MULTIPLE SCATTERING
+vector<Hit> Event::partTransport(Detector& detector)
 {
     vector<Hit> IPvec;
     IPvec.reserve(fPrimaryVertex.getMultiplicity());
 
-    
+    for (Particle& part: fParticleArray)     IPvec.push_back(part.transport(detector));
 
     if (detector.multipleScattering)    
     {
-        continue;
+        for (Particle& part: fParticleArray)     part.multipleScattering(detector);
     }
+
+    return IPvec;
+}
+
+void Event::clear()
+{
+    fPrimaryVertex = Vertex(0., 0., 0., 0);
+    fParticleArray.clear(); 
 }

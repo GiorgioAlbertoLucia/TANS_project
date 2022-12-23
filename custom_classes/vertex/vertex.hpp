@@ -2,18 +2,18 @@
 #define VERTEX_H
 
 #include "../hit/hit.hpp"
-#include "../point/point.hpp"
+#include "../pointCC/pointCC.hpp"
 
 /**
  * @brief Class for vertex points. 
  * 
  */
-class Vertex: public Point
+class Vertex: public PointCC
 {
     
     public:
-        Vertex(): Point(0., 0., 0.), fMultiplicity(0){};
-        Vertex(double X, double Y, double Z, int multiplicity): Point(X, Y, Z), fMultiplicity(multiplicity){};
+        Vertex(): PointCC(0., 0., 0.), fMultiplicity(0){};
+        Vertex(double X, double Y, double Z, int multiplicity): PointCC(X, Y, Z), fMultiplicity(multiplicity){};
         ~Vertex(){};
 
         int getMultiplicity() const {return fMultiplicity;};

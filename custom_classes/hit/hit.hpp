@@ -5,14 +5,14 @@
 
 #include <TObject.h>
 
-#include "../point/point.hpp"
+#include "../pointCC/pointCC.hpp"
 
-class Hit: public TObject, public Point
+class Hit: public TObject, public PointCC
 {
     public:
-        Hit(): TObject(), Point(0., 0., 0.), fHitLayer(0){};
+        Hit(): TObject(), PointCC(0., 0., 0.), fHitLayer(0){};
         Hit(const double X, const double Y, const double Z, const int IL):  
-            TObject(), Point(X, Y, Z), fHitLayer(IL){};
+            TObject(), PointCC(X, Y, Z), fHitLayer(IL){};
          ~Hit(){};
 
         inline int getHitLayer(){return fHitLayer;};

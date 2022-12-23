@@ -29,8 +29,21 @@ class Event: public TObject
          * @param option1 option for multiplicity distr
          * @param option2 option for eta distr (part)
          */
-        Vertex PartGeneration(/*const char * option1, const char * option2*/);   
-        vector<Hit> PartTransport(Detector& detector);                 // arg -> detector
+        Vertex partGeneration(/*const char * option1, const char * option2*/);   
+        /**
+         * @brief executes particle transport through a given detector (if multiple scattering is assumed for that detector,
+         * it will be performed). A vector containing positions of hits on the detector is returned.
+         * 
+         * @param detector 
+         * @return vector<Hit> 
+         */
+        vector<Hit> partTransport(Detector& detector);                 
+
+        /**
+         * @brief clears fParticleArray and sets fPrimaryVertex to (0., 0., 0., 0)
+         * 
+         */
+        void clear();
 
 
     private:
