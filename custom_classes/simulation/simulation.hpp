@@ -6,15 +6,10 @@
 class Simulation
 {
     public:
-        Simulation(const char * TreeName, const char * ConfigFile): fTreeName(TreeName), fConfigFile(ConfigFile){};
-        ~Simulation(){};
+        Simulation();
+        ~Simulation();
 
-        /**
-         * @brief Run a simulation for n events. Results (hits and vertex positions) are stored in a TTree (.root file).
-         * 
-         * @param nEvents 
-         */
-        void runSimulation(const int nEvents);
+        void RunSimulation();
 
     private:
         std::string fTreeName;          // description for ROOT if this becomes a TObject - probably not necessary

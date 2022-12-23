@@ -20,6 +20,7 @@ class Hit: public TObject, public PointCC
         inline double getPhi() const {return fPhi;};
 
         void smearing();
+        void noise();
       
 
     private:

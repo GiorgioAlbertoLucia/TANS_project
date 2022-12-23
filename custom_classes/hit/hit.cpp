@@ -10,3 +10,12 @@ void Hit::smearing()
     fZ += gRandom->Gaus(0., 0.0120);
     double fPhi = this->evalPhi()+gRandom->Gaus(0.,0.003)/this->evalRadius();
 }
+
+void Hit::noise()
+{
+    fZ=gRandom->Rndm()*27.;
+    fPhi=gRandom->Rndm()*2*TMath::Pi();
+    double aaa=gRandom->Rndm();
+    if(aaa<0.5)  fHitLayer=1;
+    else  fHitLayer=2;
+}
