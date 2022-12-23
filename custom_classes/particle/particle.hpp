@@ -19,11 +19,12 @@ class Particle
         * @param vertex 
         */
         Particle(const double Phi, const double Eta, Vertex& vertex);
+        Particle(const Particle& particle);
         ~Particle();
 
         double getPhi() const {return fPhi;};
         double getEta() const {return fEta;};
-        Hit getLastHP() const {return *fLastHP;};
+        Hit getLastHP() const {return fLastHP;};
 
         /**
         * @brief Creates a Hit (position and layer) of this particle on given detector assuming the particle will
@@ -58,7 +59,7 @@ class Particle
         double fPhi;
         double fEta;
 
-        Hit* fLastHP;  // last hit position
+        Hit fLastHP;  // last hit position
 
         
 

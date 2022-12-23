@@ -5,7 +5,7 @@
 #include <vector>
 
 #include <TObject.h>
-
+#include <TClonesArray.h>
 
 #include "../hit/hit.hpp"
 #include "../detector/detector.hpp"
@@ -38,6 +38,7 @@ class Event: public TObject
          * @return vector<Hit> 
          */
         vector<Hit> partTransport(Detector& detector);                 
+        TClonesArray partTransport(Detector& detector);
 
         /**
          * @brief clears fParticleArray and sets fPrimaryVertex to (0., 0., 0., 0)

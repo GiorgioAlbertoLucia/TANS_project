@@ -13,19 +13,18 @@ class Hit: public TObject, public PointCC
         Hit(): TObject(), PointCC(0., 0., 0.), fHitLayer(0){};
         Hit(const double X, const double Y, const double Z, const int IL):  
             TObject(), PointCC(X, Y, Z), fHitLayer(IL){};
-         ~Hit(){};
+        Hit(const Hit& hit): PointCC(hit.getX(), hit.getY(), hit.getZ()), fHitLayer(hit.fHitLayer), fPhi(hit.fPhi){};
+        ~Hit(){};
 
-        inline int getHitLayer(){return fHitLayer;};
-        inline double getPhi(){return fPhi;};
+        inline int getHitLayer() const {return fHitLayer;};
+        inline double getPhi() const {return fPhi;};
 
         void smearing();
       
 
     private:
         int fHitLayer;      // layer 
-        double fPhi;    // get in point
-        //double rad;    // get in point
-        
+        double fPhi;        // azimuthal angle of interaction from primary vertex
 
         ClassDef(Hit, 1)
 

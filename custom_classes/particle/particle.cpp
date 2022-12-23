@@ -1,3 +1,5 @@
+#include <Riostream.h>
+
 #include "particle.hpp"
 
 /* PROTECTED */
@@ -5,11 +7,10 @@
 void Particle::updateHitPos(const double X, const double Y, const double Z, const bool updateLayer)
 {
     int layer = 0;
-    if (updateLayer)    layer = fLastHP->getHitLayer() + 1;
-    else                layer = fLastHP->getHitLayer();
+    if (updateLayer)    layer = fLastHP.getHitLayer() + 1;
+    else                layer = fLastHP.getHitLayer();
 
-    delete fLastHP;
-    fLastHP = new Hit(X, Y, Z, layer);
+    fLastHP = Hit(X, Y, Z, layer);
 }
 
 /* PUBLIC */
@@ -17,7 +18,7 @@ void Particle::updateHitPos(const double X, const double Y, const double Z, cons
 Particle::Particle():
 fPhi(0.),
 fEta(0.),
-fLastHP(NULL)
+fLastHP()
 {
 
 }
@@ -26,12 +27,20 @@ Particle::Particle(const double Phi, const double Eta, Vertex& vertex):
 fPhi(Phi), 
 fEta(Eta)
 {
-    fLastHP = new Hit(vertex.getX(), vertex.getY(), vertex.getZ(), -1);
+    fLastHP = Hit(vertex.getX(), vertex.getY(), vertex.getZ(), -1);
+}
+
+Particle::Particle(const Particle& particle):
+fPhi(particle.fPhi),
+fEta(particle.fEta),
+fLastHP(particle.fLastHP)
+{
+    
 }
 
 Particle::~Particle()
 {
-    delete fLastHP;
+
 }
 
 Hit Particle::transport(Detector& detector)
@@ -41,10 +50,11 @@ Hit Particle::transport(Detector& detector)
     double c2 = sin(theta) * sin(fPhi);
     double c3 = cos(theta);
 
-    Hit &lastHP = *fLastHP;
-    double x0 = lastHP.getX();
-    double y0 = lastHP.getY();
-    double z0 = lastHP.getZ();
+    cout << fPhi << ", " << theta << endl;
+
+    double x0 = fLastHP.getX();
+    double y0 = fLastHP.getY();
+    double z0 = fLastHP.getZ();
     double R = detector.radius - (detector.width/2);
     double Delta = (x0*c1 + y0*c2)*(x0*c1 + y0*c2) - (c1+c2)*(c1+c2)*(x0*x0 + y0*y0 - R*R);
 
@@ -52,11 +62,13 @@ Hit Particle::transport(Detector& detector)
 
     // create a hit
     Hit hit;
-    if(z0+c3*t > -(detector.lenght/2) && z0+c3*t < (detector.lenght/2)) hit = Hit(x0+c1*t, y0+c2*t, z0+c3*t, lastHP.getHitLayer()+1);
-    else                                                                hit = Hit(1000., 1000., 1000., lastHP.getHitLayer()+1);
+    if(z0+c3*t > -(detector.lenght/2) && z0+c3*t < (detector.lenght/2)) hit = Hit(x0+c1*t, y0+c2*t, z0+c3*t, fLastHP.getHitLayer()+1);
+    else                                                                hit = Hit(1000., 1000., 1000., fLastHP.getHitLayer()+1);
 
     // update last hit position for the particle (outside the detector)
     updateHitPos(x0+c1*t, y0+c2*t, z0+c3*t+(detector.width/2), true);
+
+    cout << hit.getX() << ", " << hit.getY() << ", " << hit.getZ() << endl;
 
     return hit;
 }

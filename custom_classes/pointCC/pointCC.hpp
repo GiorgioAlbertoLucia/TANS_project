@@ -14,9 +14,9 @@ class PointCC
         inline PointCC(const double X, const double Y, const double Z): fX(X), fY(Y), fZ(Z){};
         ~PointCC(){};
 
-        inline double getX(){return fX;};
-        inline double getY(){return fY;};
-        inline double getZ(){return fZ;};
+        inline double getX() const {return fX;};
+        inline double getY() const {return fY;};
+        inline double getZ() const {return fZ;};
 
         inline double evalRadius(){return (sqrt(fX*fX+fY*fY));};
         double evalPhi();
