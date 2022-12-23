@@ -1,15 +1,17 @@
-#include "event.hpp"
+#include <Riostream.h>
 
 #include <TRandom3.h>
 #include <TMath.h>
 
+#include "event.hpp"
+
 ClassImp(Event)
 
 Event::Event():
-    TObject(), 
-    fPrimaryVertex(), 
-    fParticleArray()
+    TObject()
 {
+    std::vector<Particle> temp;
+    fParticleArray = temp;
     fPrimaryVertex = Vertex(0., 0., 0., 0);
 }
 
@@ -44,12 +46,28 @@ vector<Hit> Event::partTransport(Detector& detector)
     vector<Hit> IPvec;
     IPvec.reserve(fPrimaryVertex.getMultiplicity());
 
-    for (Particle& part: fParticleArray)     IPvec.push_back(part.transport(detector));
+    for (Particle& part: fParticleArray)    IPvec.push_back(part.transport(detector));
 
-    if (detector.multipleScattering)    
-    {
-        for (Particle& part: fParticleArray)     part.multipleScattering(detector);
-    }
+    //if (detector.multipleScattering)    
+    //{
+    //    for (Particle& part: fParticleArray)     part.multipleScattering(detector);
+    //}
+
+    return IPvec;
+}
+
+TClonesArray Event::partTransport(Detector& detector)
+{
+    vector<Hit> IPvec;
+    TClonesArray * ptrhits = new TClonesArray
+    IPvec.reserve(fPrimaryVertex.getMultiplicity());
+
+    for (Particle& part: fParticleArray)    IPvec.push_back(part.transport(detector));
+
+    //if (detector.multipleScattering)    
+    //{
+    //    for (Particle& part: fParticleArray)     part.multipleScattering(detector);
+    //}
 
     return IPvec;
 }
