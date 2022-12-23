@@ -14,7 +14,7 @@ void Reconstruction::RunReconstruction()
 {
   int nEvents;
   TFile hfile("recTree.root","RECREATE");
-  TTree* recTree=new TTree(fTreeName2.c_str(),"tree of reconstruction");//restituisce il Tree
+  TTree* recTree=new TTree(fTreeName2.c_str(),"tree of reconstruction");
   recTree->Branch("Phi",&Phi);
   recTree->Branch("Layer",&Li);
   recTree->Branch("Z",&Z);

@@ -15,8 +15,8 @@ class Reconstruction
         void ReadTree();
     private:
         std::string fTreeName2; 
-        std::string fTreeName3;         // description for ROOT if this becomes a TObject - probably not necessary
-        std::string fConfigFile;    //
+        std::string fTreeName3;         
+        std::string fConfigFile;   
         
 
 };
