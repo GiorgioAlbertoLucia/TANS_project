@@ -56,20 +56,19 @@ vector<Hit> Event::partTransport(Detector& detector)
     return IPvec;
 }
 
-TClonesArray Event::partTransport(Detector& detector)
+TClonesArray Event::partTransport2(Detector& detector)
 {
-    vector<Hit> IPvec;
-    TClonesArray * ptrhits = new TClonesArray
-    IPvec.reserve(fPrimaryVertex.getMultiplicity());
+    TClonesArray * ptrhits = new TClonesArray("Hit", fPrimaryVertex.getMultiplicity());
+    TClonesArray &hits = * ptrhits;
 
-    for (Particle& part: fParticleArray)    IPvec.push_back(part.transport(detector));
+    for(int i=0; i<fPrimaryVertex.getMultiplicity(); i++)   hits.AddAt(fParticleArray[i].transport(detector), i);
 
     //if (detector.multipleScattering)    
     //{
     //    for (Particle& part: fParticleArray)     part.multipleScattering(detector);
     //}
 
-    return IPvec;
+    return hits;
 }
 
 void Event::clear()

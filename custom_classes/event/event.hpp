@@ -38,7 +38,7 @@ class Event: public TObject
          * @return vector<Hit> 
          */
         vector<Hit> partTransport(Detector& detector);                 
-        TClonesArray partTransport(Detector& detector);
+        TClonesArray partTransport2(Detector& detector);
 
         /**
          * @brief clears fParticleArray and sets fPrimaryVertex to (0., 0., 0., 0)

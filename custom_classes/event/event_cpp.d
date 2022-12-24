@@ -30,6 +30,16 @@
 ./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TMath.h
 ./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TError.h
 ./custom_classes/event/event_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/./custom_classes/event/event.hpp
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TClonesArray.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TObjArray.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TSeqCollection.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TCollection.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TIterator.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TVirtualRWMutex.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TVirtualMutex.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/ROOT/RRangeCast.hxx
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/ROOT/RSpan.hxx
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/ROOT/span.hxx
 ./custom_classes/event/event_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/./custom_classes/hit/hit.hpp
 ./custom_classes/event/event_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/./custom_classes/pointCC/pointCC.hpp
 ./custom_classes/event/event_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/./custom_classes/detector/detector.hpp

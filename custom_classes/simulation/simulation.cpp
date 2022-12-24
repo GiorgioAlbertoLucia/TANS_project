@@ -19,15 +19,16 @@ void Simulation::runSimulation(const int nEvents)
     TTree * tree = new TTree(fTreeName.c_str(), "Simulation");
     tree->Branch("Vertex", &vertex);
 
-    vector<Hit> hits;
+    //vector<Hit> hits;
     //vector<double> hits;
+    TClonesArray hits("Hit");
     tree->Branch("Hits", &hits);
 
     for (int i=0; i<nEvents; i++)
     {
         vertex = event->partGeneration();
-        hits.reserve(event->getVertex().getMultiplicity());
-        hits = event->partTransport(detector1);
+        //hits.reserve(event->getVertex().getMultiplicity());
+        hits = event->partTransport2(detector1);
         //hits = {1., 2.};
 
         tree->Fill();
