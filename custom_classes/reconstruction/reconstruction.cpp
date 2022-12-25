@@ -6,11 +6,11 @@
 #include <TBranch.h>
 
 #include <TMath.h>
-void Reconstruction::ReadTree()
+void Reconstruction::readTree()
 {
   //wait in order to know the structure of the tree
 }
-void Reconstruction::RunReconstruction()
+void Reconstruction::runReconstruction()
 {
   int nEvents;
   TFile hfile("recTree.root","RECREATE");

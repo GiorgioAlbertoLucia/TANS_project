@@ -11,8 +11,8 @@ class Reconstruction
         Reconstruction();
         ~Reconstruction();
 
-        void RunReconstruction();
-        void ReadTree();
+        void runReconstruction();   // sono un rompipalle, ti voglio bene
+        void readTree();
     private:
         std::string fTreeName2; 
         std::string fTreeName3;         
