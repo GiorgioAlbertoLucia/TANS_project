@@ -16,7 +16,8 @@ void Simulation::runSimulation(const int nEvents)
     Vertex vertex;
     Detector detector1 = {3., 0.08, 27., false};
 
-    TTree * tree = new TTree(fTreeName.c_str(), "OhXmasTTree");
+    //TTree * tree = new TTree(fTreeName.c_str(), "Simulation");
+    TTree * tree = new TTree("OhXmasTTree", "OhXmasTTree");
     tree->Branch("Vertex", &vertex);
 
     //vector<Hit> hits;
