@@ -16,7 +16,7 @@ void Simulation::runSimulation(const int nEvents)
     Vertex vertex;
     Detector detector1 = {3., 0.08, 27., false};
 
-    TTree * tree = new TTree(fTreeName.c_str(), "Simulation");
+    TTree * tree = new TTree(fTreeName.c_str(), "OhXmasTTree");
     tree->Branch("Vertex", &vertex);
 
     //vector<Hit> hits;
@@ -32,7 +32,7 @@ void Simulation::runSimulation(const int nEvents)
         //hits = {1., 2.};
 
         tree->Fill();
-        hits.clear();
+        hits.Clear();
     }
 
     TFile file("data/simulation.root", "recreate");

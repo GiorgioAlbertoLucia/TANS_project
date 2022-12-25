@@ -61,7 +61,13 @@ TClonesArray Event::partTransport2(Detector& detector)
     TClonesArray * ptrhits = new TClonesArray("Hit", fPrimaryVertex.getMultiplicity());
     TClonesArray &hits = * ptrhits;
 
-    for(int i=0; i<fPrimaryVertex.getMultiplicity(); i++)   hits.AddAt(fParticleArray[i].transport(detector), i);
+    for(int i=0; i<fPrimaryVertex.getMultiplicity(); i++)
+    {
+        new (hits[i]) Hit();
+        Hit * hit = (Hit*)ptrhits->At(i);
+        * hit = fParticleArray[i].transport(detector);
+    }   
+    
 
     //if (detector.multipleScattering)    
     //{
