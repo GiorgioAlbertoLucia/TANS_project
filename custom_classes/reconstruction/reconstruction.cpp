@@ -5,7 +5,7 @@
 #include <TTree.h>
 #include <TBranch.h>
 #include <TMath.h>
- Reconstruction::Reconstruction()
+ Reconstruction::Reconstruction()// da sistemre nomi dei rami che così non funzia, ma ci sono circa
 {
   TFile hfile("simulation.root");
   TTree *tree=(TTree*)hfile.Get("OhXmasTTree");
@@ -25,9 +25,13 @@
 }
 void Reconstruction::runReconstruction()
 {
+  Hit Hitrec;
+  for(int y=0;y<hitsVec.size();y++)
+  {
+
+  }
   
-  /*int nEvents;
-  TFile hfile("recTree.root","RECREATE");
+  /*TFile hfile("recTree.root","RECREATE");
   TTree* recTree=new TTree(fTreeName2.c_str(),"tree of reconstruction");
   recTree->Branch("Phi",&Phi);
   recTree->Branch("Layer",&Li);
