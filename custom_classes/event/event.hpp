@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include <TH1I.h>
+#include <TH1F.h>
 #include <TObject.h>
 #include <TClonesArray.h>
 
@@ -29,7 +31,7 @@ class Event: public TObject
          * @param option1 option for multiplicity distr
          * @param option2 option for eta distr (part)
          */
-        Vertex partGeneration(/*const char * option1, const char * option2*/);   
+        Vertex partGeneration(TH1I& hMultiplicity, TH1F& hEta);   
         /**
          * @brief executes particle transport through a given detector (if multiple scattering is assumed for that detector,
          * it will be performed). A vector containing positions of hits on the detector is returned.

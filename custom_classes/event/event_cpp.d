@@ -2,9 +2,9 @@
 # DO NOT DELETE
 
 ./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/Riostream.h
-./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TRandom3.h
-./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TRandom.h
-./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/Math/TRandomEngine.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TH1I.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TH1.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TAxis.h
 ./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TNamed.h
 ./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TObject.h
 ./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/Rtypes.h
@@ -27,6 +27,25 @@
 ./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TMathBase.h
 ./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/ROOT/RStringView.hxx
 ./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/ROOT/TypeTraits.hxx
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TAttAxis.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TArrayD.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TArray.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TAttLine.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TAttFill.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TAttMarker.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TArrayC.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TArrayS.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TArrayI.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TArrayF.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/Foption.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/ROOT/EExecutionPolicy.hxx
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TVectorFfwd.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TVectorDfwd.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TFitResultPtr.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TH1F.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TRandom3.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TRandom.h
+./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/Math/TRandomEngine.h
 ./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TMath.h
 ./custom_classes/event/event_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TError.h
 ./custom_classes/event/event_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/./custom_classes/event/event.hpp

@@ -3,6 +3,9 @@
 
 #include <string>
 
+#include <TH1I.h>
+#include <TH1F.h>
+
 class Simulation
 {
     public:
@@ -11,6 +14,12 @@ class Simulation
         ~Simulation(){};
 
         void runSimulation(const int nEvents);
+        /**
+         * @brief version with vectors
+         * 
+         * @param nEvents 
+         */
+        void runSimulation2(const int nEvents);
 
     private:
         std::string fTreeName;          // description for ROOT if this becomes a TObject - probably not necessary

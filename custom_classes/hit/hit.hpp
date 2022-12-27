@@ -31,9 +31,11 @@ class Hit: public TObject, public PointCC
         ClassDef(Hit, 1)
 
 };
+
 #endif
+
 
 #ifdef MAKECINT
+#include <vector>
 #pragma link C++ class vector<Hit>+;
 #endif
-

@@ -50,8 +50,6 @@ Hit Particle::transport(Detector& detector)
     double c2 = sin(theta) * sin(fPhi);
     double c3 = cos(theta);
 
-    cout << fPhi << ", " << theta << endl;
-
     double x0 = fLastHP.getX();
     double y0 = fLastHP.getY();
     double z0 = fLastHP.getZ();
@@ -68,7 +66,8 @@ Hit Particle::transport(Detector& detector)
     // update last hit position for the particle (outside the detector)
     updateHitPos(x0+c1*t, y0+c2*t, z0+c3*t+(detector.width/2), true);
 
-    cout << hit.getX() << ", " << hit.getY() << ", " << hit.getZ() << endl;
+    // check cout
+    //cout << hit.getX() << ", " << hit.getY() << ", " << hit.getZ() << endl;
 
     return hit;
 }
