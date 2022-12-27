@@ -10,7 +10,7 @@
 #include "../pointCC/pointCC.hpp"
 #include "../vertex/vertex.hpp"
 
- Reconstruction::Reconstruction()// da sistemre nomi dei rami che così non funzia, ma ci sono circa
+ Reconstruction::Reconstruction()
 {
   TFile hfile("simulation.root");
   TTree *tree=(TTree*)hfile.Get("OhXmasTTree");
@@ -20,6 +20,7 @@
   Vertex vertex;
   b1->SetAddress(&vertex);
   b2->SetAddress(&hitsArray);
+  
   for(int ev=0;ev<tree->GetEntries();ev++){
       tree->GetEvent(ev);
       int numHits=hitsArray->GetEntries();
