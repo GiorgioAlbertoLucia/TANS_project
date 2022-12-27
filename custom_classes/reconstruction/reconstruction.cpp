@@ -1,6 +1,6 @@
 #include "reconstruction.hpp"
-#include "hit.hpp"
-#include "pointCC.hpp"
+
+
 #include <vector>
 #include "TClonesArray.h"
 #include <TFile.h>
@@ -8,6 +8,7 @@
 #include <TBranch.h>
 #include <TMath.h>
 #include "../hit/hit.hpp"
+#include "../pointCC/pointCC.hpp"
 #include "../vertex/vertex.hpp"
  Reconstruction::Reconstruction()// da sistemre nomi dei rami che così non funzia, ma ci sono circa
 {
@@ -17,8 +18,8 @@
   TBranch *b2=tree->GetBranch("Hits");
   TClonesArray *hitsArray = new TClonesArray("Hit",100);
   TClonesArray *vertexArray = new TClonesArray("Vertex",100);
-  b1->SetAddress("&vertexArray");
-  b2->SetAddress("&hitsArray");
+  b1->SetAddress(&vertexArray);
+  b2->SetAddress(&hitsArray);
   for(int ev=0;ev<tree->GetEntries();ev++){
     tree->GetEvent(ev);
     int numHits=hitsArray->GetEntries();
@@ -36,7 +37,6 @@
 }
 void Reconstruction::runReconstruction()
 {
-<<<<<<< Updated upstream
   Hit Hitrec;
   for(int y=0;y<hitsVec.size();y++)
   {
@@ -48,11 +48,4 @@ void Reconstruction::runReconstruction()
   recTree->Branch("Phi",&Phi);
   recTree->Branch("Layer",&Li);
   recTree->Branch("Z",&Z);*/
-=======
-  TClonesArray *ptrhits = new TClonesArray("hit",100);
-  int nEvents;
-  TFile hfile("recTree.root","RECREATE");
-  TTree* recTree=new TTree("Trec","tree of reconstruction");
-  recTree->Branch("hits",&ptrhits);
->>>>>>> Stashed changes
 }
