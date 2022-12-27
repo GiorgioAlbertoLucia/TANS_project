@@ -1,18 +1,25 @@
 #include "reconstruction.hpp"
+
+
 #include <vector>
 #include "TClonesArray.h"
 #include <TFile.h>
 #include <TTree.h>
 #include <TBranch.h>
 #include <TMath.h>
+#include "../hit/hit.hpp"
+#include "../pointCC/pointCC.hpp"
+#include "../vertex/vertex.hpp"
  Reconstruction::Reconstruction()// da sistemre nomi dei rami che così non funzia, ma ci sono circa
 {
   TFile hfile("simulation.root");
   TTree *tree=(TTree*)hfile.Get("OhXmasTTree");
   TBranch *b1=tree->GetBranch("Vertex");
   TBranch *b2=tree->GetBranch("Hits");
-  b1->SetAddress("&Vertex");
-  b2->SetAddress("&Hits");
+  TClonesArray *hitsArray = new TClonesArray("Hit",100);
+  TClonesArray *vertexArray = new TClonesArray("Vertex",100);
+  b1->SetAddress(&vertexArray);
+  b2->SetAddress(&hitsArray);
   for(int ev=0;ev<tree->GetEntries();ev++){
     tree->GetEvent(ev);
     int numHits=Hits->GetEntries();
