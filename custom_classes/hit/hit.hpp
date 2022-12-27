@@ -6,10 +6,7 @@
 #include <TObject.h>
 
 #include "../pointCC/pointCC.hpp"
-
-#ifdef MAKECINT
-#pragma link C++ class vector<Hit>+;
-#endif
+//
 
 class Hit: public TObject, public PointCC
 {
@@ -17,7 +14,7 @@ class Hit: public TObject, public PointCC
         Hit(): TObject(), PointCC(0., 0., 0.), fHitLayer(0){};
         Hit(const double X, const double Y, const double Z, const int IL):  
             TObject(), PointCC(X, Y, Z), fHitLayer(IL){};
-        Hit(const Hit& hit): PointCC(hit.getX(), hit.getY(), hit.getZ()), fHitLayer(hit.fHitLayer), fPhi(hit.fPhi){};
+        Hit(const Hit& hit): TObject(), PointCC(hit.getX(), hit.getY(), hit.getZ()), fHitLayer(hit.fHitLayer), fPhi(hit.fPhi){};
         ~Hit(){};
 
         inline int getHitLayer() const {return fHitLayer;};
@@ -35,4 +32,8 @@ class Hit: public TObject, public PointCC
 
 };
 
+#endif
+
+#ifdef MAKECINT
+#pragma link C++ class vector<Hit>+;
 #endif
