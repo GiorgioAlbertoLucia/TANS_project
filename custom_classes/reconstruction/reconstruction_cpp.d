@@ -21,6 +21,7 @@
 ./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/RVersion.h
 ./../reconstruction/reconstruction_cpp.so: ../pointCC/pointCC.hpp
 ./../reconstruction/reconstruction_cpp.so: ../hit/hit.hpp
+./../reconstruction/reconstruction_cpp.so: ../vertex/vertex.hpp
 ./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TClonesArray.h
 ./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TObjArray.h
 ./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TSeqCollection.h

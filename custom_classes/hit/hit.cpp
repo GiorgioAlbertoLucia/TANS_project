@@ -15,7 +15,7 @@ void Hit::noise()
 {
     fZ=gRandom->Rndm()*27.;
     fPhi=gRandom->Rndm()*2*TMath::Pi();
-    double aaa=gRandom->Rndm();         // TE LI CAMBIERÒ TUTTI STI NOMI
+    double aaa=gRandom->Rndm();         // TE LI CAMBIERÒ TUTTI STI NOMI, ma sono giustiiiiiii
     if(aaa<0.5)  fHitLayer=1;
     else  fHitLayer=2;
 }

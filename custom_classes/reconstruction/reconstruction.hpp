@@ -5,6 +5,7 @@
 
 #include "../pointCC/pointCC.hpp"
 #include "../hit/hit.hpp"
+#include "../vertex/vertex.hpp"
 class Reconstruction
 
 {
@@ -19,7 +20,7 @@ class Reconstruction
         std::string fTreeName3;         
         std::string fConfigFile;
         vector<Hit> hitsVec;
-        vector<double> zVec;
+        vector<double> zVertVec;
 
 
         
