@@ -1,4 +1,6 @@
 #include "reconstruction.hpp"
+#include "hit.hpp"
+#include "pointCC.hpp"
 #include <vector>
 #include "TClonesArray.h"
 #include <TFile.h>
@@ -34,6 +36,7 @@
 }
 void Reconstruction::runReconstruction()
 {
+<<<<<<< Updated upstream
   Hit Hitrec;
   for(int y=0;y<hitsVec.size();y++)
   {
@@ -45,4 +48,11 @@ void Reconstruction::runReconstruction()
   recTree->Branch("Phi",&Phi);
   recTree->Branch("Layer",&Li);
   recTree->Branch("Z",&Z);*/
+=======
+  TClonesArray *ptrhits = new TClonesArray("hit",100);
+  int nEvents;
+  TFile hfile("recTree.root","RECREATE");
+  TTree* recTree=new TTree("Trec","tree of reconstruction");
+  recTree->Branch("hits",&ptrhits);
+>>>>>>> Stashed changes
 }
