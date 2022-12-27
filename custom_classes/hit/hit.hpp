@@ -7,6 +7,10 @@
 
 #include "../pointCC/pointCC.hpp"
 
+#ifdef MAKECINT
+#pragma link C++ class vector<Hit>+;
+#endif
+
 class Hit: public TObject, public PointCC
 {
     public:
