@@ -18,39 +18,28 @@ void Simulation::runSimulation(const int nEvents)
     Vertex vertex;
     Detector detector1 = {3., 0.08, 27., false};
 
-    //TTree * tree = new TTree(fTreeName.c_str(), "Simulation");
     TTree * tree = new TTree("OhXmasTTree", "OhXmasTTree");
     tree->Branch("Vertex", &vertex);
 
-    //vector<Hit> hits;
-    //vector<Hit> *ptrhits = &hits;
-    //vector<double> hits;
     TClonesArray hits("Hit");
     tree->Branch("Hits", &hits);
-    //tree->Branch("Hits", &ptrhits);
 
+    // input distributions
     TFile inFile("data/kinem.root");
-    
-    TH1I * hMultiplicity = new TH1I();
+    TH1I * hMultiplicity = new TH1I("hMultiplicity", "check", 100, 0, 10);
     TH1F * hEta = (TH1F*)inFile.Get("heta2");
     hMultiplicity->SetDirectory(0);
     hEta->SetDirectory(0);
     inFile.Close();
 
-
     for (int i=0; i<nEvents; i++)
     {
         vertex = event->partGeneration(*hMultiplicity, *hEta);
-        //hits.reserve(event->getVertex().getMultiplicity());
-        //for (int j=0; j<event->getVertex().getMultiplicity(); j++)  hits.push_back(event->partTransport(detector1)[j]);
         hits = event->partTransport2(detector1);
-        //hits = {1., 2.};
-
-
 
         tree->Fill();
-        //hits.clear();
         hits.Clear();
+        event->clear();
     }
 
     TFile file("data/simulation.root", "recreate");
@@ -64,7 +53,7 @@ void Simulation::runSimulation(const int nEvents)
 
 void Simulation::runSimulation2(const int nEvents)
 {
-    /*
+    
     Event * event = new Event();
     Vertex vertex;
     Detector detector1 = {3., 0.08, 27., false};
@@ -73,26 +62,26 @@ void Simulation::runSimulation2(const int nEvents)
     TTree * tree = new TTree("OhXmasTTree", "OhXmasTTree");
     tree->Branch("Vertex", &vertex);
 
-    //vector<Hit> hits;
-    //vector<Hit> *ptrhits = &hits;
-    //vector<double> hits;
-    TClonesArray hits("Hit");
-    tree->Branch("Hits", &hits);
-    //tree->Branch("Hits", &ptrhits);
+    vector<Hit> hits;
+    vector<Hit> *ptrhits = &hits;
+    
+    // input distributions
+    TFile inFile("data/kinem.root");
+    TH1I * hMultiplicity = new TH1I("hMultiplicity", "check", 100, 0, 10);
+    TH1F * hEta = (TH1F*)inFile.Get("heta2");
+    hMultiplicity->SetDirectory(0);
+    hEta->SetDirectory(0);
+    inFile.Close();
 
     for (int i=0; i<nEvents; i++)
     {
-        vertex = event->partGeneration();
-        //hits.reserve(event->getVertex().getMultiplicity());
-        //for (int j=0; j<event->getVertex().getMultiplicity(); j++)  hits.push_back(event->partTransport(detector1)[j]);
-        hits = event->partTransport2(detector1);
-        //hits = {1., 2.};
-
-
+        vertex = event->partGeneration(*hMultiplicity, *hEta);
+        hits.reserve(event->getVertex().getMultiplicity());
+        for (int j=0; j<event->getVertex().getMultiplicity(); j++)  hits.push_back(event->partTransport(detector1)[j]);
 
         tree->Fill();
-        //hits.clear();
-        hits.Clear();
+        hits.clear();
+        event->clear();
     }
 
     TFile file("data/simulation.root", "recreate");
@@ -101,5 +90,5 @@ void Simulation::runSimulation2(const int nEvents)
 
     //delete event;
     //delete tree;
-    */
+    
 }

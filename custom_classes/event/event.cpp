@@ -69,6 +69,7 @@ TClonesArray Event::partTransport2(Detector& detector)
         new (hits[i]) Hit();
         Hit * hit = (Hit*)ptrhits->At(i);
         * hit = fParticleArray[i].transport(detector);
+        cout << "event " << hit->getX() << ", " << hit->getY() << ", " << hit->getZ() << endl;
     }   
     
 
