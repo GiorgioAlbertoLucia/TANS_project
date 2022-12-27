@@ -17,22 +17,20 @@
   TBranch *b1=tree->GetBranch("Vertex");
   TBranch *b2=tree->GetBranch("Hits");
   TClonesArray *hitsArray = new TClonesArray("Hit",100);
-  TClonesArray *vertexArray = new TClonesArray("Vertex",100);
-  b1->SetAddress(&vertexArray);
+Vertex vertex;
+  b1->SetAddress(&vertex);
   b2->SetAddress(&hitsArray);
   for(int ev=0;ev<tree->GetEntries();ev++){
     tree->GetEvent(ev);
     int numHits=hitsArray->GetEntries();
-    int numVert=vertexArray->GetEntries();
+    
 
     for(int j=0; j<numHits;j++){
     Hit *hitptr=(Hit*)hitsArray->At(j);
-    hitsVec.push_back(hitptr);
+    hitsVec.push_back(*hitptr);
     }
-    for (int i=0;i<numVert;i++)
-    {
-     zVertVec.push_back(vertexArray[i].fZ)
-    }
+   zVertVec.push_back(vertex.getZ());
+    
   }
 }
 void Reconstruction::runReconstruction()
