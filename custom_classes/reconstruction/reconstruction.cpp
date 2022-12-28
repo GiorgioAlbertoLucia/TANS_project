@@ -10,58 +10,12 @@
 #include "../pointCC/pointCC.hpp"
 #include "../vertex/vertex.hpp"
 
-
-void Reconstruction::ReadTree()
-{
-   TFile hfile("simulation.root");
-  TTree *tree=(TTree*)hfile.Get("OhXmasTTree");
-  TBranch *b1=tree->GetBranch("Vertex");
-  TBranch *b2=tree->GetBranch("Hits");
-  TClonesArray *hitsArray = new TClonesArray("Hit",100);
-  Vertex vertex;
-  b1->SetAddress(&vertex);
-  b2->SetAddress(&hitsArray);
-
-  for(int ev=0;ev<tree->GetEntries();ev++){
-      tree->GetEvent(ev);
-      int numHits=hitsArray->GetEntries();
-
-      for(int j=0; j<numHits;j++){
-      Hit *hitptr=(Hit*)hitsArray->At(j);
-      hitsVec.push_back(*hitptr);
-    }
-
-   zVertVec.push_back(vertex.getZ());
-    
-  }
-}
-
 double Reconstruction::recZvert(Hit& hit1,Hit& hit2)//return z of rec vertex
 {
 
 }
 
-
-
-void Reconstruction::runReconstruction()
-{
-    Hit Hitrec;
-
-    for(int j=0;j<hitsVec.size();j++)//smearing on points
-    {
-        Hitrec = Hit(hitsVec[j].getX(), hitsVec[j].getY(), hitsVec[j].getZ(), hitsVec[j].getHitLayer()+1);
-        Hitrec.smearing();
-        hitsVec[j]=Hitrec;
-    }
-
-    int noi=int(gRandom->Rndm()*1000);//add noise
-    for(int i=0;i<noi;i++)
-    {
-        Hitrec=Hit();
-        Hitrec.noise();
-        hitsVec.push_back(Hitrec);
-    }
-
+void Reconstruction::runReconstruction(){
     double phi=0.;//loop on point for the vertex's reconstruction
     double deltaPhi=0.087; // 5 degres
     for(int i=0;i<hitsVec.size();i++)
@@ -72,10 +26,56 @@ void Reconstruction::runReconstruction()
             for(int j=0;j<hitsVec.size();j++)
             {
                 if(((hitsVec[j].getHitLayer()+1)==2)&&(hitsVec[j].getPhi()<phi+deltaPhi)&&(hitsVec[j].getPhi()>phi-deltaPhi))
-                Reconstructor.recZvert( hitsVec[i], hitsVec[j]);//to add in a histo
+                recZvert( hitsVec[i], hitsVec[j]);//to add in a histo
             }
         }
     }
+}
+
+
+
+void Reconstruction::loadHits()
+{ 
+  TFile hfile("simulation.root");
+  TTree *tree=(TTree*)hfile.Get("OhXmasTTree");
+  TBranch *b1=tree->GetBranch("Vertex");
+  TBranch *b2=tree->GetBranch("Hits");
+  TClonesArray *hitsArray = new TClonesArray("Hit",100);
+  Hit Hitrec;
+  Vertex vertex;
+  b1->SetAddress(&vertex);
+  b2->SetAddress(&hitsArray);
+
+  for(int ev=0;ev<tree->GetEntries();ev++)
+  {
+        tree->GetEvent(ev);
+        int numHits=hitsArray->GetEntries();
+        zVertVec.push_back(vertex.getZ());
+
+        for(int j=0; j<numHits;j++){
+        Hit *hitptr=(Hit*)hitsArray->At(j);
+        hitsVec.push_back(*hitptr);
+        }
+
+        for(int ii=0;ii<hitsVec.size();ii++)
+        {
+            hitsVec[ii].smearing();
+        }
+
+        int noi=int(gRandom->Rndm()*1000);//add noise
+
+        for(int i=0;i<noi;i++)
+        {
+        Hitrec=Hit();
+        Hitrec.noise();
+        hitsVec.push_back(Hitrec);
+        }
+        
+        runReconstruction();
+    }
+}
+    
+
 
   
   /*TFile hfile("recTree.root","RECREATE");
@@ -83,4 +83,3 @@ void Reconstruction::runReconstruction()
   recTree->Branch("Phi",&Phi);
   recTree->Branch("Layer",&Li);
   recTree->Branch("Z",&Z);*/
-}
