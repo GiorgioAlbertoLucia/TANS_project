@@ -72,7 +72,7 @@ void Reconstruction::runReconstruction()
             for(int j=0;j<hitsVec.size();j++)
             {
                 if(((hitsVec[j].getHitLayer()+1)==2)&&(hitsVec[j].getPhi()<phi+deltaPhi)&&(hitsVec[j].getPhi()>phi-deltaPhi))
-                Reconstructor.recZvert( hitsVec[i], hitsVec[j]);
+                Reconstructor.recZvert( hitsVec[i], hitsVec[j]);//to add in a histo
             }
         }
     }
