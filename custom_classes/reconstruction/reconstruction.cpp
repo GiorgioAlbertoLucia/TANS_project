@@ -10,23 +10,26 @@
 #include "../pointCC/pointCC.hpp"
 #include "../vertex/vertex.hpp"
 
-double Reconstruction::recZvert(Hit& hit1,Hit& hit2)//return z of rec vertex
+double Reconstruction::recZvert(Hit *hit1,Hit *hit2)//return z of rec vertex
 {
 
 }
 
-void Reconstruction::runReconstruction(){
+void Reconstruction::runReconstruction(TClonesArray* hitsArray){
     double phi=0.;//loop on point for the vertex's reconstruction
     double deltaPhi=0.087; // 5 degres
-    for(int i=0;i<hitsVec.size();i++)
+    
+    for(int i=0;i<hitsArray->GetEntries();i++)
     {
-        if((hitsVec[i].getHitLayer()+1)==1)
+        Hit *hitptr=(Hit*)hitsArray->At(i);
+        if((hitptr->getHitLayer()+1)==1)
         {
-            phi=hitsVec[i].getPhi();
-            for(int j=0;j<hitsVec.size();j++)
+            phi=hitptr->getPhi();
+            for(int j=0;j<hitsArray->GetEntries();j++)
             {
-                if(((hitsVec[j].getHitLayer()+1)==2)&&(hitsVec[j].getPhi()<phi+deltaPhi)&&(hitsVec[j].getPhi()>phi-deltaPhi))
-                recZvert( hitsVec[i], hitsVec[j]);//to add in a histo
+                Hit *hitptr1=(Hit*)hitsArray->At(j);
+                if(((hitptr1->getHitLayer()+1)==2)&&(hitptr1->getPhi()<phi+deltaPhi)&&(hitptr1->getPhi()>phi-deltaPhi))
+                recZvert( hitptr,hitptr1);//to add in a histo
             }
         }
     }
@@ -52,28 +55,27 @@ void Reconstruction::loadHits()
         int numHits=hitsArray->GetEntries();
         zVertVec.push_back(vertex.getZ());
 
-        for(int j=0; j<numHits;j++){
-        Hit *hitptr=(Hit*)hitsArray->At(j);
-        hitsVec.push_back(*hitptr);
-        }
-
-        for(int ii=0;ii<hitsVec.size();ii++)
+        for(int ii=0;ii<numHits;ii++)//smearing
         {
-            hitsVec[ii].smearing();
+            Hit *hitptr2=(Hit*)hitsArray->At(ii);
+            hitptr2->smearing();
         }
 
-        int noi=int(gRandom->Rndm()*1000);//add noise
-
-        for(int i=0;i<noi;i++)
+        int noi=int(gRandom->Rndm()*100);//add noise
+        for(int i=numHits+1; i<numHits+noi+1; i++)
         {
-        Hitrec=Hit();
-        Hitrec.noise();
-        hitsVec.push_back(Hitrec);
+            Hitrec=Hit();
+            Hitrec.noise();
+            new(hitsArray[i])Hitrec;//QUESTO POI LO SISTEMO, è l'unica cosa che non va!!! ORA TRA ARRAY E PUNTATORI STO SMATTANDO QUINDI VADO A FARE CAMPI
         }
-        
-        runReconstruction();
+
+        runReconstruction(hitsArray);
+        hitsArray->Clear();
     }
+        
 }
+    
+
     
 
 

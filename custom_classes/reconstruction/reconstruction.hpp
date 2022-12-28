@@ -16,8 +16,8 @@ class Reconstruction
        
 
         void loadHits();
-        void runReconstruction();   // sono un rompipalle, ti voglio bene
-        double recZvert(Hit& hit1,Hit& hit2);
+        void runReconstruction(TClonesArray* hitsArray);   // sono un rompipalle, ti voglio bene
+        double recZvert(Hit *hit1,Hit *hit2);
         
     private:
         std::string fTreeName2; 
