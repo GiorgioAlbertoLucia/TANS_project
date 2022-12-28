@@ -10,9 +10,11 @@
 #include "../pointCC/pointCC.hpp"
 #include "../vertex/vertex.hpp"
 
- Reconstruction::Reconstruction()
+
+
+void Reconstruction::ReadTree()
 {
-  TFile hfile("simulation.root");
+   TFile hfile("simulation.root");
   TTree *tree=(TTree*)hfile.Get("OhXmasTTree");
   TBranch *b1=tree->GetBranch("Vertex");
   TBranch *b2=tree->GetBranch("Hits");
