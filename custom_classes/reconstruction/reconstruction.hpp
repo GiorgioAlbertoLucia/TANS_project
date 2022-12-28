@@ -17,6 +17,7 @@ class Reconstruction
 
         void readTree();
         void runReconstruction();   // sono un rompipalle, ti voglio bene
+        double recZvert(Hit& hit1,Hit& hit2);
         
     private:
         std::string fTreeName2; 

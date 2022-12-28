@@ -11,7 +11,6 @@
 #include "../vertex/vertex.hpp"
 
 
-
 void Reconstruction::ReadTree()
 {
    TFile hfile("simulation.root");
@@ -37,30 +36,12 @@ void Reconstruction::ReadTree()
   }
 }
 
-void ReadTree()
+double Reconstruction::recZvert(Hit& hit1,Hit& hit2)//return z of rec vertex
 {
-  TFile hfile("simulation.root");
-  TTree *tree=(TTree*)hfile.Get("OhXmasTTree");
-  TBranch *b1=tree->GetBranch("Vertex");
-  TBranch *b2=tree->GetBranch("Hits");
-  TClonesArray *hitsArray = new TClonesArray("Hit",100);
-  Vertex vertex;
-  b1->SetAddress(&vertex);
-  b2->SetAddress(&hitsArray);
 
-  for(int ev=0;ev<tree->GetEntries();ev++){
-      tree->GetEvent(ev);
-      int numHits=hitsArray->GetEntries();
-
-      for(int j=0; j<numHits;j++){
-      Hit *hitptr=(Hit*)hitsArray->At(j);
-      hitsVec.push_back(*hitptr);
-    }
-
-   zVertVec.push_back(vertex.getZ());
-    
-  }
 }
+
+
 
 void Reconstruction::runReconstruction()
 {
@@ -88,6 +69,11 @@ void Reconstruction::runReconstruction()
         if((hitsVec[i].getHitLayer()+1)==1)
         {
             phi=hitsVec[i].getPhi();
+            for(int j=0;j<hitsVec.size();j++)
+            {
+                if(((hitsVec[j].getHitLayer()+1)==2)&&(hitsVec[j].getPhi()<phi+deltaPhi)&&(hitsVec[j].getPhi()>phi-deltaPhi))
+                Reconstructor.recZvert( hitsVec[i], hitsVec[j]);
+            }
         }
     }
 
