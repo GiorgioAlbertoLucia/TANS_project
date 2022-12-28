@@ -9,7 +9,7 @@ ClassImp(Hit)
 void Hit::smearing()
 {
     fZ += gRandom->Gaus(0., 0.0120);
-    double fPhi = this->evalPhi()+gRandom->Gaus(0.,0.003)/this->evalRadius();
+    fPhi = this->evalPhi()+gRandom->Gaus(0.,0.003)/this->evalRadius();
 }
 
 void Hit::noise()
