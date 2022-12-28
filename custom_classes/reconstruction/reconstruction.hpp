@@ -10,14 +10,17 @@ class Reconstruction
 
 {
     public:
-        Reconstruction();
+        Reconstruction(){};
+        Reconstruction(const char * TreeName, const char * ConfigFile): fTreeName2(TreeName), fConfigFile(ConfigFile){};
         ~Reconstruction();
+       
 
+        void readTree();
         void runReconstruction();   // sono un rompipalle, ti voglio bene
+        double recZvert(Hit& hit1,Hit& hit2);
         
     private:
         std::string fTreeName2; 
-        std::string fTreeName3;         
         std::string fConfigFile;
         vector<Hit> hitsVec;
         vector<double> zVertVec;
