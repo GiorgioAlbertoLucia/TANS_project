@@ -67,7 +67,7 @@ Hit Particle::transport(Detector& detector)
     updateHitPos(x0+c1*t, y0+c2*t, z0+c3*t+(detector.width/2), true);
 
     // check cout
-    cout << "particle " << hit.getX() << ", " << hit.getY() << ", " << hit.getZ() << endl;
+    // cout << "particle " << hit.getX() << ", " << hit.getY() << ", " << hit.getZ() << endl;
 
     return hit;
 }

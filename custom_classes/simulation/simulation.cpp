@@ -1,50 +1,90 @@
 #include <Riostream.h>
+#include <string>
 #include <vector>
 
 #include <TH1I.h>
 #include <TH1F.h>
 #include <TFile.h>
 #include <TTree.h>
-#include <TBranch.h>
 
 #include "simulation.hpp"
 #include "../event/event.hpp"
 #include "../detector/detector.hpp"
 #include "../hit/hit.hpp"
+#include "../../yaml/Yaml.hpp"
 
 void Simulation::runSimulation(const int nEvents)
 {
-    Event * event = new Event();
-    Vertex vertex;
-    Detector detector1 = {3., 0.08, 27., false};
+    // initialize parser and event
+    Yaml::Node root;
+    Yaml::Parse(root, fConfigFile.c_str());
 
-    TTree * tree = new TTree("OhXmasTTree", "OhXmasTTree");
+    Event * event = new Event();
+
+    //  initialize vertex and detectors
+    Vertex vertex;
+    
+    const int nDetectors = root["n_detectors"].As<int>();
+    vector<Detector> detectorVector;
+    detectorVector.reserve(nDetectors);
+
+    for(int i=0; i<nDetectors; i++)
+    {
+        Detector detector = {root["detectors"][i]["radius"].As<double>(),
+                             root["detectors"][i]["width"].As<double>(),
+                             root["detectors"][i]["lenght"].As<double>(),
+                             root["detectors"][i]["multiple_scattering"].As<bool>(),};
+        detectorVector.push_back(detector);
+    }
+
+    // initialize ttree
+    TTree * tree = new TTree((root["outputNames"]["treeSimName"].As<std::string>()).c_str(), 
+                             (root["outputNames"]["treeSimName"].As<std::string>()).c_str());
+    
     tree->Branch("Vertex", &vertex);
 
-    TClonesArray hits("Hit");
-    tree->Branch("Hits", &hits);
+    vector<TClonesArray> hitArrayVector;
+    hitArrayVector.reserve(nDetectors);
+    char name[50];
 
-    // input distributions
-    TFile inFile("data/kinem.root");
+    for(int i=0; i<nDetectors; i++)
+    {
+        TClonesArray hitArray("Hit");    
+        hitArrayVector.push_back(hitArray);
+
+        sprintf(name, "HitsL%d", i);
+        tree->Branch(name, &hitArrayVector[i]);
+    }
+
+    // read input distributions
+    TFile inFile((root["inputPaths"]["distributions"].As<std::string>()).c_str());
+
     TH1I * hMultiplicity = new TH1I("hMultiplicity", "check", 100, 0, 10);
     TH1F * hEta = (TH1F*)inFile.Get("heta2");
+    
     hMultiplicity->SetDirectory(0);
     hEta->SetDirectory(0);
     inFile.Close();
 
-    for (int i=0; i<nEvents; i++)
+    cout << "10" << endl;
+
+    for(int i=0; i<nEvents; i++)
     {
         vertex = event->partGeneration(*hMultiplicity, *hEta);
-        hits = event->partTransport2(detector1);
+        cout << "10." << i << endl;
+        for(int j=0; j<nDetectors; j++)     hitArrayVector[j] = event->partTransport2(detectorVector[j]);
+        cout << "11." << i << endl;
 
         tree->Fill();
-        hits.Clear();
+        for(TClonesArray clone: hitArrayVector) clone.Clear();
         event->clear();
     }
 
-    TFile file("data/simulation.root", "recreate");
+    
+
+    TFile outFile((root["outputPaths"]["treeSimPath"].As<std::string>()).c_str(), "recreate");
     tree->Write();
-    file.Close();
+    outFile.Close();
 
     //delete event;
     //delete tree;
