@@ -2,7 +2,7 @@
 #define RECONSTRUCTION_H
 #include <TObject.h>
 #include <vector>
-
+#include "TClonesArray.h"
 #include "../pointCC/pointCC.hpp"
 #include "../hit/hit.hpp"
 #include "../vertex/vertex.hpp"
@@ -15,9 +15,9 @@ class Reconstruction
         ~Reconstruction();
        
 
-        void readTree();
-        void runReconstruction();   // sono un rompipalle, ti voglio bene
-        double recZvert(Hit& hit1,Hit& hit2);
+        void loadHits();
+        void runReconstruction(TClonesArray* hitsArray);   // sono un rompipalle, ti voglio bene
+        double recZvert(Hit *hit1,Hit *hit2);
         
     private:
         std::string fTreeName2; 

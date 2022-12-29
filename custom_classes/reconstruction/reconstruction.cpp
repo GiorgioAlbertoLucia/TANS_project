@@ -10,72 +10,74 @@
 #include "../pointCC/pointCC.hpp"
 #include "../vertex/vertex.hpp"
 
-
-void Reconstruction::ReadTree()
+double Reconstruction::recZvert(Hit *hit1,Hit *hit2)//return z of rec vertex
 {
-   TFile hfile("simulation.root");
+
+}
+
+void Reconstruction::runReconstruction(TClonesArray* hitsArray){
+    double phi=0.;//loop on point for the vertex's reconstruction
+    double deltaPhi=0.087; // 5 degres
+    
+    for(int i=0;i<hitsArray->GetEntries();i++)
+    {
+        Hit *hitptr=(Hit*)hitsArray->At(i);
+        if((hitptr->getHitLayer()+1)==1)
+        {
+            phi=hitptr->getPhi();
+            for(int j=0;j<hitsArray->GetEntries();j++)
+            {
+                Hit *hitptr1=(Hit*)hitsArray->At(j);
+                if(((hitptr1->getHitLayer()+1)==2)&&(hitptr1->getPhi()<phi+deltaPhi)&&(hitptr1->getPhi()>phi-deltaPhi))
+                recZvert( hitptr,hitptr1);//to add in a histo
+            }
+        }
+    }
+}
+
+
+
+void Reconstruction::loadHits()
+{ 
+  TFile hfile("simulation.root");
   TTree *tree=(TTree*)hfile.Get("OhXmasTTree");
   TBranch *b1=tree->GetBranch("Vertex");
   TBranch *b2=tree->GetBranch("Hits");
   TClonesArray *hitsArray = new TClonesArray("Hit",100);
+  Hit Hitrec;
   Vertex vertex;
   b1->SetAddress(&vertex);
   b2->SetAddress(&hitsArray);
 
-  for(int ev=0;ev<tree->GetEntries();ev++){
-      tree->GetEvent(ev);
-      int numHits=hitsArray->GetEntries();
+  for(int ev=0;ev<tree->GetEntries();ev++)
+  {
+        tree->GetEvent(ev);
+        int numHits=hitsArray->GetEntries();
+        zVertVec.push_back(vertex.getZ());
 
-      for(int j=0; j<numHits;j++){
-      Hit *hitptr=(Hit*)hitsArray->At(j);
-      hitsVec.push_back(*hitptr);
-    }
-
-   zVertVec.push_back(vertex.getZ());
-    
-  }
-}
-
-double Reconstruction::recZvert(Hit& hit1,Hit& hit2)//return z of rec vertex
-{
-
-}
-
-
-
-void Reconstruction::runReconstruction()
-{
-    Hit Hitrec;
-
-    for(int j=0;j<hitsVec.size();j++)//smearing on points
-    {
-        Hitrec = Hit(hitsVec[j].getX(), hitsVec[j].getY(), hitsVec[j].getZ(), hitsVec[j].getHitLayer()+1);
-        Hitrec.smearing();
-        hitsVec[j]=Hitrec;
-    }
-
-    int noi=int(gRandom->Rndm()*1000);//add noise
-    for(int i=0;i<noi;i++)
-    {
-        Hitrec=Hit();
-        Hitrec.noise();
-        hitsVec.push_back(Hitrec);
-    }
-
-    double phi=0.;//loop on point for the vertex's reconstruction
-    double deltaPhi=0.087; // 5 degres
-    for(int i=0;i<hitsVec.size();i++)
-    {
-        if((hitsVec[i].getHitLayer()+1)==1)
+        for(int ii=0;ii<numHits;ii++)//smearing
         {
-            phi=hitsVec[i].getPhi();
-            for(int j=0;j<hitsVec.size();j++)
-            {
-                if(((hitsVec[j].getHitLayer()+1)==2)&&(hitsVec[j].getPhi()<phi+deltaPhi)&&(hitsVec[j].getPhi()>phi-deltaPhi))
-                Reconstructor.recZvert( hitsVec[i], hitsVec[j]);//to add in a histo
-            }
+            Hit *hitptr2=(Hit*)hitsArray->At(ii);
+            hitptr2->smearing();
         }
+
+        int noi=int(gRandom->Rndm()*100);//add noise
+        for(int i=numHits+1; i<numHits+noi+1; i++)
+        {
+            Hitrec=Hit();
+            Hitrec.noise();
+            new(hitsArray[i])Hitrec;//QUESTO POI LO SISTEMO, è l'unica cosa che non va!!! ORA TRA ARRAY E PUNTATORI STO SMATTANDO QUINDI VADO A FARE CAMPI
+        }
+
+        runReconstruction(hitsArray);
+        hitsArray->Clear();
     }
+        
+}
+    
+
+    
+
 
   
   /*TFile hfile("recTree.root","RECREATE");
@@ -83,4 +85,3 @@ void Reconstruction::runReconstruction()
   recTree->Branch("Phi",&Phi);
   recTree->Branch("Layer",&Li);
   recTree->Branch("Z",&Z);*/
-}
