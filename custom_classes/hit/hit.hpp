@@ -1,6 +1,7 @@
 #ifndef HIT_H
 #define HIT_H
 
+#include <Riostream.h>
 #include <string>
 
 #include <TObject.h>
@@ -13,7 +14,7 @@ class Hit: public TObject, public PointCC
     public:
         Hit(): TObject(), PointCC(0., 0., 0.), fHitLayer(0){};
         Hit(const double X, const double Y, const double Z, const int IL):  
-            TObject(), PointCC(X, Y, Z), fHitLayer(IL){};
+            TObject(), PointCC(X, Y, Z), fHitLayer(IL), fPhi(this->evalPhi()){};
         Hit(const Hit& hit): TObject(), PointCC(hit.getX(), hit.getY(), hit.getZ()), fHitLayer(hit.fHitLayer), fPhi(hit.fPhi){};
         ~Hit(){};
 
