@@ -16,7 +16,7 @@ class Reconstruction
        
 
         void loadHits();
-        void runReconstruction(TClonesArray* hitsArray1,TClonesArray* hitsArray2);   // sono un rompipalle, ti voglio bene
+        void runReconstruction(TClonesArray hitsArray1,TClonesArray hitsArray2);   // sono un rompipalle, ti voglio bene
         double recZvert(Hit *hit1,Hit *hit2);
         
     private:

@@ -12,28 +12,28 @@
 
 double Reconstruction::recZvert(Hit *hit1,Hit *hit2)//return z of rec vertex
 {
-
+    double m,n,y=0.;
+    m=hit2->getY()-hit1->getY();
+    n=hit2->getZ()-hit1->getZ();
+    return n*(y-hit2->getY())/m + hit2->getZ(); //from 3D line equations
 }
 
-void Reconstruction::runReconstruction(TClonesArray* hitsArray1, TClonesArray* hitsArray2){//non devi cambiarla... questa devo cambiarla tutta, TI ODIO SEMPRE DI PIù
+void Reconstruction::runReconstruction(TClonesArray hitsArray1, TClonesArray hitsArray2){
     double phi=0.;//loop on point for the vertex's reconstruction
     double deltaPhi=0.087; // 5 degres
     
-    for(int i=0;i<hitsArray->GetEntries();i++)
+    for(int i=0;i<hitsArray1.GetEntries();i++)
     {
-        Hit *hitptr=(Hit*)hitsArray->At(i);
-        if((hitptr->getHitLayer()+1)==1)
-        {
+        Hit *hitptr=(Hit*)hitsArray1.At(i);
             phi=hitptr->getPhi();
-            for(int j=0;j<hitsArray->GetEntries();j++)
+            for(int j=0;j<hitsArray2.GetEntries();j++)
             {
-                Hit *hitptr1=(Hit*)hitsArray->At(j);
-                if(((hitptr1->getHitLayer()+1)==2)&&(hitptr1->getPhi()<phi+deltaPhi)&&(hitptr1->getPhi()>phi-deltaPhi))
+                Hit *hitptr1=(Hit*)hitsArray2.At(j);
+                if((hitptr1->getPhi()<phi+deltaPhi)&&(hitptr1->getPhi()>phi-deltaPhi))
                 recZvert( hitptr,hitptr1);//to add in a histo
             }
         }
     }
-}
 
 
 
@@ -44,12 +44,12 @@ void Reconstruction::loadHits()
   TBranch *br[nlayer];
   TTree *tree=(TTree*)hfile.Get("simulation");
   TBranch *bv=tree->GetBranch("Vertex");
-  for(int b=1;b<3;b++)//DA QUI MI HAI FATTO FARE UN ACASINO SENZA SENSO
+  for(int b=1;b<3;b++)//DA QUI MI HAI FATTO FARE UN CASINO SENZA SENSO
   {
      br[b-1]=tree->GetBranch(Form("HitsL%d",b));
   }
-  TClonesArray *hitsArray[nlayer] = new TClonesArray("Hit",100);
-  Hit Hitrec;
+  TClonesArray hitsArray[nlayer];
+  for(int yy=0;yy<nlayer;yy++)  hitsArray[yy] = new TClonesArray("Hit",100); // bho non so che dare e tu su quetso sei + skillato fa così: error: no viable overloaded '='
   Vertex vertex;
   bv->SetAddress(&vertex);
   for(int b=1;b<3;b++)
@@ -61,26 +61,26 @@ void Reconstruction::loadHits()
         tree->GetEvent(ev);
         zVertVec.push_back(vertex.getZ());
         int numHits[nlayer];
-        for(int assoreta=0; assoreta<nlayer ; assoreta++)
+        for(int limmortaccitua=0; limmortaccitua<nlayer ; limmortaccitua++)
         {
-            int numHits[assoreta]=hitsArray[assoreta]->GetEntries();  
-            for(int ii=0;ii<numHits[assoreta];ii++)//smearing
+            numHits[limmortaccitua]=hitsArray[limmortaccitua].GetEntries();  
+            for(int ii=0;ii<numHits[limmortaccitua];ii++)//smearing
                 {
-                    Hit *hitptr2=(Hit*)hitsArray[assoreta]->At(ii);
+                    Hit *hitptr2=(Hit*)hitsArray[limmortaccitua].At(ii);
                     hitptr2->smearing();
                 }
         
         int noi=int(gRandom->Rndm()*50);//add noise
-        for(int i=numHits[assoreta]+1; i<numHits[assoreta]+noi+1; i++)
+        for(int i=numHits[limmortaccitua]+1; i<numHits[limmortaccitua]+noi+1; i++)
         {
-            new(hitsArray[assoreta][i]) Hit();//ODDIO QUANTO TI STO ODIANDO QUI
-            Hit * hit1=(Hit*)hitsArray[assoreta]->At(i);  
-            * hit1->noise();                      // https://www.deviantart.com/lucdof1/art/Pikachu-with-Chainsaw-390060014
+            new(hitsArray[limmortaccitua][i]) Hit();//ODDIO QUANTO TI STO ODIANDO QUI
+            Hit * hit1=(Hit*)hitsArray[limmortaccitua].At(i);  
+            hit1->noise();                     
         }
   }
 
         runReconstruction(hitsArray[0],hitsArray[1]);
-        for(int i=0;i<nlayer;i++) hitsArray[i]->Clear();
+        for(int i=0;i<nlayer;i++) hitsArray[i].Clear();
     }
         
 }
@@ -89,9 +89,4 @@ void Reconstruction::loadHits()
     
 
 
-  
-  /*TFile hfile("recTree.root","RECREATE");
-  TTree* recTree=new TTree(fTreeName2.c_str(),"tree of reconstruction");
-  recTree->Branch("Phi",&Phi);
-  recTree->Branch("Layer",&Li);
-  recTree->Branch("Z",&Z);*/
+
