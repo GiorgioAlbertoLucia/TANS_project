@@ -32,6 +32,7 @@
 ./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TVirtualMutex.h
 ./../reconstruction/reconstruction_cpp.so: ../pointCC/pointCC.hpp
 ./../reconstruction/reconstruction_cpp.so: ../hit/hit.hpp
+./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/Riostream.h
 ./../reconstruction/reconstruction_cpp.so: ../vertex/vertex.hpp
 ./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TRandom3.h
 ./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TRandom.h

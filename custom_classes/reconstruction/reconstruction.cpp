@@ -42,7 +42,7 @@ void Reconstruction::loadHits()
   TFile hfile("simulation.root");
   TTree *tree=(TTree*)hfile.Get("simulation");
   TBranch *b1=tree->GetBranch("Vertex");
-  TBranch *b2=tree->GetBranch("Hits");
+  TBranch *b2=tree->GetBranch("HitsL1");
   TClonesArray *hitsArray = new TClonesArray("Hit",100);
   Hit Hitrec;
   Vertex vertex;
@@ -64,10 +64,9 @@ void Reconstruction::loadHits()
         int noi=int(gRandom->Rndm()*100);//add noise
         for(int i=numHits+1; i<numHits+noi+1; i++)
         {
-            Hitrec=Hit();
-            Hitrec.noise();
-            new(hitsArray[i])Hitrec;//QUESTO POI LO SISTEMO, è l'unica cosa che non va!!! ORA TRA ARRAY E PUNTATORI STO SMATTANDO QUINDI VADO A FARE 
-                                    // https://www.deviantart.com/lucdof1/art/Pikachu-with-Chainsaw-390060014
+            new(hitsArray[i]) Hit();//QUESTO POI LO SISTEMO, è l'unica cosa che non va!!! ORA TRA ARRAY E PUNTATORI STO SMATTANDO QUINDI VADO A FARE 
+            Hit * hit1=(Hit*)hitptr2->At(i);  
+            * hit1->noise();                      // https://www.deviantart.com/lucdof1/art/Pikachu-with-Chainsaw-390060014
         }
 
         runReconstruction(hitsArray);
