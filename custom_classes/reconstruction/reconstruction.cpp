@@ -15,7 +15,7 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2)//return z of rec vertex
 
 }
 
-void Reconstruction::runReconstruction(TClonesArray* hitsArray){
+void Reconstruction::runReconstruction(TClonesArray* hitsArray1, TClonesArray* hitsArray2){//non devi cambiarla... questa devo cambiarla tutta, TI ODIO SEMPRE DI PIù
     double phi=0.;//loop on point for the vertex's reconstruction
     double deltaPhi=0.087; // 5 degres
     
@@ -39,38 +39,48 @@ void Reconstruction::runReconstruction(TClonesArray* hitsArray){
 
 void Reconstruction::loadHits()
 { 
+  int nlayer=2;
   TFile hfile("simulation.root");
+  TBranch *br[nlayer];
   TTree *tree=(TTree*)hfile.Get("simulation");
-  TBranch *b1=tree->GetBranch("Vertex");
-  TBranch *b2=tree->GetBranch("HitsL1");
-  TClonesArray *hitsArray = new TClonesArray("Hit",100);
+  TBranch *bv=tree->GetBranch("Vertex");
+  for(int b=1;b<3;b++)//DA QUI MI HAI FATTO FARE UN ACASINO SENZA SENSO
+  {
+     br[b-1]=tree->GetBranch(Form("HitsL%d",b));
+  }
+  TClonesArray *hitsArray[nlayer] = new TClonesArray("Hit",100);
   Hit Hitrec;
   Vertex vertex;
-  b1->SetAddress(&vertex);
-  b2->SetAddress(&hitsArray);
-
+  bv->SetAddress(&vertex);
+  for(int b=1;b<3;b++)
+  {
+  br[b-1]->SetAddress(&hitsArray[b-1]);
+  }
   for(int ev=0;ev<tree->GetEntries();ev++)
   {
         tree->GetEvent(ev);
-        int numHits=hitsArray->GetEntries();
         zVertVec.push_back(vertex.getZ());
-
-        for(int ii=0;ii<numHits;ii++)//smearing
+        int numHits[nlayer];
+        for(int assoreta=0; assoreta<nlayer ; assoreta++)
         {
-            Hit *hitptr2=(Hit*)hitsArray->At(ii);
-            hitptr2->smearing();
-        }
-
-        int noi=int(gRandom->Rndm()*100);//add noise
-        for(int i=numHits+1; i<numHits+noi+1; i++)
+            int numHits[assoreta]=hitsArray[assoreta]->GetEntries();  
+            for(int ii=0;ii<numHits[assoreta];ii++)//smearing
+                {
+                    Hit *hitptr2=(Hit*)hitsArray[assoreta]->At(ii);
+                    hitptr2->smearing();
+                }
+        
+        int noi=int(gRandom->Rndm()*50);//add noise
+        for(int i=numHits[assoreta]+1; i<numHits[assoreta]+noi+1; i++)
         {
-            new(hitsArray[i]) Hit();//QUESTO POI LO SISTEMO, è l'unica cosa che non va!!! ORA TRA ARRAY E PUNTATORI STO SMATTANDO QUINDI VADO A FARE 
-            Hit * hit1=(Hit*)hitptr2->At(i);  
+            new(hitsArray[assoreta][i]) Hit();//ODDIO QUANTO TI STO ODIANDO QUI
+            Hit * hit1=(Hit*)hitsArray[assoreta]->At(i);  
             * hit1->noise();                      // https://www.deviantart.com/lucdof1/art/Pikachu-with-Chainsaw-390060014
         }
+  }
 
-        runReconstruction(hitsArray);
-        hitsArray->Clear();
+        runReconstruction(hitsArray[0],hitsArray[1]);
+        for(int i=0;i<nlayer;i++) hitsArray[i]->Clear();
     }
         
 }

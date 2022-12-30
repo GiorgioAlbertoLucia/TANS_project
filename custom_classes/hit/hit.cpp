@@ -16,6 +16,6 @@ void Hit::noise()
 {
     fZ=gRandom->Rndm()*27.;
     fPhi=gRandom->Rndm()*2*TMath::Pi();
-    if(gRandom->Rndm()<0.5)  fHitLayer=1;
-    else  fHitLayer=2;
+    //if(gRandom->Rndm()<0.5)  fHitLayer=1;
+    //else  fHitLayer=2;
 }
