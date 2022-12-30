@@ -62,7 +62,7 @@ void Reconstruction::loadHits()
         zVertVec.push_back(vertex.getZ());
         int numHits[nlayer];
         for(int limmortaccitua=0; limmortaccitua<nlayer ; limmortaccitua++)
-        {
+        { 
             numHits[limmortaccitua]=hitsArray[limmortaccitua].GetEntries();  
             for(int ii=0;ii<numHits[limmortaccitua];ii++)//smearing
                 {
