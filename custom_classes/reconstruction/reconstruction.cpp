@@ -49,7 +49,7 @@ void Reconstruction::loadHits()
      br[b-1]=tree->GetBranch(Form("HitsL%d",b));
   }
   TClonesArray hitsArray[nlayer];
-  for(int yy=0;yy<nlayer;yy++)  hitsArray[yy] = new TClonesArray("Hit",100); // bho non so che dare e tu su quetso sei + skillato fa così: error: no viable overloaded '='
+  for(int yy=0;yy<nlayer;yy++)  hitsArray[yy] = TClonesArray("Hit",100); // bho non so che dare e tu su quetso sei + skillato fa così: error: no viable overloaded '='
   Vertex vertex;
   bv->SetAddress(&vertex);
   for(int b=1;b<3;b++)
