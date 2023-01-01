@@ -1,6 +1,10 @@
 #include <Riostream.h>
+#include <cmath>
 
 #include "particle.hpp"
+
+#include <TMath.h>
+#include <TRandom3.h>
 
 /* PROTECTED */
 
@@ -11,6 +15,18 @@ void Particle::updateHitPos(const double X, const double Y, const double Z, cons
     else                layer = fLastHP.getHitLayer();
 
     fLastHP = Hit(X, Y, Z, layer);
+}
+
+void Particle::rotate(const double phi, const double theta, double (&vec)[3])
+{
+    double rotMat[3][3] =  {{-sin(phi), -cos(phi)*cos(theta), cos(phi)*sin(theta)},
+                            {cos(phi), -sin(phi)*cos(theta), sin(phi)*sin(theta)},
+                            {0., sin(theta), cos(theta)}};
+
+    double vecp[3];
+    for(int i=0; i<3; i++)  vecp[i] = vec[i];
+
+    for(int i=0; i<3; i++)  for(int j=0; j<3; j++)  vec[i] = rotMat[i][j] * vecp[j];
 }
 
 /* PUBLIC */
@@ -45,7 +61,7 @@ Particle::~Particle()
 
 Hit Particle::transport(Detector& detector)
 {
-    double theta = 2. * atan(exp(-fEta));
+    double theta = this->evalTheta();
     double c1 = sin(theta) * cos(fPhi);
     double c2 = sin(theta) * sin(fPhi);
     double c3 = cos(theta);
@@ -72,7 +88,22 @@ Hit Particle::transport(Detector& detector)
     return hit;
 }
 
-void Particle::multipleScattering(Detector& detector)
+void Particle::multipleScattering()
 {
+    double phiRot = 2. * TMath::Pi() * gRandom->Rndm();
+    double thetaRot = gRandom->Gaus(0., 1.02);      // from slides
+
+    double theta = this->evalTheta();
+    double vec[3] = {cos(fPhi)*sin(theta), sin(fPhi)*sin(theta), cos(theta)};
+
+    // check cout
+    cout << "before MS: phi = " << fPhi << "; eta = " << fEta << endl;
+    rotate(phiRot, thetaRot, vec);
     
+    fEta = - log( tan(acos(vec[2])/2.) );
+    double newPhi = atan(vec[1]/vec[0]);
+    if (newPhi < 0.)    fPhi = newPhi + (2 * TMath::Pi());
+    else                fPhi = newPhi;
+    
+    cout << " after MS: phi = " << fPhi << "; eta = " << fEta << endl;
 }
