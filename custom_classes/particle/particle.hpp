@@ -22,9 +22,11 @@ class Particle
         Particle(const Particle& particle);
         ~Particle();
 
-        double getPhi() const {return fPhi;};
-        double getEta() const {return fEta;};
-        Hit getLastHP() const {return fLastHP;};
+        inline double getPhi() const {return fPhi;};
+        inline double getEta() const {return fEta;};
+        inline Hit getLastHP() const {return fLastHP;};
+
+        inline double evalTheta() const {return 2. * atan(exp(-fEta));};
 
         /**
         * @brief Creates a Hit (position and layer) of this particle on given detector assuming the particle will
@@ -36,11 +38,11 @@ class Particle
         Hit transport(Detector& detector);
         /**
          * @brief multiple scattering through a detector. In the simplest approximation, only the direction of the particle 
-         * will be updated.
+         * will be updated. 
          * 
          * @param detector 
          */
-        void multipleScattering(Detector& detector);
+        void multipleScattering();
         
         
     protected:
@@ -54,6 +56,14 @@ class Particle
          * @return * void 
          */
         void updateHitPos(const double X, const double Y, const double Z, const bool updateLayer=true);
+        /**
+         * @brief Rotate a 3d vector through angles phi and theta
+         * 
+         * @param phi 
+         * @param theta 
+         * @param vec 
+         */
+        void rotate(const double phiRot, const double thetaRot, double (&vec)[3]);
 
     private:
         double fPhi;

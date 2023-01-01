@@ -6,22 +6,21 @@
 #include <TTree.h>
 #include <TBranch.h>
 #include <TMath.h>
+#include <TH1D.h>
 #include "../hit/hit.hpp"
 #include "../pointCC/pointCC.hpp"
 #include "../vertex/vertex.hpp"
 
-double Reconstruction::recZvert(Hit *hit1,Hit *hit2)//return z of rec vertex
-{
-    double m,n,y=0.;
-    m=hit2->getY()-hit1->getY();
-    n=hit2->getZ()-hit1->getZ();
-    return n*(y-hit2->getY())/m + hit2->getZ(); //from 3D line equations
-}
 
-void Reconstruction::runReconstruction(TClonesArray hitsArray1, TClonesArray hitsArray2){
-    double phi=0.;//loop on point for the vertex's reconstruction
-    double deltaPhi=0.087; // 5 degres
-    
+void Reconstruction::runReconstruction(TClonesArray hitsArray1, TClonesArray hitsArray2){//loop on points for the vertex's reconstruction
+    double phi=0.;
+    double deltaPhi=0.087; // 5 degres, not sure
+    double ztemp=0;
+    vector<double> zTrackVert;
+    TH1D* histoHit;
+    double binW=0.5;
+    histoHit=new TH1D("histoHit","Vertex's z rec",int(27*binW),0.,27.); //bin's number maybe has to be changed
+
     for(int i=0;i<hitsArray1.GetEntries();i++)
     {
         Hit *hitptr=(Hit*)hitsArray1.At(i);
@@ -30,9 +29,26 @@ void Reconstruction::runReconstruction(TClonesArray hitsArray1, TClonesArray hit
             {
                 Hit *hitptr1=(Hit*)hitsArray2.At(j);
                 if((hitptr1->getPhi()<phi+deltaPhi)&&(hitptr1->getPhi()>phi-deltaPhi))
-                recZvert( hitptr,hitptr1);//to add in a histo
+                {
+                    ztemp=recZvert( hitptr,hitptr1);
+                    histoHit->Fill(ztemp);
+                    zTrackVert.push_back(ztemp);
+                }
             }
         }
+
+        int binmax=histoHit->GetMaximumBin();
+        double zMax=histoHit->GetXaxis()->GetBinCenter(binmax);
+
+        vector<double> zTrackVert1;
+        for(int aa=0;aa<zTrackVert.size();aa++)
+        {
+            if((zTrackVert[aa]<zMax+binW/2)&&(zTrackVert[aa]>zMax-binW/2)) zTrackVert1.push_back(zTrackVert[aa]);
+        }
+        double som=0.;
+        for(int a=0;a<zTrackVert1.size();a++) som=som+zTrackVert1[a];
+
+        zVertVecRec.push_back(som/zTrackVert1.size());
     }
 
 
@@ -44,17 +60,20 @@ void Reconstruction::loadHits()
   TBranch *br[nlayer];
   TTree *tree=(TTree*)hfile.Get("simulation");
   TBranch *bv=tree->GetBranch("Vertex");
+
   for(int b=1;b<3;b++)//DA QUI MI HAI FATTO FARE UN CASINO SENZA SENSO
   {
      br[b-1]=tree->GetBranch(Form("HitsL%d",b));
   }
+
   TClonesArray hitsArray[nlayer];
-  for(int yy=0;yy<nlayer;yy++)  hitsArray[yy] = new TClonesArray("Hit",100); // bho non so che dare e tu su quetso sei + skillato fa così: error: no viable overloaded '='
+  for(int yy=0;yy<nlayer;yy++)  hitsArray[yy] = TClonesArray("Hit",100); // bho non so che dare e tu su quetso sei + skillato fa così: error: no viable overloaded '='
   Vertex vertex;
   bv->SetAddress(&vertex);
+
   for(int b=1;b<3;b++)
   {
-  br[b-1]->SetAddress(&hitsArray[b-1]);
+        br[b-1]->SetAddress(&hitsArray[b-1]);
   }
   for(int ev=0;ev<tree->GetEntries();ev++)
   {

@@ -51,10 +51,7 @@ vector<Hit> Event::partTransport(Detector& detector)
 
     for (Particle& part: fParticleArray)    IPvec.push_back(part.transport(detector));
 
-    //if (detector.multipleScattering)    
-    //{
-    //    for (Particle& part: fParticleArray)     part.multipleScattering(detector);
-    //}
+    if (detector.multipleScattering)    for (Particle& part: fParticleArray)     part.multipleScattering();
 
     return IPvec;
 }
@@ -73,12 +70,8 @@ TClonesArray Event::partTransport2(Detector& detector)
         // check cout
         // cout << "event " << hit->getX() << ", " << hit->getY() << ", " << hit->getZ() << endl;
     }   
-    
 
-    //if (detector.multipleScattering)    
-    //{
-    //    for (Particle& part: fParticleArray)     part.multipleScattering(detector);
-    //}
+    if (detector.multipleScattering)    for (Particle& part: fParticleArray)     part.multipleScattering();
 
     return hits;
 }
