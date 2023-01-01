@@ -12,6 +12,16 @@
 #include "../vertex/vertex.hpp"
 
 
+double Reconstruction::recZvert(Hit *hit1,Hit *hit2)//return z of rec vertex
+{
+    double m,n,y=0.;
+    m=hit2->getY()-hit1->getY();
+    n=hit2->getZ()-hit1->getZ();
+    return n*(y-hit2->getY())/m + hit2->getZ(); //from 3D line equations
+}
+
+
+
 void Reconstruction::runReconstruction(TClonesArray hitsArray1, TClonesArray hitsArray2){//loop on points for the vertex's reconstruction
     double phi=0.;
     double deltaPhi=0.087; // 5 degres, not sure
@@ -89,14 +99,14 @@ void Reconstruction::loadHits()
                     hitptr2->smearing();
                 }
         
-        int noi=int(gRandom->Rndm()*50);//add noise
-        for(int i=numHits[limmortaccitua]+1; i<numHits[limmortaccitua]+noi+1; i++)
-        {
-            new(hitsArray[limmortaccitua][i]) Hit();//ODDIO QUANTO TI STO ODIANDO QUI
-            Hit * hit1=(Hit*)hitsArray[limmortaccitua].At(i);  
-            hit1->noise();                     
+            int noi=int(gRandom->Rndm()*50);//add noise
+            for(int i=numHits[limmortaccitua]+1; i<numHits[limmortaccitua]+noi+1; i++)
+            {
+                new(hitsArray[limmortaccitua][i]) Hit();//ODDIO QUANTO TI STO ODIANDO QUI
+                Hit * hit1=(Hit*)hitsArray[limmortaccitua].At(i);  
+                hit1->noise();                     
+            }
         }
-  }
 
         runReconstruction(hitsArray[0],hitsArray[1]);
         for(int i=0;i<nlayer;i++) hitsArray[i].Clear();
