@@ -26,8 +26,9 @@ class Reconstruction
     private:
         std::string fTreeName2; 
         std::string fConfigFile;
-        vector<Hit> hitsVec;
+       
         vector<double> zVertVec;
+        vector<double> zVertVecRec;
 
 
         
