@@ -1,32 +1,33 @@
-Commento le cose che puoi fare per far girare quello che ho fatto finora.
+# README solo per Roby
 
-```
-root -l
-```
+<img src="charmander.gif" width="500" height="500">
 
-Chiaramente puoi caricare manualmente le classi come al solito. Queste sono disponibili:
 
-```
-.L custom_classes/pointCC/pointCC.cpp
-.L custom_classes/hit/hit.cpp
-.L custom_classes/particle/particle.cpp
-.L custom_classes/event/event.cpp
-.L custom_classes/simulation/simulation.cpp
-```
+## Come leggere questo README in maniera decente
 
-Alternativa figa perché siamo studiati (fa tutte le precedenti in un colpo solo):
+Premi ctrl + shift + V (se non funziona è colpa di Windows)
+
+## Come caricare le cose su root senza impazzire
+
+Chiaramente puoi caricare manualmente le classi come al solito. È un po' da pezzenti. Per questo motivo il tuo compagnetto ti fa le cose fighe.
+
+### Caricare tutte le classi di Giogio e Yaml
 ```
 .x exe/loadMacros.cpp
 ``` 
+
+### Caricare tutte le classi di Giogio e Yaml e RECOSTRUCTION
+```
+.x exe/loadMacrosRoby.cpp
+``` 
+
+## Come creare un TTree con la simulazione
 
 Per creare un TTree con la simulazione puoi fare:
 
 ```
 Simulation * sim = new Simulation("Simulation", "config");
-sim->runSimulation(2);
+sim->runSimulation(200);
 ```
 
-Sto vedendo un parser per aggiungere file di configurazione .yaml. Finito di lavorarci ti spiego come puoi divertirti a modificarlo
-
->>>>>>> Questo commento è invecchiato male 
-Conto di fare presto un file per caricare tutto in modo da non impazzire per fare il debug. Ci vorrà un po' di tempo, ma soprattutto tante bestemmie. Dopo il progetto vado a farmi un pellegrinaggio
+Chiaramente al posto del 200 puoi mettere il numero che vuoi. In realtà quelli che ti lasciavo finora avevano quel valore uguale a 2. Se ne fai di più grossi per verifica o altro ricordati di eliminarli prima di pushare (altrimenti o github si lamenta perché sono pesanti o presumo ci metta una vita). Quando ci vediamo/discordiamo mettiamo a posto questa cosa.

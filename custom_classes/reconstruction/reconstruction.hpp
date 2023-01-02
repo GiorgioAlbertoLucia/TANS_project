@@ -12,15 +12,10 @@ class Reconstruction
     public:
         Reconstruction(){};
         Reconstruction(const char * TreeName, const char * ConfigFile): fTreeName2(TreeName), fConfigFile(ConfigFile){};
-        ~Reconstruction(){};        // ti ho aggiunto io le parentesi. Stavo provando a compilare e si 
-                                    // lamentava che gli avessi inizializzato il distruttore senza definirlo bene
-                                    // (visti i tuoi data memeber in realtà potrebbe essere il caso di fargli cancellare 
-                                    // delle cose - non sono sicurissimo però -. Molto probabilmente ci avevi già 
-                                    // pensato e volevi farlo poi)
-       
-
+        ~Reconstruction(){};        
+    
         void loadHits();
-        void runReconstruction(TClonesArray hitsArray1,TClonesArray hitsArray2);   // sono un rompipalle, ti voglio bene
+        void runReconstruction(TClonesArray hitsArray1,TClonesArray hitsArray2); 
         double recZvert(Hit *hit1,Hit *hit2);
         
     private:
