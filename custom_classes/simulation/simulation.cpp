@@ -66,14 +66,10 @@ void Simulation::runSimulation(const int nEvents)
     hEta->SetDirectory(0);
     inFile.Close();
 
-    cout << "10" << endl;
-
-    for(int i=0; i<nEvents; i++)
+    for(int ev=0; ev<nEvents; ev++)
     {
         vertex = event->partGeneration(*hMultiplicity, *hEta);
-        cout << "10." << i << endl;
-        for(int j=0; j<nDetectors; j++)     hitArrayVector[j] = event->partTransport2(detectorVector[j]);
-        cout << "11." << i << endl;
+        for(int i=0; i<nDetectors; i++)     hitArrayVector[i] = event->partTransport2(detectorVector[i]);
 
         tree->Fill();
         for(TClonesArray clone: hitArrayVector) clone.Clear();

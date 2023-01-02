@@ -90,20 +90,24 @@ Hit Particle::transport(Detector& detector)
 
 void Particle::multipleScattering()
 {
-    double phiRot = 2. * TMath::Pi() * gRandom->Rndm();
-    double thetaRot = gRandom->Gaus(0., 1.02);      // from slides
+    double phiMS = 2. * TMath::Pi() * gRandom->Rndm();
+    double thetaMS = 1.;      // from slides
 
+    // direction after MS, with respect to initial particle direction
+    double vec[3] = {cos(phiMS)*sin(thetaMS), sin(phiMS)*sin(thetaMS), cos(thetaMS)};
+
+    // return to the initial reference frame
     double theta = this->evalTheta();
-    double vec[3] = {cos(fPhi)*sin(theta), sin(fPhi)*sin(theta), cos(theta)};
+    rotate(fPhi, theta, vec);
 
     // check cout
-    cout << "before MS: phi = " << fPhi << "; eta = " << fEta << endl;
-    rotate(phiRot, thetaRot, vec);
+    //cout << "before MS: phi = " << fPhi << "; eta = " << fEta << endl;
     
     fEta = - log( tan(acos(vec[2])/2.) );
     double newPhi = atan(vec[1]/vec[0]);
     if (newPhi < 0.)    fPhi = newPhi + (2 * TMath::Pi());
     else                fPhi = newPhi;
     
-    cout << " after MS: phi = " << fPhi << "; eta = " << fEta << endl;
+    // check cout
+    //cout << " after MS: phi = " << fPhi << "; eta = " << fEta << endl;
 }
