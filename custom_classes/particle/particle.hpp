@@ -10,7 +10,7 @@
 class Particle
 {
     public:
-        Particle();
+        Particle(): fPhi(0.), fEta(0.), fLastHP() {};
         /**
         * @brief Whenever a particle is created, its last intersection point is considered to be the vertex position
         * 

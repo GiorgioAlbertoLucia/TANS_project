@@ -31,14 +31,6 @@ void Particle::rotate(const double phi, const double theta, double (&vec)[3])
 
 /* PUBLIC */
 
-Particle::Particle():
-fPhi(0.),
-fEta(0.),
-fLastHP()
-{
-
-}
-
 Particle::Particle(const double Phi, const double Eta, Vertex& vertex): 
 fPhi(Phi), 
 fEta(Eta)
@@ -91,7 +83,7 @@ Hit Particle::transport(Detector& detector)
 void Particle::multipleScattering()
 {
     double phiMS = 2. * TMath::Pi() * gRandom->Rndm();
-    double thetaMS = 1.;      // from slides
+    double thetaMS = gRandom->Gaus(0, 0.001);               // theta0 rms = 1 mrad
 
     // direction after MS, with respect to initial particle direction
     double vec[3] = {cos(phiMS)*sin(thetaMS), sin(phiMS)*sin(thetaMS), cos(thetaMS)};
