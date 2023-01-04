@@ -81,5 +81,17 @@
 ./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TVectorFfwd.h
 ./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TVectorDfwd.h
 ./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TFitResultPtr.h
+./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TCanvas.h
+./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TPad.h
+./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TVirtualPad.h
+./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TAttPad.h
+./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TQObject.h
+./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TVirtualQConnection.h
+./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TInterpreter.h
+./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TInterpreterValue.h
+./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/GuiTypes.h
+./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/Buttons.h
+./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TAttBBox2D.h
+./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/TAttCanvas.h
 ./../reconstruction/reconstruction_cpp.so: /mnt/c/root/include/RVersion.h /mnt/c/root/include/RConfig.h /mnt/c/root/include/TClass.h /mnt/c/root/include/TDictAttributeMap.h /mnt/c/root/include/TInterpreter.h /mnt/c/root/include/TROOT.h /mnt/c/root/include/TBuffer.h /mnt/c/root/include/TMemberInspector.h /mnt/c/root/include/TError.h /mnt/c/root/include/RtypesImp.h /mnt/c/root/include/TIsAProxy.h /mnt/c/root/include/TFileMergeInfo.h /mnt/c/root/include/TCollectionProxyInfo.h /mnt/c/root/bin/rootcling
 reconstruction_cpp__ROOTBUILDVERSION= 6.24/02

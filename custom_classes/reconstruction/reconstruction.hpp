@@ -17,6 +17,7 @@ class Reconstruction
         void loadHits();
         void runReconstruction(TClonesArray hitsArray1,TClonesArray hitsArray2); 
         double recZvert(Hit *hit1,Hit *hit2);
+        void  residues();
         
     private:
         std::string fTreeName2; 

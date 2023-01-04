@@ -7,6 +7,8 @@
 #include <TBranch.h>
 #include <TMath.h>
 #include <TH1D.h>
+#include <TAxis.h>
+#include <TCanvas.h>
 #include "../hit/hit.hpp"
 #include "../pointCC/pointCC.hpp"
 #include "../vertex/vertex.hpp"
@@ -20,11 +22,31 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2)//return z from tracking's l
     return n*(y-hit2->getY())/m + hit2->getZ(); //from 3D line equations
 }
 
+void Reconstruction::residues()
+{
+    double n=zVertVecRec.size();
+    TH1D* resHisto;
+    resHisto = new TH1D("resHisto","Histo of Zrec-Ztrue",int(sqrt(n)),-2000.,2000.);
+    for(int i=0;i<n;i++)
+    {
+        resHisto->Fill(zVertVecRec[i]*10000-zVertVec[i]*10000);  //microm
+    }
+    TCanvas* c1=new TCanvas("c1","Residues",1650,900);
+    c1->cd();
+    resHisto->SetLineColor(kBlue);
+    resHisto->Draw("E");
+    cout<<"number of events: "<<n<<endl; //controllo per vedere se funziona corretamente
+    
+    
+}
+
+
 
 
 void Reconstruction::runReconstruction(TClonesArray hitsArray1, TClonesArray hitsArray2){//loop on points for the vertex's reconstruction
     double phi = 0.;
-    double deltaPhi = 0.087; // 5 degres, not sure
+    double deltaPhi = 0.01; 
+    
     double ztemp = 0;
     vector<double> zTrackVert;
     TH1D* histoHit;
@@ -34,7 +56,7 @@ void Reconstruction::runReconstruction(TClonesArray hitsArray1, TClonesArray hit
                                                                             // quale sia e al momento sono pigro) -> una volta settata quella, il numero di bin sarebbe 
                                                                             // N bins = ampiezza intervallo / bin width per definizione (quindi 27 / binW)
 
-    for(int i=0; i<hitsArray1.GetEntries(); i++)
+    for(int i=0; i<hitsArray1.GetEntries(); i++)                            //risposta alla ripsostona: il MAserone ha detto di usare 5 mm con il metodo che ho implementato io, e toglimi quelle tre rigeh di spazio che mi fanno solo salire il crimine
     {
         Hit *hitptr=(Hit*)hitsArray1.At(i);
         phi = hitptr->getPhi();
@@ -48,14 +70,14 @@ void Reconstruction::runReconstruction(TClonesArray hitsArray1, TClonesArray hit
                 zTrackVert.push_back(ztemp);
             }
         }
-        }
+    }
 
         int binmax = histoHit->GetMaximumBin();
         double zMax = histoHit->GetXaxis()->GetBinCenter(binmax);
 
         vector<double> zTrackVert1;
         for(int aa=0; aa<(int)zTrackVert.size(); aa++)          // ti volevo dire che esiste la sintassi (per i vector, non so se anche per array)
-                                                                // for(double z: zTrackVert) { if((z < (zMax+binW/2.)) && ... ) ...}
+                                                                // for(double z: zTrackVert) { if((z < (zMax+binW/2.)) && ... ) ...}  // ou fatti i fatti tuoi, smettila di deprimermi!!!
         {
             if((zTrackVert[aa]<zMax+binW/2)&&(zTrackVert[aa]>zMax-binW/2)) zTrackVert1.push_back(zTrackVert[aa]);
         }
