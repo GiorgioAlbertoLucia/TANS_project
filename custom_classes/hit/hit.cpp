@@ -14,7 +14,7 @@ void Hit::smearing()
 
 void Hit::noise()
 {
-    fZ=gRandom->Rndm()*27.;
+    fZ=gRandom->Rndm()*27-13.5;
     fPhi=gRandom->Rndm()*2*TMath::Pi();
     //if(gRandom->Rndm()<0.5)  fHitLayer=1;
     //else  fHitLayer=2;
