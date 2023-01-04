@@ -12,7 +12,7 @@
 #include "../vertex/vertex.hpp"
 
 
-double Reconstruction::recZvert(Hit *hit1,Hit *hit2)//return z of rec vertex
+double Reconstruction::recZvert(Hit *hit1,Hit *hit2)//return z from tracking's line
 {
     double m,n,y = 0.;
     m = hit2->getY()-hit1->getY();
@@ -67,10 +67,16 @@ void Reconstruction::runReconstruction(TClonesArray hitsArray1, TClonesArray hit
 
 
 
+<<<<<<< Updated upstream
 void Reconstruction::loadHits()
 { 
   int nlayer = 2;
   TFile hfile("data/simulation.root");
+=======
+void Reconstruction::loadHits(){ 
+  int nlayer=2;
+  TFile hfile("simulation.root");
+>>>>>>> Stashed changes
   TBranch *br[nlayer];
   TTree *tree = (TTree*)hfile.Get("simulation");
   TBranch *bv = tree->GetBranch("Vertex");
@@ -115,7 +121,6 @@ void Reconstruction::loadHits()
         runReconstruction(hitsArray[0], hitsArray[1]);
         for(int i=0; i<nlayer; i++) hitsArray[i].Clear();
     }
-        
 }
     
 
