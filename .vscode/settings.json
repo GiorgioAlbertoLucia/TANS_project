@@ -51,7 +51,8 @@
         "PlotFromTree.C": "cpp",
         "limitece.C": "cpp",
         "decadimento.C": "cpp",
-        "binpois.C": "cpp"
+        "binpois.C": "cpp",
+        "FitKab.C": "cpp"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
 }

@@ -24,6 +24,7 @@ class Reconstruction
         std::string fConfigFile;
        
         vector<double> zVertVec;
+        vector<double> zMoltVec;
         vector<double> zVertVecRec;
 
 
