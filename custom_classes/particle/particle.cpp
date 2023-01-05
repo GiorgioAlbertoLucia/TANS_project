@@ -1,8 +1,6 @@
 #include <Riostream.h>
 #include <cmath>
-
 #include "particle.hpp"
-
 #include <TMath.h>
 #include <TRandom3.h>
 
@@ -11,7 +9,7 @@
 void Particle::updateHitPos(const double X, const double Y, const double Z, const bool updateLayer)
 {
     int layer = 0;
-    if (updateLayer)    layer = fLastHP.getHitLayer() + 1;
+    if (updateLayer)    layer = fLastHP.getHitLayer()+1;
     else                layer = fLastHP.getHitLayer();
 
     fLastHP = Hit(X, Y, Z, layer);

@@ -14,7 +14,7 @@ Event::Event():
 {
     std::vector<Particle> temp;
     fParticleArray = temp;
-    fPrimaryVertex = Vertex(0., 0., 0., 0);
+    fPrimaryVertex = Vertex(0.,0.,0.,0);
 }
 
 Event::~Event()
@@ -78,6 +78,6 @@ TClonesArray Event::partTransport2(Detector& detector)
 
 void Event::clear()
 {
-    fPrimaryVertex = Vertex(0., 0., 0., 0);
+    fPrimaryVertex = Vertex(0.,0.,0.,0);
     fParticleArray.clear(); 
 }

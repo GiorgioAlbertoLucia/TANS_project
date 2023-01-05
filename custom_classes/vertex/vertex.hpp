@@ -10,7 +10,6 @@
  */
 class Vertex: public PointCC
 {
-    
     public:
         Vertex(): PointCC(0., 0., 0.), fMultiplicity(0){};
         Vertex(double X, double Y, double Z, int multiplicity): PointCC(X, Y, Z), fMultiplicity(multiplicity){};
