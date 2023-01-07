@@ -13,6 +13,7 @@
 #include "../hit/hit.hpp"
 #include "../pointCC/pointCC.hpp"
 #include "../vertex/vertex.hpp"
+#include "../plotter/plotter.hpp"
 
 
 double Reconstruction::recZvert(Hit *hit1,Hit *hit2)//return z from tracking's line
@@ -74,7 +75,7 @@ void Reconstruction::residues() //forse tutta la funzione è da spostare in plot
 
 
 
-void Reconstruction::runReconstruction(TClonesArray hitsArray1, TClonesArray hitsArray2){//loop on points for the vertex's reconstruction
+void Reconstruction::vertexReconstruction(TClonesArray hitsArray1, TClonesArray hitsArray2){//loop on points for the vertex's reconstruction
     double phi = 0.;
     double deltaPhi = 0.01; 
     
@@ -117,7 +118,7 @@ void Reconstruction::runReconstruction(TClonesArray hitsArray1, TClonesArray hit
 
 
 
-void Reconstruction::loadHits()
+void Reconstruction::runReconstruction()
 { 
   int nlayer = 2;
   TFile hfile("data/simulation.root");
