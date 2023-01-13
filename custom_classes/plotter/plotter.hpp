@@ -24,6 +24,7 @@ class Plotter
         vector <double> zVertReal;
         vector <double> zVertRec;
         vector <double> moltReal;
+        vector <double> resVec;
         double nEvents;
 
 
