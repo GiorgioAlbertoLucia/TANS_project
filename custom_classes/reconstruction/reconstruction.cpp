@@ -16,61 +16,13 @@
 #include "../plotter/plotter.hpp"
 
 
+
 double Reconstruction::recZvert(Hit *hit1,Hit *hit2)//return z from tracking's line
 {
     double m,n,y = 0.;
     m = hit2->getY()-hit1->getY();
     n = hit2->getZ()-hit1->getZ();
     return n*(y-hit2->getY())/m + hit2->getZ(); //from 3D line equations
-}
-
-
-
-void Reconstruction::residues() //forse tutta la funzione è da spostare in plotter. *** please help!!!!
-{
-    double n=zVertVecRec.size();
-    TH1D* resHisto;//questo va in Plotter fino a riga 40
-    resHisto = new TH1D("resHisto","Histo of Zrec-Ztrue",int(sqrt(n)),-2000.,2000.);
-    for(int i=0;i<n;i++)
-    {
-        resHisto->Fill(zVertVecRec[i]*10000-zVertVec[i]*10000);  //microm //ci potrebbero essere delle condizioni da aggiungere perchè così viene un efficineza=1 sempre
-    }
-    TCanvas* c1=new TCanvas("c1","Residues",1650,900);  
-    c1->cd();
-    resHisto->SetLineColor(kBlue);//differenza per tutte le moltiplicità 
-    resHisto->Draw("E");
-    cout<<"number of events: "<<n<<endl; //controllo per vedere se funziona corretamente
-    int nMolt=17;
-    int Molt[nMolt]={1,2,3,4,5,6,7,8,9,10,12,15,20,30,40,50,60};
-    double sigma[nMolt];
-    for(int i=0;i<nMolt;i++)
-    {
-        if(i<12)
-        {
-            TH1D* resHistoMolt;
-            resHistoMolt = new TH1D("resHisto","Histo of Zrec-Ztrue",int(sqrt(n)),-2000.,2000.);
-            for(int j=0;j<n;j++)
-            {
-                if((zMoltVec[j]>Molt[i]+0.5)&&(zMoltVec[j]<Molt[i]-0.5))  resHistoMolt->Fill(zVertVecRec[j]*10000-zVertVec[j]*10000); 
-            }
-            TF1* g1=new TF1("g1","gaus",-2000,2000.);//estremi possono essere fatti meglio, ma ho sonno ora
-            resHistoMolt->Fit("g1","L");
-            sigma[i]=g1->GetParameter(2); //devo aggiungere condizioni su quelli non gaussiani, devo prendere l'RMS dell'histo
-        }
-
-        else
-        {
-            TH1D* resHistoMolt;
-            resHistoMolt = new TH1D("resHisto","Histo of Zrec-Ztrue",int(sqrt(n)),-2000.,2000.);
-            for(int j=0;j<n;j++)
-            {
-                if((zMoltVec[j]>Molt[i]+Molt[i]*0.1)&&(zMoltVec[j]<Molt[i]*0.1))  resHistoMolt->Fill(zVertVecRec[j]*10000-zVertVec[j]*10000); 
-            }
-            TF1* g1=new TF1("g1","gaus",-2000,2000.);//estremi possono essere fatti meglio, ma ho sonno ora
-            resHistoMolt->Fit("g1","L");
-            sigma[i]=g1->GetParameter(2); // le sigma solo le risoluzioni 
-        }
-    }
 }
 
 
@@ -164,7 +116,7 @@ void Reconstruction::runReconstruction()
             }
         }
 
-        runReconstruction(hitsArray[0], hitsArray[1]);
+        vertexReconstruction(hitsArray[0], hitsArray[1]);
         for(int i=0; i<nlayer; i++) hitsArray[i].Clear();
     }
 }
