@@ -24,6 +24,14 @@ class Simulation
          */
         void runSimulation2(const int nEvents);
 
+    protected:
+        /**
+         * @brief Function to call during simulation of a event. Will create a .txt file storing positions of particles
+         * during transport. Intended to be used to display the event with TGeoManager
+         * 
+         */
+        void recordTracks();
+
     private:
         std::string fTreeName;          // description for ROOT if this becomes a TObject - probably not necessary
         std::string fConfigFile;    //

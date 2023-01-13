@@ -10,10 +10,11 @@
 #include <TAxis.h>
 #include <TCanvas.h>
 #include <TF1.h>
+
 #include "../hit/hit.hpp"
 #include "../pointCC/pointCC.hpp"
 #include "../vertex/vertex.hpp"
-
+#include "../../yaml/Yaml.hpp"
 
 double Reconstruction::recZvert(Hit *hit1,Hit *hit2)//return z from tracking's line
 {
@@ -39,7 +40,7 @@ void Reconstruction::residues() //forse tutta la funzione è da spostare in plot
     resHisto->SetLineColor(kBlue);//differenza per tutte le moltiplicità 
     resHisto->Draw("E");
     cout<<"number of events: "<<n<<endl; //controllo per vedere se funziona corretamente
-    int nMolt=17;
+    const int nMolt=17;
     int Molt[nMolt]={1,2,3,4,5,6,7,8,9,10,12,15,20,30,40,50,60};
     double sigma[nMolt];
     for(int i=0;i<nMolt;i++)
@@ -119,28 +120,32 @@ void Reconstruction::runReconstruction(TClonesArray hitsArray1, TClonesArray hit
 
 void Reconstruction::loadHits()
 { 
-  int nlayer = 2;
-  TFile hfile("data/simulation.root");
-  TBranch *br[nlayer];
-  TTree *tree = (TTree*)hfile.Get("simulation");
-  TBranch *bv = tree->GetBranch("Vertex");
+    Yaml::Node root;
+    Yaml::Parse(root, fConfigFile.c_str());
 
-  for(int b=1; b<3; b++)//DA QUI MI HAI FATTO FARE UN CASINO SENZA SENSO
-  {
-     br[b-1]=tree->GetBranch(Form("HitsL%d",b));
-  }
+    TFile hfile(root["inputPaths"]["distributions"].As<std::string>().c_str());
+    TTree *tree = (TTree*)hfile.Get(root["outputNames"]["treeSimName"].As<std::string>().c_str());
 
-  TClonesArray hitsArray[nlayer];
-  for(int yy=0; yy<nlayer; yy++)  hitsArray[yy] = TClonesArray("Hit",100); 
-  Vertex vertex;
-  bv->SetAddress(&vertex);
+    const int nlayer = root["n_detectors"].As<int>() - 1; // n_detectors counts beam pipe as well
+    TBranch *br[nlayer];
+    TBranch *bv = tree->GetBranch("Vertex");
 
-  for(int b=1; b<3; b++)
-  {
-        br[b-1]->SetAddress(&hitsArray[b-1]);
-  }
-  for(int ev=0; ev<tree->GetEntries(); ev++)
-  {
+    for(int b=1; b<3; b++)//DA QUI MI HAI FATTO FARE UN CASINO SENZA SENSO
+    {
+       br[b-1]=tree->GetBranch(Form("HitsL%d",b));
+    }
+
+    TClonesArray hitsArray[nlayer];
+    for(int yy=0; yy<nlayer; yy++)  hitsArray[yy] = TClonesArray("Hit",100); 
+    Vertex vertex;
+    bv->SetAddress(&vertex);
+
+    for(int b=1; b<3; b++)
+    {
+          br[b-1]->SetAddress(&hitsArray[b-1]);
+    }
+    for(int ev=0; ev<tree->GetEntries(); ev++)
+    {
         tree->GetEvent(ev);
         zVertVec.push_back(vertex.getZ());
         zMoltVec.push_back(vertex.getMultiplicity());
