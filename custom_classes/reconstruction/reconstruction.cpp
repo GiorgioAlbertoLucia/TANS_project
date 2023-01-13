@@ -10,10 +10,12 @@
 #include <TAxis.h>
 #include <TCanvas.h>
 #include <TF1.h>
+
 #include "../hit/hit.hpp"
 #include "../pointCC/pointCC.hpp"
 #include "../vertex/vertex.hpp"
 #include "../plotter/plotter.hpp"
+#include "../../yaml/Yaml.hpp"
 
 
 
@@ -72,28 +74,32 @@ void Reconstruction::vertexReconstruction(TClonesArray hitsArray1, TClonesArray 
 
 void Reconstruction::runReconstruction()
 { 
-  int nlayer = 2;
-  TFile hfile("data/simulation.root");
-  TBranch *br[nlayer];
-  TTree *tree = (TTree*)hfile.Get("simulation");
-  TBranch *bv = tree->GetBranch("Vertex");
+    Yaml::Node root;
+    Yaml::Parse(root, fConfigFile.c_str());
 
-  for(int b=1; b<3; b++)//DA QUI MI HAI FATTO FARE UN CASINO SENZA SENSO
-  {
-     br[b-1]=tree->GetBranch(Form("HitsL%d",b));
-  }
+    TFile hfile(root["inputPaths"]["distributions"].As<std::string>().c_str());
+    TTree *tree = (TTree*)hfile.Get(root["outputNames"]["treeSimName"].As<std::string>().c_str());
 
-  TClonesArray hitsArray[nlayer];
-  for(int yy=0; yy<nlayer; yy++)  hitsArray[yy] = TClonesArray("Hit",100); 
-  Vertex vertex;
-  bv->SetAddress(&vertex);
+    const int nlayer = root["n_detectors"].As<int>() - 1; // n_detectors counts beam pipe as well
+    TBranch *br[nlayer];
+    TBranch *bv = tree->GetBranch("Vertex");
 
-  for(int b=1; b<3; b++)
-  {
-        br[b-1]->SetAddress(&hitsArray[b-1]);
-  }
-  for(int ev=0; ev<tree->GetEntries(); ev++)
-  {
+    for(int b=1; b<3; b++)//DA QUI MI HAI FATTO FARE UN CASINO SENZA SENSO
+    {
+       br[b-1]=tree->GetBranch(Form("HitsL%d",b));
+    }
+
+    TClonesArray hitsArray[nlayer];
+    for(int yy=0; yy<nlayer; yy++)  hitsArray[yy] = TClonesArray("Hit",100); 
+    Vertex vertex;
+    bv->SetAddress(&vertex);
+
+    for(int b=1; b<3; b++)
+    {
+          br[b-1]->SetAddress(&hitsArray[b-1]);
+    }
+    for(int ev=0; ev<tree->GetEntries(); ev++)
+    {
         tree->GetEvent(ev);
         zVertVec.push_back(vertex.getZ());
         zMoltVec.push_back(vertex.getMultiplicity());

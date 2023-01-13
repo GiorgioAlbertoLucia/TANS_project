@@ -1,14 +1,16 @@
 #include <Riostream.h>
 #include <cmath>
-#include "particle.hpp"
+
 #include <TMath.h>
 #include <TRandom3.h>
+
+#include "particle.hpp"
 
 /* PROTECTED */
 
 void Particle::updateHitPos(const double X, const double Y, const double Z, const bool updateLayer)
 {
-    int layer = 0;
+    int layer;
     if (updateLayer)    layer = fLastHP.getHitLayer()+1;
     else                layer = fLastHP.getHitLayer();
 
@@ -60,7 +62,7 @@ Hit Particle::transport(Detector& detector)
     double y0 = fLastHP.getY();
     double z0 = fLastHP.getZ();
     double R = detector.radius - (detector.width/2);
-    double Delta = (x0*c1 + y0*c2)*(x0*c1 + y0*c2) - (c1+c2)*(c1+c2)*(x0*x0 + y0*y0 - R*R);
+    double Delta = (x0*c1 + y0*c2)*(x0*c1 + y0*c2) - (c1*c1 + c2*c2)*(x0*x0 + y0*y0 - R*R);
 
     double t = (-(x0*c1 + y0*c2) + sqrt(Delta))/(c1*c1 + c2*c2);
 
@@ -70,7 +72,7 @@ Hit Particle::transport(Detector& detector)
     else                                                                hit = Hit(9., 9., 30., fLastHP.getHitLayer()+1);            // choose outliers
 
     // update last hit position for the particle (outside the detector)
-    updateHitPos(x0+c1*t, y0+c2*t, z0+c3*t+(detector.width/2), true);
+    updateHitPos(x0+c1*t, y0+c2*t, z0+c3*t+detector.width, true);
 
     // check cout
     // cout << "particle " << hit.getX() << ", " << hit.getY() << ", " << hit.getZ() << endl;

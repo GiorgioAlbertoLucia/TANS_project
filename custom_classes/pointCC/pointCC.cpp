@@ -13,6 +13,6 @@ PointCC PointCC::operator+(const PointCC& point)
 
 double PointCC::evalPhi()
 {
-    if(fX>0) return asin(fY/this->evalRadius());
-    return (TMath::Pi()-asin(fY/this->evalRadius()));
+    if(fY>0)    return acos(fX/this->evalRadius());
+    return (2. * TMath::Pi() - acos(fX/this->evalRadius()));
 }
