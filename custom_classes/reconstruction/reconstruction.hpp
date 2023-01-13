@@ -14,10 +14,10 @@ class Reconstruction
         Reconstruction(const char * TreeName, const char * ConfigFile): fTreeName2(TreeName), fConfigFile(ConfigFile){};
         ~Reconstruction(){};        
     
-        void loadHits();
-        void runReconstruction(TClonesArray hitsArray1,TClonesArray hitsArray2); 
+        void runReconstruction();
+        void vertexReconstruction(TClonesArray hitsArray1,TClonesArray hitsArray2); 
         double recZvert(Hit *hit1,Hit *hit2);
-        void  residues();
+        
         
     private:
         std::string fTreeName2; 
