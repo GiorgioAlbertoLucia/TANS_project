@@ -6,7 +6,7 @@
 #include "../pointCC/pointCC.hpp"
 #include "../hit/hit.hpp"
 #include "../vertex/vertex.hpp"
-#include "../reconstruction/recosntruction.hpp"
+#include "../reconstruction/reconstruction.hpp"
 
 class Plotter
 {

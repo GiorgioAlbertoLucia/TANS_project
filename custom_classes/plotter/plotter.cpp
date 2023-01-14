@@ -11,7 +11,7 @@
 
 
 
-Plotter::addVector(vector<double> zVertReal1, vector<double> zVertRec1, vector<double> moltReal1)
+ void Plotter::addVector(vector<double> zVertReal1, vector<double> zVertRec1, vector<double> moltReal1)
 {
    nEvents=zVertReal.size();
    for(int i=0;i<nEvents;i++)
@@ -26,6 +26,7 @@ Plotter::addVector(vector<double> zVertReal1, vector<double> zVertRec1, vector<d
 
 void Plotter::residues(TObjArray* arrHisto,int *Molt, int nn) 
 {
+    TFile* output1= new TFile("Residues.root", "recreate");
     double n=nn;
     int nHist=arrHisto->GetEntries();
     
@@ -52,21 +53,22 @@ void Plotter::residues(TObjArray* arrHisto,int *Molt, int nn)
 
 
 
-Plotter::runPlots()
-{
-   File* output = new TFile("Reconstruction.root", "recreate"); 
+void Plotter::runPlots()//devo solo copiare la parte di draw dentro residues, il resto va bene
+{//faccio due file diversi in uno metto solo i residui, nell'altro i grafici così posso alprere un file direttamente nella funzione residuies e usare i puntatori che sono più comodi di come è scritto ora
+   TFile* output = new TFile("Reconstruction.root", "recreate"); 
    TObjArray* arrHisto = new TObjArray(); 
    int nMolt=18;
-   int Molt[nMolt]={0,1,2,3,4,5,6,7,8,9,10,12,15,20,30,40,50,65};
-   int arrN[nMolt]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+   int Molt[]={0,1,2,3,4,5,6,7,8,9,10,12,15,20,30,40,50,65};
+   int arrN[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
    double n=zVertRec.size();
    arrN[0]=n;
+   int indexh=0;
 
    for(int gg=1;gg<nMolt;gg++)
     {
         for(int hh=0;hh<n;hh++)
         {
-            if(moltReal[hh]>Molt[gg]-Molt[gg]*0.1)&&(moltReal[hh]<Molt[gg]+Molt[gg]*0.1) arrN[gg]++;
+            if((moltReal[hh]>Molt[gg]-Molt[gg]*0.1)&&(moltReal[hh]<Molt[gg]+Molt[gg]*0.1)) arrN[gg]++;
         }
     }
 
@@ -74,17 +76,17 @@ Plotter::runPlots()
    {
         TH1D* resHisto;
         resHisto =  new TH1D("resHisto",Form("Hist of Zrec-Ztrue Molt_%d",Molt[i]),"Zrec-Ztrue [um]; # entries", int(sqrt(arrN[i])),-2000.,2000.);
-        arrHisto->AddAtAndExpand(resHisto)
+        arrHisto->AddAtAndExpand(resHisto,indexh++);
    }
-   plotter.residues(arrHisto,Molt,n);
+   residues(arrHisto,Molt,n);
 
-   nHisto=arrHisto->getEntries();
-   double risolution[nHisto];
-   for(int j=0;nHisto;j++)
+   double risolution[indexh];
+   for(int j=0;indexh;j++)
    {
-        risolution[j]=arraHisto[j]->GetXaxis()->GetStdDev();
-        arrHisto[h]->Write();
-        arrHisto[h]->draw("E");
+        risolution[j]=arrHisto[j]->GetXaxis()->GetStdDev();
+        arrHisto[j].Write();
+        arrHisto[j].draw("E");
    }
+   output->ls();
 
 }
