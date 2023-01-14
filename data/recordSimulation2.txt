@@ -1,0 +1,5 @@
+Vertex:
+    x:  12.4 #cm
+    y:  11.4 #cm
+    z:  11.1 #cm
+    multiplicity:   1

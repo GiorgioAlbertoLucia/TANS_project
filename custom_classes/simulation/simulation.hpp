@@ -5,6 +5,9 @@
 
 #include <TH1I.h>
 #include <TH1F.h>
+#include <TClonesArray.h>
+
+#include "../vertex/vertex.hpp"
 
 class Simulation
 {
@@ -30,7 +33,8 @@ class Simulation
          * during transport. Intended to be used to display the event with TGeoManager
          * 
          */
-        void recordTracks();
+        //void recordTracks(Vertex* vertex,vector<TClonesArray>* hitsArrayVector) const;
+        void recordVertex(Vertex* vertex, const char * filePath) const;
 
     private:
         std::string fTreeName;          // description for ROOT if this becomes a TObject - probably not necessary

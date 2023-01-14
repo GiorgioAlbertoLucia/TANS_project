@@ -24,29 +24,19 @@ class Event: public TObject
         inline Vertex getVertex() const {return fPrimaryVertex;};
         inline Particle getParticle(const int i) const {return fParticleArray[i];};
 
-
-        /**
-         * @brief Generates primary vertex, multiplicity and fill a TClonesArray with generated particles
-         * 
-         * @param option1 option for multiplicity distr
-         * @param option2 option for eta distr (part)
-         */
         Vertex partGeneration(TH1I& hMultiplicity, TH1F& hEta);   
-        /**
-         * @brief executes particle transport through a given detector (if multiple scattering is assumed for that detector,
-         * it will be performed). A vector containing positions of hits on the detector is returned.
-         * 
-         * @param detector 
-         * @return vector<Hit> 
-         */
-        vector<Hit> partTransport(Detector& detector);                 
-        TClonesArray partTransport2(Detector& detector);
+        
+        vector<Hit> partTransport(Detector& detector);  
+        TClonesArray partTransport2(Detector& detector, bool record, string filePath = "");
 
         /**
          * @brief clears fParticleArray and sets fPrimaryVertex to (0., 0., 0., 0)
          * 
          */
         void clear();
+
+    protected:
+        void recordTracks(const char * filePath, double recordArray[][3], const int multiplicity) const;
 
 
     private:

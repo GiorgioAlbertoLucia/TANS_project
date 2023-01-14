@@ -11,6 +11,8 @@ outputPaths:
     treeRecPath:    data/reconstruction.root
     treeTestPath:   data/test.root
 
+    recordSimPath:  data/recordSimulation.txt
+
 outputNames:
     treeSimName:    simulation
     treeRecName:    reconstruction
