@@ -42,15 +42,18 @@ void Reconstruction::vertexReconstruction(TClonesArray hitsArray1, TClonesArray 
     for(int i=0; i<hitsArray1.GetEntries(); i++)                            
     {
         Hit *hitptr=(Hit*)hitsArray1.At(i);
-        phi = hitptr->getPhi();
-        for(int j=0; j<hitsArray2.GetEntries(); j++)
+        if ((hitptr->getZ()<13.5)&&(hitptr->getZ()>-13.5))
         {
-            Hit *hitptr1=(Hit*)hitsArray2.At(j);
-            if((hitptr1->getPhi()<phi+deltaPhi)&&(hitptr1->getPhi()>phi-deltaPhi))
+            phi = hitptr->getPhi();
+            for(int j=0; j<hitsArray2.GetEntries(); j++)
             {
-                ztemp = recZvert( hitptr,hitptr1);
-                histoHit->Fill(ztemp);
-                zTrackVert.push_back(ztemp);
+                Hit *hitptr1=(Hit*)hitsArray2.At(j);
+                if((hitptr1->getPhi()<phi+deltaPhi) && (hitptr1->getPhi()>phi-deltaPhi) && (hitptr1->getZ()>-13.5))
+                {
+                    ztemp = recZvert( hitptr,hitptr1);
+                    histoHit->Fill(ztemp);
+                    zTrackVert.push_back(ztemp);
+                }
             }
         }
     }
@@ -59,8 +62,8 @@ void Reconstruction::vertexReconstruction(TClonesArray hitsArray1, TClonesArray 
         double zMax = histoHit->GetXaxis()->GetBinCenter(binmax);
 
         vector<double> zTrackVert1;
-        for(int aa=0; aa<(int)zTrackVert.size(); aa++)          // ti volevo dire che esiste la sintassi (per i vector, non so se anche per array)
-                                                                // for(double z: zTrackVert) { if((z < (zMax+binW/2.)) && ... ) ...}  // ou fatti i fatti tuoi, smettila di deprimermi!!!
+        for(int aa=0; aa<(int)zTrackVert.size(); aa++)          
+                                                                
         {
             if((zTrackVert[aa]<zMax+binW/2)&&(zTrackVert[aa]>zMax-binW/2)) zTrackVert1.push_back(zTrackVert[aa]);
         }
@@ -116,7 +119,7 @@ void Reconstruction::runReconstruction()
             int noi=int(gRandom->Rndm()*50);//add noise
             for(int i=numHits[ll]+1; i<numHits[ll]+noi+1; i++)
             {
-                new(hitsArray[ll][i]) Hit();//ODDIO QUANTO TI STO ODIANDO QUI
+                new(hitsArray[ll][i]) Hit();
                 Hit * hit1 = (Hit*)hitsArray[ll].At(i);  
                 hit1->noise();                     
             }
