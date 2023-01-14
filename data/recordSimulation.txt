@@ -10,9 +10,9 @@ DetectorLayers: # first layer is the beam pipe
                 y: 0.275677 #cm
                 z: 0.058066 #cm
 
-            -   x: 9 #cm
-                y: 9 #cm
-                z: 30 #cm
+            -   x: -0.0957553 #cm
+                y: -2.95845 #cm
+                z: 13.5335 #cm
 
             -   x: -0.176508 #cm
                 y: -2.95473 #cm
@@ -23,36 +23,36 @@ DetectorLayers: # first layer is the beam pipe
                 z: 8.05787 #cm
 
     -   Particles:
-            -   x: 9 #cm
-                y: 9 #cm
-                z: 30 #cm
+            -   x: 6.95855 #cm
+                y: -0.662342 #cm
+                z: -13.5473 #cm
 
-            -   x: 9 #cm
-                y: 9 #cm
-                z: 30 #cm
+            -   x: 0.260185 #cm
+                y: 6.98516 #cm
+                z: 45.2205 #cm
 
             -   x: 0.451189 #cm
                 y: 6.97542 #cm
                 z: 6.40294 #cm
 
-            -   x: 9 #cm
-                y: 9 #cm
-                z: 30 #cm
+            -   x: 3.80487 #cm
+                y: 5.86371 #cm
+                z: 21.2881 #cm
 
     -   Particles:
-            -   x: 9 #cm
-                y: 9 #cm
-                z: 30 #cm
+            -   x: 7.9541 #cm
+                y: -0.756616 #cm
+                z: -14.9027 #cm
 
-            -   x: 9 #cm
-                y: 9 #cm
-                z: 30 #cm
+            -   x: 0.295958 #cm
+                y: 7.98452 #cm
+                z: 48.4171 #cm
 
             -   x: 0.514275 #cm
                 y: 7.97343 #cm
                 z: 6.59181 #cm
 
-            -   x: 9 #cm
-                y: 9 #cm
-                z: 30 #cm
+            -   x: 4.34791 #cm
+                y: 6.70341 #cm
+                z: 22.6297 #cm
 
