@@ -68,8 +68,7 @@ Hit Particle::transport(Detector& detector)
 
     // create a hit
     Hit hit;
-    if(z0+c3*t > -(detector.lenght/2) && z0+c3*t < (detector.lenght/2)) hit = Hit(x0+c1*t, y0+c2*t, z0+c3*t, fLastHP.getHitLayer()+1);
-    else                                                                hit = Hit(9., 9., 30., fLastHP.getHitLayer()+1);            // choose outliers
+    hit = Hit(x0+c1*t, y0+c2*t, z0+c3*t, fLastHP.getHitLayer()+1);
 
     // update last hit position for the particle (outside the detector)
     updateHitPos(x0+c1*t, y0+c2*t, z0+c3*t+detector.width, true);
