@@ -104,20 +104,20 @@ void Reconstruction::runReconstruction()
         zVertVec.push_back(vertex.getZ());
         zMoltVec.push_back(vertex.getMultiplicity());
         int numHits[nlayer];
-        for(int limmortaccitua=0; limmortaccitua<nlayer; limmortaccitua++)
+        for(int ll=0; ll<nlayer; ll++)
         { 
-            numHits[limmortaccitua] = hitsArray[limmortaccitua].GetEntries();  
-            for(int ii=0;ii<numHits[limmortaccitua];ii++)//smearing
+            numHits[ll] = hitsArray[ll].GetEntries();  
+            for(int ii=0;ii<numHits[ll];ii++)//smearing
                 {
-                    Hit *hitptr2 = (Hit*)hitsArray[limmortaccitua].At(ii);
+                    Hit *hitptr2 = (Hit*)hitsArray[ll].At(ii);
                     hitptr2->smearing();
                 }
         
             int noi=int(gRandom->Rndm()*50);//add noise
-            for(int i=numHits[limmortaccitua]+1; i<numHits[limmortaccitua]+noi+1; i++)
+            for(int i=numHits[ll]+1; i<numHits[ll]+noi+1; i++)
             {
-                new(hitsArray[limmortaccitua][i]) Hit();//ODDIO QUANTO TI STO ODIANDO QUI
-                Hit * hit1 = (Hit*)hitsArray[limmortaccitua].At(i);  
+                new(hitsArray[ll][i]) Hit();//ODDIO QUANTO TI STO ODIANDO QUI
+                Hit * hit1 = (Hit*)hitsArray[ll].At(i);  
                 hit1->noise();                     
             }
         }
