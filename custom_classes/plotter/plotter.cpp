@@ -46,8 +46,7 @@ void Plotter::residues(TObjArray* arrHisto,int *Molt, int nn)
            {
                if((moltReal[j]>Molt[ab]-Molt[ab]*0.1)&&(moltReal[j]<Molt[ab]+Molt[ab]*0.1))  hRes->Fill(zVertRec[j]*10000-zVertReal[j]*10000); 
            }
-           
-      }
+        }
     }
 }
 
