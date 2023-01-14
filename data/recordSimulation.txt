@@ -1,0 +1,58 @@
+Vertex:
+    x: 0.00998933 #cm
+    y: -0.00434764 #cm
+    z: 4.14352 #cm
+    multiplicity: 4
+
+DetectorLayers: # first layer is the beam pipe
+    -   Particles:
+            -   x: -2.94713 #cm
+                y: 0.275677 #cm
+                z: 0.058066 #cm
+
+            -   x: 9 #cm
+                y: 9 #cm
+                z: 30 #cm
+
+            -   x: -0.176508 #cm
+                y: -2.95473 #cm
+                z: 4.64273 #cm
+
+            -   x: -1.59836 #cm
+                y: -2.49135 #cm
+                z: 8.05787 #cm
+
+    -   Particles:
+            -   x: 9 #cm
+                y: 9 #cm
+                z: 30 #cm
+
+            -   x: 9 #cm
+                y: 9 #cm
+                z: 30 #cm
+
+            -   x: 0.451189 #cm
+                y: 6.97542 #cm
+                z: 6.40294 #cm
+
+            -   x: 9 #cm
+                y: 9 #cm
+                z: 30 #cm
+
+    -   Particles:
+            -   x: 9 #cm
+                y: 9 #cm
+                z: 30 #cm
+
+            -   x: 9 #cm
+                y: 9 #cm
+                z: 30 #cm
+
+            -   x: 0.514275 #cm
+                y: 7.97343 #cm
+                z: 6.59181 #cm
+
+            -   x: 9 #cm
+                y: 9 #cm
+                z: 30 #cm
+
