@@ -87,7 +87,7 @@ void Reconstruction::runReconstruction()
     TBranch *br[nlayer];
     TBranch *bv = tree->GetBranch("Vertex");
 
-    for(int b=1; b<3; b++)//DA QUI MI HAI FATTO FARE UN CASINO SENZA SENSO
+    for(int b=1; b<3; b++)
     {
        br[b-1]=tree->GetBranch(Form("HitsL%d",b));
     }
@@ -116,7 +116,7 @@ void Reconstruction::runReconstruction()
                     hitptr2->smearing();
                 }
         
-            int noi=int(gRandom->Rndm()*50);//add noise
+            int noi=int(gRandom->Rndm()*10);//add noise
             for(int i=numHits[ll]+1; i<numHits[ll]+noi+1; i++)
             {
                 new(hitsArray[ll][i]) Hit();
