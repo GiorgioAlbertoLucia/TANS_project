@@ -17,6 +17,7 @@ void geomDisplay()
     TGeoVolume * space = manager->MakeBox("space", NULL, 100., 100., 100.);
     manager->SetTopVolume(space);
 
+    // DETECTORS
     const int nDetectors = root["n_detectors"].As<int>();
     TGeoVolume * detectors[nDetectors];
 
@@ -35,19 +36,9 @@ void geomDisplay()
 
     Yaml::Parse(root, "data/recordSimulation.txt");
 
+    // PARTICLE TRAJECTORY
     const int multiplicity = root["Vertex"]["multiplicity"].As<int>();
     cout << "multiplicity is " <<  multiplicity << endl;
-
-    //TPolyLine3D * line = new TPolyLine3D();
-    //for(int j=0; j<nDetectors; j++)
-    //{
-    //    line->SetPoint(j, 
-    //                   root["DetectorLayers"][j]["Particles"][0]["x"].As<double>(),
-    //                   root["DetectorLayers"][j]["Particles"][0]["y"].As<double>(),
-    //                   root["DetectorLayers"][j]["Particles"][0]["z"].As<double>());
-    //}
-    //line->SetLineColor(kRed);
-    //line->Draw("same");
 
     TPolyLine3D* lineArray[multiplicity];
     for(int i=0; i<multiplicity; i++)
@@ -67,11 +58,11 @@ void geomDisplay()
                                    root["DetectorLayers"][j]["Particles"][i]["x"].As<double>(),
                                    root["DetectorLayers"][j]["Particles"][i]["y"].As<double>(),
                                    root["DetectorLayers"][j]["Particles"][i]["z"].As<double>());
+            cout << "hit: " << root["DetectorLayers"][j]["Particles"][i]["x"].As<double>() << ", " << root["DetectorLayers"][j]["Particles"][i]["y"].As<double>() << ", " << root["DetectorLayers"][j]["Particles"][i]["z"].As<double>() << endl;
         }
 
         lineArray[i]->SetLineColor(kRed);
         lineArray[i]->Draw("same");
-        
     }
 
     
