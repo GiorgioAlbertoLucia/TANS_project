@@ -7,11 +7,11 @@
 #include <TObjArray.h>
 
 #include "plotter.hpp"// è solo un abbozzo
-#include "../reconstruction/recosntruction.hpp"
 
 
 
-Plotter::addVector(vector<double> zVertReal1, vector<double> zVertRec1, vector<double> moltReal1)
+
+ void Plotter::addVector(vector<double> zVertReal1, vector<double> zVertRec1, vector<double> moltReal1)
 {
    nEvents=zVertReal.size();
    for(int i=0;i<nEvents;i++)
@@ -24,55 +24,68 @@ Plotter::addVector(vector<double> zVertReal1, vector<double> zVertRec1, vector<d
 
 
 
-void Plotter::residues() 
+void Plotter::residues(TObjArray* arrHisto,int *Molt, int nn) 
 {
-    int nMolt=18;
-    int Molt[nMolt]={0,1,2,3,4,5,6,7,8,9,10,12,15,20,30,40,50,65};
-    int arrN[nMolt]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    TObjArray* arrHisto = new TObjArray();
-    double n=zVertRec.size();
-    arrN[0]=n;
-    for(int gg=1;gg<nMolt;gg++)
-    {
-        for(int hh=0;hh<n;hh++)
-        {
-            if(moltReal[hh]>Molt[gg]-Molt[gg]*0.1)&&(moltReal[hh]<Molt[gg]+Molt[gg]*0.1) arrN[gg]++;
-        }
-    }
+    TFile* output1= new TFile("Residues.root", "recreate");
+    double n=nn;
+    int nHist=arrHisto->GetEntries();
     
-    for(int ab=0;ab<nMolt;ab++)
+    for(int ab=0;ab<nHist;ab++)
     {
-      if(ab==0){
-        
-        TH1D* resHisto;
-        resHisto = new TH1D("resHisto","Histo of Zrec-Ztrue",int(sqrt(arrN[ab])),-2000.,2000.);
-        for(int i=0;i<n;i++)
+      TH1D* hRes=(TH1D*)arrHisto->At(ab);
+      if(ab==0)
+      {
+       for(int i=0;i<n;i++)
         {
-            resHisto->Fill(zVertRec[i]*10000-zVertReal[i]*10000);  //microm //ci potrebbero essere delle condizioni da aggiungere perchè così viene un efficineza=1 sempre
+            hRes->Fill(zVertRec[i]*10000-zVertReal[i]*10000);  //microm //ci potrebbero essere delle condizioni da aggiungere perchè così viene un efficineza=1 sempre
         }
-        resHisto->SetLineColor(kBlue);//differenza per tutte le moltiplicità 
-        resHisto->Draw("E");
       }
       else
-       {
-            TH1D* resHistoMolt;
-            resHistoMolt = new TH1D("resHisto","Histo of Zrec-Ztrue",int(sqrt(n)),-2000.,2000.);
-            for(int j=0;j<n;j++)
-            {
-                if((moltReal[j]>Molt[i]-Molt[i]*0.1)&&(moltReal[j]<Molt[i]+Molt[i]*0.1))  resHistoMolt->Fill(zVertRec[j]*10000-zVertReal[j]*10000); 
-            }
-            TF1* g1=new TF1("g1","gaus",-2000,2000.);//estremi possono essere fatti meglio, ma ho sonno ora
-            resHistoMolt->Fit("g1","L");
-            sigma[i]=g1->GetParameter(2); // le sigma solo le risoluzioni 
-       }
+      {
+           for(int j=0;j<n;j++)
+           {
+               if((moltReal[j]>Molt[ab]-Molt[ab]*0.1)&&(moltReal[j]<Molt[ab]+Molt[ab]*0.1))  hRes->Fill(zVertRec[j]*10000-zVertReal[j]*10000); 
+           }
+        }
     }
 }
 
 
 
-Plotter::runPlots()
-{
-   File* output = new TFile("Reconstruction.root", "recreate");  
-   //gli restituisci l'array conn gli histogrammi e ti prendi 
-   
+void Plotter::runPlots()//devo solo copiare la parte di draw dentro residues, il resto va bene
+{//faccio due file diversi in uno metto solo i residui, nell'altro i grafici così posso alprere un file direttamente nella funzione residuies e usare i puntatori che sono più comodi di come è scritto ora
+   TFile* output = new TFile("Reconstruction.root", "recreate"); 
+   TObjArray* arrHisto = new TObjArray(); 
+   int nMolt=18;
+   int Molt[]={0,1,2,3,4,5,6,7,8,9,10,12,15,20,30,40,50,65};
+   int arrN[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+   double n=zVertRec.size();
+   arrN[0]=n;
+   int indexh=0;
+
+   for(int gg=1;gg<nMolt;gg++)
+    {
+        for(int hh=0;hh<n;hh++)
+        {
+            if((moltReal[hh]>Molt[gg]-Molt[gg]*0.1)&&(moltReal[hh]<Molt[gg]+Molt[gg]*0.1)) arrN[gg]++;
+        }
+    }
+
+   for(int i=0;i<nMolt;i++)
+   {
+        TH1D* resHisto;
+        resHisto =  new TH1D("resHisto",Form("Hist of Zrec-Ztrue Molt_%d",Molt[i]),"Zrec-Ztrue [um]; # entries", int(sqrt(arrN[i])),-2000.,2000.);
+        arrHisto->AddAtAndExpand(resHisto,indexh++);
+   }
+   residues(arrHisto,Molt,n);
+
+   double risolution[indexh];
+   for(int j=0;indexh;j++)
+   {
+        risolution[j]=arrHisto[j]->GetXaxis()->GetStdDev();
+        arrHisto[j].Write();
+        arrHisto[j].draw("E");
+   }
+   output->ls();
+
 }

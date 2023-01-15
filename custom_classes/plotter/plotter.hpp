@@ -6,7 +6,7 @@
 #include "../pointCC/pointCC.hpp"
 #include "../hit/hit.hpp"
 #include "../vertex/vertex.hpp"
-#include "../reconstruction/recosntruction.hpp"
+#include "../reconstruction/reconstruction.hpp"
 
 class Plotter
 {
@@ -15,16 +15,14 @@ class Plotter
         
         ~Plotter(){}; 
 
-        void  addVector(vector<double> zVertReal1, vector<double> zVertRec1, vector<double> moltReal1);
+        void addVector(vector<double> zVertReal1, vector<double> zVertRec1, vector<double> moltReal1);
         void runPlots();
-        void residues();
+        void residues(TObjArray* arrHisto,int *Molt, int nn);
 
     private:
-        
         vector <double> zVertReal;
         vector <double> zVertRec;
         vector <double> moltReal;
-        vector <double> resVec;
         double nEvents;
 
 
