@@ -43,6 +43,7 @@
 ./custom_classes/plotter/plotter_cpp.so: /mnt/c/root/include/TVectorDfwd.h
 ./custom_classes/plotter/plotter_cpp.so: /mnt/c/root/include/TFitResultPtr.h
 ./custom_classes/plotter/plotter_cpp.so: /mnt/c/root/include/TH1F.h
+./custom_classes/plotter/plotter_cpp.so: /mnt/c/root/include/TH1D.h
 ./custom_classes/plotter/plotter_cpp.so: /mnt/c/root/include/TFile.h
 ./custom_classes/plotter/plotter_cpp.so: /mnt/c/root/include/Compression.h
 ./custom_classes/plotter/plotter_cpp.so: /mnt/c/root/include/TDirectoryFile.h

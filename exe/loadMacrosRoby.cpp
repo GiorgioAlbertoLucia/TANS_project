@@ -14,4 +14,5 @@ void loadMacrosRoby(TString myopt="fast")
     
     // RECONSTRUCTION
     gSystem->CompileMacro("custom_classes/reconstruction/reconstruction.cpp",opt.Data());
+    gSystem->CompileMacro("custom_classes/plotter/plotter.cpp",opt.Data());
 }
