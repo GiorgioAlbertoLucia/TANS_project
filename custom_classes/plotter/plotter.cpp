@@ -12,7 +12,8 @@
 
 
  void Plotter::addVector(vector<double> zVertReal1, vector<double> zVertRec1, vector<double> moltReal1)
-{
+{   // su questa cosa poi ti darò un parere non richiesto. Se però lo fai così, ricordati di fissare le dimensioni dei
+    // vector prima di fillarli
    nEvents=zVertReal.size();
    for(int i=0;i<nEvents;i++)
    {
@@ -27,7 +28,7 @@
 void Plotter::residues(TObjArray* arrHisto,int *Molt, int nn) 
 {
     TFile* output1= new TFile("Residues.root", "recreate");
-    double n=nn;
+    double n=nn;    // qui n lo stai usando comunque come indice intero, quindi non ho capito
     int nHist=arrHisto->GetEntries();
     
     for(int ab=0;ab<nHist;ab++)
@@ -58,7 +59,9 @@ void Plotter::runPlots()//devo solo copiare la parte di draw dentro residues, il
    TObjArray* arrHisto = new TObjArray(); 
    int nMolt=18;
    int Molt[]={0,1,2,3,4,5,6,7,8,9,10,12,15,20,30,40,50,65};
-   int arrN[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+   int arrN[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};        // se ti vuoi salvare tempo, l'internet dice che puoi fare
+                                                            // int arrN[18] = {} e fai la stessa cosa
+                                                            // smetto di fare il saputello ciao
    double n=zVertRec.size();
    arrN[0]=n;
    int indexh=0;
@@ -74,7 +77,7 @@ void Plotter::runPlots()//devo solo copiare la parte di draw dentro residues, il
    for(int i=0;i<nMolt;i++)
    {
         TH1D* resHisto;
-        resHisto =  new TH1D("resHisto",Form("Hist of Zrec-Ztrue Molt_%d",Molt[i]),"Zrec-Ztrue [um]; # entries", int(sqrt(arrN[i])),-2000.,2000.);
+        resHisto =  new TH1D("resHisto",Form("Hist of Zrec-Ztrue Molt_%d",Molt[i]),"Zrec-Ztrue [#mum]; # entries", int(sqrt(arrN[i])),-2000.,2000.);
         arrHisto->AddAtAndExpand(resHisto,indexh++);
    }
    residues(arrHisto,Molt,n);
