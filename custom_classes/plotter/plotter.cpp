@@ -13,14 +13,8 @@
 
 
  void Plotter::addVector(vector<double> zVertReal1, vector<double> zVertRec1, vector<double> moltReal1)
-<<<<<<< HEAD
-{   // su questa cosa poi ti darò un parere non richiesto. Se però lo fai così, ricordati di fissare le dimensioni dei
-    // vector prima di fillarli
-   nEvents=zVertReal.size();
-=======
-{
+{// fixare size dei vettori
    nEvents=zVertReal1.size();
->>>>>>> c087256c69f2c5fb837ce0e3e4e08bb01908a2be
    for(int i=0;i<nEvents;i++)
    {
         zVertReal.push_back(zVertReal1[i]);
@@ -33,7 +27,7 @@
 
 void Plotter::residues(TObjArray* arrHisto,int *Molt, int nn,double *resolution,double *resolutionErr, double *efficiency) 
 {
-    TFile* output1= new TFile("Residues.root", "recreate");
+    TFile* output1= new TFile("output/Residues.root", "recreate");
     double n=nn;    // qui n lo stai usando comunque come indice intero, quindi non ho capito
     int nHist=arrHisto->GetEntries();
     double mean[nHist];
@@ -69,14 +63,16 @@ void Plotter::residues(TObjArray* arrHisto,int *Molt, int nn,double *resolution,
       }
       efficiency[ab]=hRes->GetEntries()-entriesIn;
     }
-    output1->ls();
+    output1->ls();  // questo non ho capito pure
+    // una volta scritti i TH1D sul file credo tu li possa eliminare con delete, altrimenti occupano spazio 
+    // (magari fai una prova, non vorrei dire una sciocchezzuola)
 }
 
 
 
 void Plotter::runPlots()
 {
-   TFile* output = new TFile("Reconstruction.root", "recreate"); 
+   TFile* output = new TFile("output/Reconstruction.root", "recreate"); 
    TObjArray* arrHisto = new TObjArray(); 
    int nMolt=18;
    int Molt[]={0,1,2,3,4,5,6,7,8,9,10,12,15,20,30,40,50,65};
@@ -98,11 +94,7 @@ void Plotter::runPlots()
    for(int i=0;i<nMolt;i++)
    {
         TH1D* resHisto;
-<<<<<<< HEAD
-        resHisto =  new TH1D("resHisto",Form("Hist of Zrec-Ztrue Molt_%d",Molt[i]),"Zrec-Ztrue [#mum]; # entries", int(sqrt(arrN[i])),-2000.,2000.);
-=======
         resHisto =  new TH1D("resHisto",Form("Hist of Zrec-Ztrue Molt_%d",Molt[i]), int(sqrt(arrN[i])),-2000.,2000.);
->>>>>>> c087256c69f2c5fb837ce0e3e4e08bb01908a2be
         arrHisto->AddAtAndExpand(resHisto,indexh++);
    }
    double resolution[indexh];
