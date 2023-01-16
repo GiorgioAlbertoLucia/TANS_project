@@ -1,6 +1,6 @@
 
 # DO NOT DELETE
 
-yaml/Yaml_cpp.so: /mnt/c/Users/Utente/Desktop/UNIVERSITA/Magistrale/anno 1/TANS/TANS_project/TANS_project/yaml/Yaml.hpp
-yaml/Yaml_cpp.so: /mnt/c/root/include/RVersion.h /mnt/c/root/include/RConfig.h /mnt/c/root/include/TClass.h /mnt/c/root/include/TDictAttributeMap.h /mnt/c/root/include/TInterpreter.h /mnt/c/root/include/TROOT.h /mnt/c/root/include/TBuffer.h /mnt/c/root/include/TMemberInspector.h /mnt/c/root/include/TError.h /mnt/c/root/include/RtypesImp.h /mnt/c/root/include/TIsAProxy.h /mnt/c/root/include/TFileMergeInfo.h /mnt/c/root/include/TCollectionProxyInfo.h /mnt/c/root/bin/rootcling
-Yaml_cpp__ROOTBUILDVERSION= 6.24/02
+./yaml/Yaml_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/./yaml/Yaml.hpp
+./yaml/Yaml_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/RVersion.h /usr/local/Cellar/root/6.26.04_1/include/root/RConfig.h /usr/local/Cellar/root/6.26.04_1/include/root/TClass.h /usr/local/Cellar/root/6.26.04_1/include/root/TDictAttributeMap.h /usr/local/Cellar/root/6.26.04_1/include/root/TInterpreter.h /usr/local/Cellar/root/6.26.04_1/include/root/TROOT.h /usr/local/Cellar/root/6.26.04_1/include/root/TBuffer.h /usr/local/Cellar/root/6.26.04_1/include/root/TMemberInspector.h /usr/local/Cellar/root/6.26.04_1/include/root/TError.h /usr/local/Cellar/root/6.26.04_1/include/root/RtypesImp.h /usr/local/Cellar/root/6.26.04_1/include/root/TIsAProxy.h /usr/local/Cellar/root/6.26.04_1/include/root/TFileMergeInfo.h /usr/local/Cellar/root/6.26.04_1/include/root/TCollectionProxyInfo.h /usr/local/bin/rootcling
+Yaml_cpp__ROOTBUILDVERSION= 6.26/04
