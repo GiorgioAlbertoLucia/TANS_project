@@ -26,7 +26,7 @@
         zVertReal.push_back(zVertReal1[i]);
         zVertRec.push_back(zVertRec1[i]); 
         moltReal.push_back(moltReal1[i]);
-        resVec.push_back(zVertRec[i]*10000-zVertRec[i]*10000);
+        resVec.push_back(zVertRec1[i]*10000-zVertReal1[i]*10000);
    }
 }
 
