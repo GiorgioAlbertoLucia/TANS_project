@@ -6,6 +6,7 @@
 #include <TH1D.h>
 #include <TFile.h>
 #include <TObjArray.h>
+#include<TGraphErrors.h>
 
 #include "plotter.hpp"// è solo un abbozzo
 
@@ -13,7 +14,7 @@
 
 
  void Plotter::addVector(vector<double> zVertReal1, vector<double> zVertRec1, vector<double> moltReal1)
-{// fixare size dei vettori
+{
    nEvents=zVertReal1.size();
    for(int i=0;i<nEvents;i++)
    {
@@ -27,8 +28,8 @@
 
 void Plotter::residues(TObjArray* arrHisto,int *Molt, int nn,double *resolution,double *resolutionErr, double *efficiency) 
 {
-    TFile* output1= new TFile("output/Residues.root", "recreate");
-    double n=nn;    // qui n lo stai usando comunque come indice intero, quindi non ho capito
+    TFile* output1= new TFile("Residues.root", "recreate");
+    double n=nn;
     int nHist=arrHisto->GetEntries();
     double mean[nHist];
     for(int ab=0;ab<nHist;ab++)
@@ -41,13 +42,14 @@ void Plotter::residues(TObjArray* arrHisto,int *Molt, int nn,double *resolution,
             hRes->Fill(zVertRec[i]*10000-zVertReal[i]*10000);  
         }
       }
-      else
+      else if(ab<nHist-1)
       {
            for(int j=0;j<n;j++)
            {
                if((moltReal[j]>Molt[ab]-Molt[ab]*0.1)&&(moltReal[j]<Molt[ab]+Molt[ab]*0.1))  hRes->Fill(zVertRec[j]*10000-zVertReal[j]*10000); 
            }
       }
+      
       resolution[ab]=hRes->GetStdDev();
       resolutionErr[ab]=hRes->GetStdDevError();
       mean[ab]=hRes->GetMean();
@@ -61,25 +63,24 @@ void Plotter::residues(TObjArray* arrHisto,int *Molt, int nn,double *resolution,
       {
         entriesIn=entriesIn+hRes->GetBinContent(t);
       }
-      efficiency[ab]=hRes->GetEntries()-entriesIn;
+      efficiency[ab]=entriesIn/hRes->GetEntries();
     }
-    output1->ls();  // questo non ho capito pure
-    // una volta scritti i TH1D sul file credo tu li possa eliminare con delete, altrimenti occupano spazio 
-    // (magari fai una prova, non vorrei dire una sciocchezzuola)
+    output1->ls();
 }
 
 
 
 void Plotter::runPlots()
 {
-   TFile* output = new TFile("output/Reconstruction.root", "recreate"); 
+   TFile* output = new TFile("Reconstruction.root", "recreate"); 
    TObjArray* arrHisto = new TObjArray(); 
+   double n=zVertRec.size();
+   
    int nMolt=18;
    int Molt[]={0,1,2,3,4,5,6,7,8,9,10,12,15,20,30,40,50,65};
-   int arrN[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};        // se ti vuoi salvare tempo, l'internet dice che puoi fare
-                                                            // int arrN[18] = {} e fai la stessa cosa
-                                                            // smetto di fare il saputello ciao
-   double n=zVertRec.size();
+   double errMolt[]={0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.}; // questa da vedere
+   int arrN[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+   
    arrN[0]=n;
    int indexh=0;
 
@@ -97,10 +98,44 @@ void Plotter::runPlots()
         resHisto =  new TH1D("resHisto",Form("Hist of Zrec-Ztrue Molt_%d",Molt[i]), int(sqrt(arrN[i])),-2000.,2000.);
         arrHisto->AddAtAndExpand(resHisto,indexh++);
    }
+
    double resolution[indexh];
    double resolutionErr[indexh];
    double efficiency[indexh];
+   double efficiencyErr[indexh];
    residues(arrHisto,Molt,n,resolution,resolutionErr,efficiency);
+  
+
+   TGraphErrors *effmolt = new TGraphErrors(indexh-1,Molt,efficiency,errMolt,efficiencyErr);
+   effmolt->SetTitle("Efficiency vs Moltiplicity");
+   effmolt->GetXaxis()->SetTitle("Molticplicity");
+   effmolt->GetYaxis()->SetTitle("Efficiency");
+   effmolt->SetMarkerStyle(8);
+   effmolt->SetMarkerColor(kBlue);
+   effmolt->Draw();
+   effmolt->Write();
+   
+
+   TGraphErrors *resmolt = new TGraphErrors(indexh-1,Molt,resolution,errMolt,resolutionErr);
+   resmolt->SetTitle("Resolution vs Moltiplicity");
+   resmolt->GetXaxis()->SetTitle("Molticplicity");
+   resmolt->GetYaxis()->SetTitle("Resolution");
+   resmolt->SetMarkerStyle(8);
+   resmolt->SetMarkerColor(kOrange-3);
+   resmolt->Draw();
+   resmolt->Write();
+
+   double bW=0.5;
+   TH1D* histoZreal;
+   histoZreal = new TH1D("histoZreal","Z of real vertex",int(27/bW),0.,27.);
+   for(int y=0;y<n;y++)
+   {
+      histoZreal->Fill(zVertReal[y]); //serve per eff e ris in funzione di zreal, prendo il centro del bin così
+   }
+   
+     
+   
+   
    
 
 

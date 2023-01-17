@@ -54,7 +54,9 @@
         "binpois.C": "cpp",
         "FitKab.C": "cpp",
         "deltag.C": "cpp",
-        "ConvertTxtToRoot.C": "cpp"
+        "ConvertTxtToRoot.C": "cpp",
+        "scanvbb.C": "cpp",
+        "Analysis.C": "cpp"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
 }
