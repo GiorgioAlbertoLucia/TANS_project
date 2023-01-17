@@ -37,7 +37,7 @@ void Reconstruction::vertexReconstruction(TClonesArray hitsArray1, TClonesArray 
     vector<double> zTrackVert;
     TH1D* histoHit;
     double binW = 0.5;
-    histoHit = new TH1D("histoHit","Vertex's z rec",int(27/binW),0.,27.);  
+    histoHit = new TH1D("histoHit","Vertex's z rec",int(60/binW),-30.,30.);  
                                                                             
     for(int i=0; i<hitsArray1.GetEntries(); i++)                            
     {
@@ -58,20 +58,20 @@ void Reconstruction::vertexReconstruction(TClonesArray hitsArray1, TClonesArray 
         }
     }
 
-        int binmax = histoHit->GetMaximumBin();
-        double zMax = histoHit->GetXaxis()->GetBinCenter(binmax);
+    int binmax = histoHit->GetMaximumBin();
+    double zMax = histoHit->GetXaxis()->GetBinCenter(binmax);
 
-        vector<double> zTrackVert1;
-        for(int aa=0; aa<(int)zTrackVert.size(); aa++)          
+    vector<double> zTrackVert1;
+    for(int aa=0; aa<(int)zTrackVert.size(); aa++)          
                                                                 
-        {
-            if((zTrackVert[aa]<zMax+binW/2)&&(zTrackVert[aa]>zMax-binW/2)) zTrackVert1.push_back(zTrackVert[aa]);
-        }
-        double som = 0.;
-        for(int a=0; a<(int)zTrackVert1.size(); a++) som = som+zTrackVert1[a];
-
-        zVertVecRec.push_back(som/zTrackVert1.size());
+    {
+        if((zTrackVert[aa]<zMax+binW/2)&&(zTrackVert[aa]>zMax-binW/2)) zTrackVert1.push_back(zTrackVert[aa]);
     }
+    double som = 0.;
+    for(int a=0; a<(int)zTrackVert1.size(); a++) som = som+zTrackVert1[a];
+
+    zVertVecRec.push_back(som/zTrackVert1.size());
+}
 
 
 

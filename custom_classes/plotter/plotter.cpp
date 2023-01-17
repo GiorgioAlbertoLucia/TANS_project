@@ -8,53 +8,70 @@
 #include <TObjArray.h>
 #include<TGraphErrors.h>
 
-#include "plotter.hpp"// è solo un abbozzo
+#include "plotter.hpp" 
 
 
 
 
  void Plotter::addVector(vector<double> zVertReal1, vector<double> zVertRec1, vector<double> moltReal1)
-{
+{//giusto così?*********
    nEvents=zVertReal1.size();
+   zVertReal.reserve(nEvents);
+   zVertRec.reserve(nEvents);
+   moltReal.reserve(nEvents);
+   resVec.reserve(nEvents);
+
    for(int i=0;i<nEvents;i++)
    {
         zVertReal.push_back(zVertReal1[i]);
         zVertRec.push_back(zVertRec1[i]); 
         moltReal.push_back(moltReal1[i]);
+        resVec.push_back(zVertRec[i]*10000-zVertRec[i]*10000);
    }
 }
 
 
 
-void Plotter::residues(TObjArray* arrHisto,double *Molt, int nn,double *resolution,double *resolutionErr, double *efficiency) 
+
+void Plotter::residues(TObjArray* arrHisto,double *Xarray, int nn,double *resolution,double *resolutionErr, double *efficiency, double *efficiencyErr, bool bol) 
 {
-    TFile* output1= new TFile("Residues.root", "recreate");
     double n=nn;
     int nHist=arrHisto->GetEntries();
     double mean[nHist];
+    double bW=2.;
+    if(bol==true) TFile* output1= new TFile("Residues.root", "recreate");
     for(int ab=0;ab<nHist;ab++)
     {
       TH1D* hRes=(TH1D*)arrHisto->At(ab);
-      if(ab==0)
+      if(bol==true)
       {
-       for(int i=0;i<n;i++)
+        if(ab==0)
         {
-            hRes->Fill(zVertRec[i]*10000-zVertReal[i]*10000);  
+          for(int i=0;i<n;i++)
+          {
+            hRes->Fill(resVec[i]);  
+          }
         }
-      }
-      else if(ab<nHist-1)
-      {
+        else 
+        {
            for(int j=0;j<n;j++)
            {
-               if((moltReal[j]>Molt[ab]-Molt[ab]*0.1)&&(moltReal[j]<Molt[ab]+Molt[ab]*0.1))  hRes->Fill(zVertRec[j]*10000-zVertReal[j]*10000); 
+               if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1))  hRes->Fill(resVec[j]); 
            }
+        }
+        hRes->Write();
+        hRes->Draw("E");
       }
-      
+      else
+      {
+        for(int ii=0;ii<n;ii++)
+        {
+          if((zVertReal[ii]>Xarray[ab]-bW)&&(zVertReal[ii]<Xarray[ab]+bW))  hRes->Fill(resVec[ii]);
+        }
+      }
       resolution[ab]=hRes->GetStdDev();
       resolutionErr[ab]=hRes->GetStdDevError();
       mean[ab]=hRes->GetMean();
-      hRes->Write();
-      hRes->Draw("E");
       double binMax,binMin;
       binMax=hRes->GetBin(mean[ab]+3*resolution[ab]); 
       binMin=hRes->GetBin(mean[ab]-3*resolution[ab]);
@@ -65,8 +82,9 @@ void Plotter::residues(TObjArray* arrHisto,double *Molt, int nn,double *resoluti
       }
       efficiency[ab]=entriesIn/hRes->GetEntries();
     }
-    output1->ls();
+    //if(bol==true) output1->ls();
 }
+
 
 
 
@@ -99,14 +117,14 @@ void Plotter::runPlots()
         arrHisto->AddAtAndExpand(resHisto,indexh++);
    }
 
-   double resolution[indexh];
-   double resolutionErr[indexh];
-   double efficiency[indexh];
-   double efficiencyErr[indexh];
-   residues(arrHisto,Molt,n,resolution,resolutionErr,efficiency);
+   double resolutionM[indexh];
+   double resolutionErrM[indexh];
+   double efficiencyM[indexh];
+   double efficiencyErrM[indexh];
+   bool bol=true;
+   residues(arrHisto,Molt,n,resolutionM,resolutionErrM,efficiencyM,efficiencyErrM,bol);
   
-
-   TGraphErrors *effmolt = new TGraphErrors(indexh-1,Molt,efficiency,errMolt,efficiencyErr);
+   TGraphErrors *effmolt = new TGraphErrors(indexh,Molt,efficiencyM,errMolt,efficiencyErrM);
    effmolt->SetTitle("Efficiency vs Moltiplicity");
    effmolt->GetXaxis()->SetTitle("Molticplicity");
    effmolt->GetYaxis()->SetTitle("Efficiency");
@@ -114,24 +132,65 @@ void Plotter::runPlots()
    effmolt->SetMarkerColor(kBlue);
    effmolt->Draw();
    effmolt->Write();
-   
 
-   TGraphErrors *resmolt = new TGraphErrors(indexh-1,Molt,resolution,errMolt,resolutionErr);
+   TGraphErrors *resmolt = new TGraphErrors(indexh,Molt,resolutionM,errMolt,resolutionErrM);
    resmolt->SetTitle("Resolution vs Moltiplicity");
    resmolt->GetXaxis()->SetTitle("Molticplicity");
-   resmolt->GetYaxis()->SetTitle("Resolution");
+   resmolt->GetYaxis()->SetTitle("Resolution [#mum]");
    resmolt->SetMarkerStyle(8);
    resmolt->SetMarkerColor(kOrange-3);
    resmolt->Draw();
-   resmolt->Write();
+   resmolt->Write();//da scivere a MAsera nel readme, a molteplicità 0 ho messo quelli senza distinzione di molteplicità
 
-   double bW=0.5;
+   arrHisto->Clear();
+
+   double bW=2;
+   double midZ[int(60./bW)];
    TH1D* histoZreal;
-   histoZreal = new TH1D("histoZreal","Z of real vertex",int(27/bW),0.,27.);
+   histoZreal = new TH1D("histoZreal","Z of real vertex",int(60/bW),-30.,30.);
+
    for(int y=0;y<n;y++)
    {
-      histoZreal->Fill(zVertReal[y]); //serve per eff e ris in funzione di zreal, prendo il centro del bin così
+      histoZreal->Fill(zVertReal[y]); 
    }
+
+   double errZmid[int(60./bW)];
+   for(int j=0;j<int(60/bW);j++)
+   {
+    midZ[j]=histoZreal->GetXaxis()->GetBinCenter(j);
+    errZmid[j]=bW/2;
+    TH1D* resHisto;
+    resHisto =  new TH1D("resHisto",Form("Hist of Zrec-Ztrue,  Ztrue:_%4.1f",midZ[j]), int(sqrt(histoZreal->GetBinContent(j))),-2000.,2000.);
+    arrHisto->AddAtAndExpand(resHisto,indexh++);
+   }
+
+   bol=false;
+   double resolutionZ[indexh];
+   double resolutionErrZ[indexh];
+   double efficiencyZ[indexh];
+   double efficiencyErrZ[indexh];
+   
+   residues(arrHisto,midZ,n,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol);
+
+   TGraphErrors *effZreal = new TGraphErrors(indexh,midZ,efficiencyZ,errZmid,efficiencyErrZ);
+   effZreal->SetTitle("Efficiency vs Vertex Z");
+   effZreal->GetXaxis()->SetTitle("Z_true [#mum] ");
+   effZreal->GetYaxis()->SetTitle("Efficiency");
+   effZreal->SetMarkerStyle(8);
+   effZreal->SetMarkerColor(kGreen);
+   effZreal->Draw();
+   effZreal->Write();
+
+   TGraphErrors *resZreal = new TGraphErrors(indexh,midZ,resolutionZ,errZmid,resolutionErrZ);
+   resZreal->SetTitle("Resolution vs Vertex Z");
+   resZreal->GetXaxis()->SetTitle("Z_true [#mum] ");
+   resZreal->GetYaxis()->SetTitle("Resolution [#mum] ");
+   resZreal->SetMarkerStyle(8);
+   resZreal->SetMarkerColor(kGreen);
+   resZreal->Draw();
+   resZreal->Write();
+
+   
    
      
    
