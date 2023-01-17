@@ -19,18 +19,29 @@ void Particle::updateHitPos(const double X, const double Y, const double Z, cons
 
 void Particle::rotate(const double phi, const double theta, double (&vec)[3])
 {
-    double rotMat[3][3] =  {{-sin(phi), -cos(phi)*cos(theta), cos(phi)*sin(theta)},
-                            {cos(phi), -sin(phi)*cos(theta), sin(phi)*sin(theta)},
-                            {0., sin(theta), cos(theta)}};
+    double rotMat[3][3] =  {{-sin(phi), -cos(phi)*cos(theta),   cos(phi)*sin(theta)},
+                            {cos(phi),  -sin(phi)*cos(theta),   sin(phi)*sin(theta)},
+                            {0.,        sin(theta),             cos(theta)}};
 
     double vecp[3];
     for(int i=0; i<3; i++)  vecp[i] = vec[i];
 
-    for(int i=0; i<3; i++)  for(int j=0; j<3; j++)  vec[i] = rotMat[i][j] * vecp[j];
+    for(int i=0; i<3; i++)
+    {
+        vec[i] = 0;
+        for(int j=0; j<3; j++)  vec[i] += rotMat[i][j] * vecp[j];
+    }
 }
 
 /* PUBLIC */
 
+/**
+* @brief Whenever a particle is created, its last intersection point is considered to be the vertex position
+* 
+* @param Phi 
+* @param Eta 
+* @param vertex 
+*/
 Particle::Particle(const double Phi, const double Eta, Vertex& vertex): 
 fPhi(Phi), 
 fEta(Eta)
@@ -51,9 +62,17 @@ Particle::~Particle()
 
 }
 
+/**
+* @brief Creates a Hit (position and layer) of this particle on given detector assuming the particle will
+* move along a straight line from its starting position (in fLastHP)
+* 
+* @param detector 
+* @return Hit 
+*/
 Hit Particle::transport(Detector& detector)
 {
     double theta = this->evalTheta();
+    cout << "theta = " << theta << endl;
     double c1 = sin(theta) * cos(fPhi);
     double c2 = sin(theta) * sin(fPhi);
     double c3 = cos(theta);
@@ -79,6 +98,12 @@ Hit Particle::transport(Detector& detector)
     return hit;
 }
 
+/**
+* @brief Multiple scattering through a detector. In the simplest approximation, only the direction of the particle 
+* will be updated. 
+* 
+* @param detector 
+*/
 void Particle::multipleScattering()
 {
     double phiMS = 2. * TMath::Pi() * gRandom->Rndm();
@@ -92,13 +117,14 @@ void Particle::multipleScattering()
     rotate(fPhi, theta, vec);
 
     // check cout
-    //cout << "before MS: phi = " << fPhi << "; eta = " << fEta << endl;
+    cout << "before MS: phi = " << fPhi << "; eta = " << fEta << endl;
     
     fEta = - log( tan(acos(vec[2])/2.) );
     double newPhi = atan(vec[1]/vec[0]);
+    if(gRandom->Rndm()<0.5) newPhi += TMath::Pi();
     if (newPhi < 0.)    fPhi = newPhi + (2 * TMath::Pi());
     else                fPhi = newPhi;
     
     // check cout
-    //cout << " after MS: phi = " << fPhi << "; eta = " << fEta << endl;
+    cout << " after MS: phi = " << fPhi << "; eta = " << fEta << endl;
 }

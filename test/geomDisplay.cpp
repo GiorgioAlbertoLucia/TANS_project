@@ -1,5 +1,8 @@
+#include <string>
+
 #include "../yaml/Yaml.hpp"
 
+#include <TFile.h>
 #include <TCanvas.h>
 #include <TGLViewer.h>
 #include <TGeoManager.h>
@@ -11,10 +14,13 @@ void geomDisplay()
     Yaml::Node root;
     Yaml::Parse(root, "config/simulationCfg.txt");
 
+    cout << endl << "-------------------------------------" << endl;
+    cout << "Creating event display..." << endl << endl;
+
     TCanvas * canvas = new TCanvas();
     TGeoManager * manager = new TGeoManager();
 
-    TGeoVolume * space = manager->MakeBox("space", NULL, 100., 100., 100.);
+    TGeoVolume * space = manager->MakeBox("space", NULL, 50., 50., 50.);
     manager->SetTopVolume(space);
 
     // DETECTORS
@@ -34,11 +40,11 @@ void geomDisplay()
     manager->CloseGeometry();
     space->Draw("ogl");
 
-    Yaml::Parse(root, "data/recordSimulation.txt");
+    Yaml::Node recordRoot;
+    Yaml::Parse(recordRoot, "data/recordSimulation.txt");
 
-    // PARTICLE TRAJECTORY
-    const int multiplicity = root["Vertex"]["multiplicity"].As<int>();
-    cout << "multiplicity is " <<  multiplicity << endl;
+    // PARTICLE TRAJECTORY (AS LINES)
+    const int multiplicity = recordRoot["Vertex"]["multiplicity"].As<int>();
 
     TPolyLine3D* lineArray[multiplicity];
     for(int i=0; i<multiplicity; i++)
@@ -47,24 +53,26 @@ void geomDisplay()
 
         // set vertex position
         lineArray[i]->SetPoint(i*multiplicity,
-                               root["Vertex"]["x"].As<double>(),
-                               root["Vertex"]["y"].As<double>(),
-                               root["Vertex"]["z"].As<double>());
+                               recordRoot["Vertex"]["x"].As<double>(),
+                               recordRoot["Vertex"]["y"].As<double>(),
+                               recordRoot["Vertex"]["z"].As<double>());
         
         // set intersection points
         for(int j=0; j<nDetectors; j++)
         {
             lineArray[i]->SetPoint(i*multiplicity+j+1,
-                                   root["DetectorLayers"][j]["Particles"][i]["x"].As<double>(),
-                                   root["DetectorLayers"][j]["Particles"][i]["y"].As<double>(),
-                                   root["DetectorLayers"][j]["Particles"][i]["z"].As<double>());
-            cout << "hit: " << root["DetectorLayers"][j]["Particles"][i]["x"].As<double>() << ", " << root["DetectorLayers"][j]["Particles"][i]["y"].As<double>() << ", " << root["DetectorLayers"][j]["Particles"][i]["z"].As<double>() << endl;
+                                   recordRoot["DetectorLayers"][j]["Particles"][i]["x"].As<double>(),
+                                   recordRoot["DetectorLayers"][j]["Particles"][i]["y"].As<double>(),
+                                   recordRoot["DetectorLayers"][j]["Particles"][i]["z"].As<double>());
         }
 
         lineArray[i]->SetLineColor(kRed);
         lineArray[i]->Draw("same");
     }
 
-    
+    TFile outFile(root["outputPaths"]["3DmodelPath"].As<string>().c_str(), "recreate");
+    canvas->Write();
+    outFile.Close();
+    cout << "3D model saved in file " << root["outputPaths"]["3DmodelPath"].As<string>() << "." << endl;
 
 }

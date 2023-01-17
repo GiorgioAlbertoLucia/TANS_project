@@ -12,6 +12,7 @@ outputPaths:
     treeTestPath:   data/test.root
 
     recordSimPath:  data/recordSimulation.txt
+    3DmodelPath:    output/3Dmodel.root
 
 outputNames:
     treeSimName:    simulation

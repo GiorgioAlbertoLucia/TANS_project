@@ -11,13 +11,6 @@ class Particle
 {
     public:
         Particle(): fPhi(0.), fEta(0.), fLastHP() {};
-        /**
-        * @brief Whenever a particle is created, its last intersection point is considered to be the vertex position
-        * 
-        * @param Phi 
-        * @param Eta 
-        * @param vertex 
-        */
         Particle(const double Phi, const double Eta, Vertex& vertex);
         Particle(const Particle& particle);
         ~Particle();
@@ -28,20 +21,7 @@ class Particle
 
         inline double evalTheta() const {return 2. * atan(exp(-fEta));};
 
-        /**
-        * @brief Creates a Hit (position and layer) of this particle on given detector assuming the particle will
-        * move along a straight line from its starting position (in fLastHP)
-        * 
-        * @param detector 
-        * @return Hit 
-        */
         Hit transport(Detector& detector);
-        /**
-         * @brief multiple scattering through a detector. In the simplest approximation, only the direction of the particle 
-         * will be updated. 
-         * 
-         * @param detector 
-         */
         void multipleScattering();
         
         
