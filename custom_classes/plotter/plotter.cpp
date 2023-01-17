@@ -186,7 +186,7 @@ void Plotter::runPlots()
    resZreal->GetXaxis()->SetTitle("Z_true [#mum] ");
    resZreal->GetYaxis()->SetTitle("Resolution [#mum] ");
    resZreal->SetMarkerStyle(8);
-   resZreal->SetMarkerColor(kGreen);
+   resZreal->SetMarkerColor(kRed);
    resZreal->Draw();
    resZreal->Write();
 
