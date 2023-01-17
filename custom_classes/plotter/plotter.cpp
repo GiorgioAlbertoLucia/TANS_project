@@ -26,7 +26,7 @@
 
 
 
-void Plotter::residues(TObjArray* arrHisto,int *Molt, int nn,double *resolution,double *resolutionErr, double *efficiency) 
+void Plotter::residues(TObjArray* arrHisto,double *Molt, int nn,double *resolution,double *resolutionErr, double *efficiency) 
 {
     TFile* output1= new TFile("Residues.root", "recreate");
     double n=nn;
@@ -59,7 +59,7 @@ void Plotter::residues(TObjArray* arrHisto,int *Molt, int nn,double *resolution,
       binMax=hRes->GetBin(mean[ab]+3*resolution[ab]); 
       binMin=hRes->GetBin(mean[ab]-3*resolution[ab]);
       int entriesIn=0; 
-      for(int t=binMin;t<BinMax;t++)
+      for(int t=binMin;t<binMax;t++)
       {
         entriesIn=entriesIn+hRes->GetBinContent(t);
       }
@@ -77,7 +77,7 @@ void Plotter::runPlots()
    double n=zVertRec.size();
    
    int nMolt=18;
-   int Molt[]={0,1,2,3,4,5,6,7,8,9,10,12,15,20,30,40,50,65};
+   double Molt[]={0.,1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,12.,15.,20.,30.,40.,50.,65.};
    double errMolt[]={0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.}; // questa da vedere
    int arrN[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
    
@@ -95,7 +95,7 @@ void Plotter::runPlots()
    for(int i=0;i<nMolt;i++)
    {
         TH1D* resHisto;
-        resHisto =  new TH1D("resHisto",Form("Hist of Zrec-Ztrue Molt_%d",Molt[i]), int(sqrt(arrN[i])),-2000.,2000.);
+        resHisto =  new TH1D("resHisto",Form("Hist of Zrec-Ztrue Molt_%4.1f",Molt[i]), int(sqrt(arrN[i])),-2000.,2000.);
         arrHisto->AddAtAndExpand(resHisto,indexh++);
    }
 
