@@ -35,7 +35,7 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2)
 
 
 /**
- * @brief 
+ * @brief loops on hits points in order to find vertex's Z
  * 
  * @param hitsArray1 
  * @param hitsArray2 
@@ -85,7 +85,10 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
 }
 
 
-
+/**
+ * @brief read data from tree
+ * 
+ */
 void Reconstruction::runReconstruction()
 { 
     Yaml::Node root;
