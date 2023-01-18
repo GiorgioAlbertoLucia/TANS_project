@@ -15,7 +15,7 @@ class Reconstruction
         ~Reconstruction(){};        
     
         void runReconstruction();
-        void vertexReconstruction(TClonesArray hitsArray1,TClonesArray hitsArray2); 
+        void vertexReconstruction(TClonesArray *hitsArray1,TClonesArray *hitsArray2); 
         double recZvert(Hit *hit1,Hit *hit2);
         
         

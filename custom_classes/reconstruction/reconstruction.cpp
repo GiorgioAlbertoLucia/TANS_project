@@ -18,8 +18,14 @@
 #include "../../yaml/Yaml.hpp"
 
 
-
-double Reconstruction::recZvert(Hit *hit1,Hit *hit2)//return z from tracking's line
+/**
+ * @brief return z from tracking's line
+ * 
+ * @param hit1 
+ * @param hit2 
+ * @return double 
+ */
+double Reconstruction::recZvert(Hit *hit1,Hit *hit2)
 {
     double m,n,y = 0.;
     m = hit2->getY()-hit1->getY();
@@ -28,8 +34,13 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2)//return z from tracking's l
 }
 
 
-
-void Reconstruction::vertexReconstruction(TClonesArray hitsArray1, TClonesArray hitsArray2){//loop on points for the vertex's reconstruction
+/**
+ * @brief 
+ * 
+ * @param hitsArray1 
+ * @param hitsArray2 
+ */
+void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray *hitsArray2){
     double phi = 0.;
     double deltaPhi = 0.01; 
     
@@ -39,15 +50,15 @@ void Reconstruction::vertexReconstruction(TClonesArray hitsArray1, TClonesArray 
     double binW = 0.5;
     histoHit = new TH1D("histoHit","Vertex's z rec",int(60/binW),-30.,30.);  
                                                                             
-    for(int i=0; i<hitsArray1.GetEntries(); i++)                            
+    for(int i=0; i<hitsArray1->GetEntries(); i++)                            
     {
-        Hit *hitptr=(Hit*)hitsArray1.At(i);
+        Hit *hitptr=(Hit*)hitsArray1->At(i);
         if ((hitptr->getZ()<13.5)&&(hitptr->getZ()>-13.5))
         {
             phi = hitptr->getPhi();
-            for(int j=0; j<hitsArray2.GetEntries(); j++)
+            for(int j=0; j<hitsArray2->GetEntries(); j++)
             {
-                Hit *hitptr1=(Hit*)hitsArray2.At(j);
+                Hit *hitptr1=(Hit*)hitsArray2->At(j);
                 if((hitptr1->getPhi()<phi+deltaPhi) && (hitptr1->getPhi()>phi-deltaPhi) && (hitptr1->getZ()>-13.5))
                 {
                     ztemp = recZvert( hitptr,hitptr1);
@@ -125,7 +136,7 @@ void Reconstruction::runReconstruction()
             }
         }
 
-        vertexReconstruction(*hitsArray[0], *hitsArray[1]);
+        vertexReconstruction(hitsArray[0], hitsArray[1]);
         for(int i=0; i<nlayer; i++) hitsArray[i]->Clear();
     }
 }
