@@ -5,4 +5,5 @@ void testPlotter()
 {
     Reconstruction * rec = new Reconstruction("simulation", "config/simulationCfg.txt");
     rec->runReconstruction();
+    
 }
