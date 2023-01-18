@@ -92,8 +92,8 @@ void Reconstruction::runReconstruction()
        br[b-1]=tree->GetBranch(Form("HitsL%d",b));
     }
 
-    TClonesArray hitsArray[nlayer];
-    for(int yy=0; yy<nlayer; yy++)  hitsArray[yy] = TClonesArray("Hit",100); 
+    TClonesArray *hitsArray[nlayer];
+    for(int yy=0; yy<nlayer; yy++)  *hitsArray[yy] = TClonesArray("Hit",100); 
     Vertex vertex;
     bv->SetAddress(&vertex);
 
@@ -109,24 +109,24 @@ void Reconstruction::runReconstruction()
         int numHits[nlayer];
         for(int ll=0; ll<nlayer; ll++)
         { 
-            numHits[ll] = hitsArray[ll].GetEntries();  
+            numHits[ll] = hitsArray[ll]->GetEntries();  
             for(int ii=0;ii<numHits[ll];ii++)//smearing
                 {
-                    Hit *hitptr2 = (Hit*)hitsArray[ll].At(ii);
+                    Hit *hitptr2 = (Hit*)hitsArray[ll]->At(ii);
                     hitptr2->smearing();
                 }
         
             int noi=int(gRandom->Rndm()*10);//add noise
             for(int i=numHits[ll]+1; i<numHits[ll]+noi+1; i++)
             {
-                new(hitsArray[ll][i]) Hit();
-                Hit * hit1 = (Hit*)hitsArray[ll].At(i);  
+                new(&hitsArray[ll][i]) Hit();
+                Hit * hit1 = (Hit*)hitsArray[ll]->At(i);  
                 hit1->noise();                     
             }
         }
 
-        vertexReconstruction(hitsArray[0], hitsArray[1]);
-        for(int i=0; i<nlayer; i++) hitsArray[i].Clear();
+        vertexReconstruction(*hitsArray[0], *hitsArray[1]);
+        for(int i=0; i<nlayer; i++) hitsArray[i]->Clear();
     }
 }
     
