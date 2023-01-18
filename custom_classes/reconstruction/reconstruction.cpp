@@ -80,7 +80,7 @@ void Reconstruction::runReconstruction()
     Yaml::Node root;
     Yaml::Parse(root, fConfigFile.c_str());
 
-    TFile hfile(root["inputPaths"]["distributions"].As<std::string>().c_str());
+    TFile hfile(root["outputPaths"]["treeSimPath"].As<std::string>().c_str());
     TTree *tree = (TTree*)hfile.Get(root["outputNames"]["treeSimName"].As<std::string>().c_str());
 
     const int nlayer = root["n_detectors"].As<int>() - 1; // n_detectors counts beam pipe as well
