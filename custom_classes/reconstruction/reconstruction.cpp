@@ -1,4 +1,3 @@
-#include "reconstruction.hpp"
 #include <TRandom3.h>
 #include <vector>
 #include "TClonesArray.h"
@@ -16,10 +15,17 @@
 #include "../vertex/vertex.hpp"
 #include "../plotter/plotter.hpp"
 #include "../../yaml/Yaml.hpp"
+#include "reconstruction.hpp"
 
 
-
-double Reconstruction::recZvert(Hit *hit1,Hit *hit2)//return z from tracking's line
+/**
+ * @brief return z from tracking's line
+ * 
+ * @param hit1 
+ * @param hit2 
+ * @return double 
+ */
+double Reconstruction::recZvert(Hit *hit1,Hit *hit2)
 {
     double m,n,y = 0.;
     m = hit2->getY()-hit1->getY();
@@ -28,8 +34,13 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2)//return z from tracking's l
 }
 
 
-
-void Reconstruction::vertexReconstruction(TClonesArray hitsArray1, TClonesArray hitsArray2){//loop on points for the vertex's reconstruction
+/**
+ * @brief loops on hits points in order to find vertex's Z
+ * 
+ * @param hitsArray1 
+ * @param hitsArray2 
+ */
+void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray *hitsArray2){
     double phi = 0.;
     double deltaPhi = 0.01; 
     
@@ -39,15 +50,15 @@ void Reconstruction::vertexReconstruction(TClonesArray hitsArray1, TClonesArray 
     double binW = 0.5;
     histoHit = new TH1D("histoHit","Vertex's z rec",int(60/binW),-30.,30.);  
                                                                             
-    for(int i=0; i<hitsArray1.GetEntries(); i++)                            
+    for(int i=0; i<hitsArray1->GetEntries(); i++)                            
     {
-        Hit *hitptr=(Hit*)hitsArray1.At(i);
+        Hit *hitptr=(Hit*)hitsArray1->At(i);
         if ((hitptr->getZ()<13.5)&&(hitptr->getZ()>-13.5))
         {
             phi = hitptr->getPhi();
-            for(int j=0; j<hitsArray2.GetEntries(); j++)
+            for(int j=0; j<hitsArray2->GetEntries(); j++)
             {
-                Hit *hitptr1=(Hit*)hitsArray2.At(j);
+                Hit *hitptr1=(Hit*)hitsArray2->At(j);
                 if((hitptr1->getPhi()<phi+deltaPhi) && (hitptr1->getPhi()>phi-deltaPhi) && (hitptr1->getZ()>-13.5))
                 {
                     ztemp = recZvert( hitptr,hitptr1);
@@ -74,7 +85,10 @@ void Reconstruction::vertexReconstruction(TClonesArray hitsArray1, TClonesArray 
 }
 
 
-
+/**
+ * @brief read data from tree
+ * 
+ */
 void Reconstruction::runReconstruction()
 { 
     Yaml::Node root;
@@ -92,8 +106,8 @@ void Reconstruction::runReconstruction()
        br[b-1]=tree->GetBranch(Form("HitsL%d",b));
     }
 
-    TClonesArray hitsArray[nlayer];
-    for(int yy=0; yy<nlayer; yy++)  hitsArray[yy] = TClonesArray("Hit",100); 
+    TClonesArray *hitsArray[nlayer];
+    for(int yy=0; yy<nlayer; yy++)  *hitsArray[yy] = TClonesArray("Hit",100); 
     Vertex vertex;
     bv->SetAddress(&vertex);
 
@@ -109,24 +123,24 @@ void Reconstruction::runReconstruction()
         int numHits[nlayer];
         for(int ll=0; ll<nlayer; ll++)
         { 
-            numHits[ll] = hitsArray[ll].GetEntries();  
+            numHits[ll] = hitsArray[ll]->GetEntries();  
             for(int ii=0;ii<numHits[ll];ii++)//smearing
                 {
-                    Hit *hitptr2 = (Hit*)hitsArray[ll].At(ii);
+                    Hit *hitptr2 = (Hit*)hitsArray[ll]->At(ii);
                     hitptr2->smearing();
                 }
         
             int noi=int(gRandom->Rndm()*10);//add noise
             for(int i=numHits[ll]+1; i<numHits[ll]+noi+1; i++)
             {
-                new(hitsArray[ll][i]) Hit();
-                Hit * hit1 = (Hit*)hitsArray[ll].At(i);  
+                new(&hitsArray[ll][i]) Hit();
+                Hit * hit1 = (Hit*)hitsArray[ll]->At(i);  
                 hit1->noise();                     
             }
         }
 
         vertexReconstruction(hitsArray[0], hitsArray[1]);
-        for(int i=0; i<nlayer; i++) hitsArray[i].Clear();
+        for(int i=0; i<nlayer; i++) hitsArray[i]->Clear();
     }
 }
     

@@ -12,9 +12,19 @@
 
 
 
-
+/**
+ * @brief  copy vectors in plotter DM
+ * 
+ * @param zVertReal1 
+ * @param zVertRec1 
+ * @param moltReal1 
+ */
  void Plotter::addVector(vector<double> zVertReal1, vector<double> zVertRec1, vector<double> moltReal1)
+<<<<<<< HEAD
 {//giusto così? YESSS (biscotto)
+=======
+{
+>>>>>>> 2e59713b6f7b9697d945819993dc2249a3adbb40
    nEvents=zVertReal1.size();
    zVertReal.reserve(nEvents);
    zVertRec.reserve(nEvents);
@@ -32,7 +42,18 @@
 
 
 
-
+/**
+ * @brief histos for residues, calculation of resolution and efficiency. 
+ * 
+ * @param arrHisto 
+ * @param Xarray 
+ * @param nn 
+ * @param resolution 
+ * @param resolutionErr 
+ * @param efficiency 
+ * @param efficiencyErr 
+ * @param bol 
+ */
 void Plotter::residues(TObjArray* arrHisto,double *Xarray, int nn,double *resolution,double *resolutionErr, double *efficiency, double *efficiencyErr, bool bol) 
 {
     double n=nn;
@@ -87,7 +108,10 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int nn,double *resolu
 
 
 
-
+/**
+ * @brief create and save Graph of resolution and efficiency vs Ztrue and Moltiplicity of vertex
+ * 
+ */
 void Plotter::runPlots()
 {
    TFile* output = new TFile("Reconstruction.root", "recreate"); 
@@ -193,12 +217,4 @@ void Plotter::runPlots()
    
    
      
-   
-   
-   
-
-
-   
-
-
 }
