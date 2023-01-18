@@ -20,11 +20,7 @@
  * @param moltReal1 
  */
  void Plotter::addVector(vector<double> zVertReal1, vector<double> zVertRec1, vector<double> moltReal1)
-<<<<<<< HEAD
-{//giusto così? YESSS (biscotto)
-=======
 {
->>>>>>> 2e59713b6f7b9697d945819993dc2249a3adbb40
    nEvents=zVertReal1.size();
    zVertReal.reserve(nEvents);
    zVertRec.reserve(nEvents);

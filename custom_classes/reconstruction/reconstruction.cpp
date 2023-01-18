@@ -65,8 +65,10 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
                     histoHit->Fill(ztemp);
                     zTrackVert.push_back(ztemp);
                 }
+                delete hitptr1; // giogio
             }
         }
+        delete hitptr; // giogio
     }
 
     int binmax = histoHit->GetMaximumBin();
@@ -96,6 +98,8 @@ void Reconstruction::runReconstruction()
 
     TFile hfile(root["outputPaths"]["treeSimPath"].As<std::string>().c_str());
     TTree *tree = (TTree*)hfile.Get(root["outputNames"]["treeSimName"].As<std::string>().c_str());
+    tree->SetDirectory(0);  // giogio
+    hfile.Close();  // giogio
 
     const int nlayer = root["n_detectors"].As<int>() - 1; // n_detectors counts beam pipe as well
     TBranch *br[nlayer];
@@ -103,11 +107,13 @@ void Reconstruction::runReconstruction()
 
     for(int b=1; b<3; b++)
     {
-       br[b-1]=tree->GetBranch(Form("HitsL%d",b));
+        br[b-1]=tree->GetBranch(Form("HitsL%d",b));
     }
 
     TClonesArray *hitsArray[nlayer];
-    for(int yy=0; yy<nlayer; yy++)  *hitsArray[yy] = TClonesArray("Hit",100); 
+    // qui proprio fuori di testa
+    for (TClonesArray * &a: hitsArray)  a = new TClonesArray("Hit",100);
+    // for(int yy=0; yy<nlayer; yy++)  *hitsArray[yy] = TClonesArray("Hit",100); 
     Vertex vertex;
     bv->SetAddress(&vertex);
 
@@ -115,31 +121,44 @@ void Reconstruction::runReconstruction()
     {
           br[b-1]->SetAddress(&hitsArray[b-1]);
     }
-    for(int ev=0; ev<tree->GetEntries(); ev++)
+
+    // questo te lo metto nella stessa logica di quello che abbiamo fatto per plotter
+    const int nEvents = tree->GetEntries();
+    zVertVec.reserve(nEvents);          // fix vector sizes
+    zMoltVec.reserve(nEvents);
+
+    for(int ev=0; ev<nEvents; ev++)
     {
+        cout << "event " << ev << endl;
         tree->GetEvent(ev);
         zVertVec.push_back(vertex.getZ());
         zMoltVec.push_back(vertex.getMultiplicity());
-        int numHits[nlayer];
+        int numHits[nlayer];    // scusa, ma se invece inizializzi la variabile dentro il for loop?
         for(int ll=0; ll<nlayer; ll++)
         { 
+            cout << "layer " << ll << endl; 
+            // tipo così
+            // const int numHits = hitsArray[ll]->GetEntries();
+            // e usi questa per ciclare dentro i loop annidati
             numHits[ll] = hitsArray[ll]->GetEntries();  
             for(int ii=0;ii<numHits[ll];ii++)//smearing
-                {
-                    Hit *hitptr2 = (Hit*)hitsArray[ll]->At(ii);
-                    hitptr2->smearing();
-                }
+            {
+                cout << "smearing " << ii << endl;
+                Hit *hitptr2 = (Hit*)hitsArray[ll]->At(ii);
+                hitptr2->smearing();
+            }
         
             int noi=int(gRandom->Rndm()*10);//add noise
             for(int i=numHits[ll]+1; i<numHits[ll]+noi+1; i++)
             {
+                cout << "noise " << i << endl;
                 new(&hitsArray[ll][i]) Hit();
                 Hit * hit1 = (Hit*)hitsArray[ll]->At(i);  
                 hit1->noise();                     
             }
         }
 
-        vertexReconstruction(hitsArray[0], hitsArray[1]);
+        //vertexReconstruction(hitsArray[0], hitsArray[1]);
         for(int i=0; i<nlayer; i++) hitsArray[i]->Clear();
     }
 }

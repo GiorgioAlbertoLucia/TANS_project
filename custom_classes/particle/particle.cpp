@@ -72,7 +72,6 @@ Particle::~Particle()
 Hit Particle::transport(Detector& detector)
 {
     double theta = this->evalTheta();
-    cout << "theta = " << theta << endl;
     double c1 = sin(theta) * cos(fPhi);
     double c2 = sin(theta) * sin(fPhi);
     double c3 = cos(theta);
@@ -93,7 +92,8 @@ Hit Particle::transport(Detector& detector)
     updateHitPos(x0+c1*t, y0+c2*t, z0+c3*t+detector.width, true);
 
     // check cout
-    // cout << "particle " << hit.getX() << ", " << hit.getY() << ", " << hit.getZ() << endl;
+    // cout << "particle " << fLastHP.getX() << ", " << fLastHP.getY() << ", " << fLastHP.getZ() << endl;
+    // cout << "phi = " << fPhi << "; eta = " << fEta << endl;
 
     return hit;
 }
@@ -117,14 +117,14 @@ void Particle::multipleScattering()
     rotate(fPhi, theta, vec);
 
     // check cout
-    cout << "before MS: phi = " << fPhi << "; eta = " << fEta << endl;
+    // cout << "before MS: phi = " << fPhi << "; eta = " << fEta << endl;
     
     fEta = - log( tan(acos(vec[2])/2.) );
     double newPhi = atan(vec[1]/vec[0]);
-    if(gRandom->Rndm()<0.5) newPhi += TMath::Pi();
-    if (newPhi < 0.)    fPhi = newPhi + (2 * TMath::Pi());
-    else                fPhi = newPhi;
+    if((vec[0]/sqrt(1-vec[2]*vec[2]))<0.) newPhi += TMath::Pi();
+    if (newPhi < 0.)                      fPhi = newPhi + (2 * TMath::Pi());
+    else                                  fPhi = newPhi;
     
     // check cout
-    cout << " after MS: phi = " << fPhi << "; eta = " << fEta << endl;
+    // cout << " after MS: phi = " << fPhi << "; eta = " << fEta << endl;
 }

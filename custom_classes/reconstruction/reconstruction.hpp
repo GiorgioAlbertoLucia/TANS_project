@@ -12,9 +12,11 @@ class Reconstruction
     public:
         Reconstruction(){};
         Reconstruction(const char * TreeName, const char * ConfigFile): fTreeName2(TreeName), fConfigFile(ConfigFile){};
-        ~Reconstruction(){};        
+        virtual ~Reconstruction(){};        
     
         void runReconstruction();
+
+        // io proporrei di mettere queste due protected, tanto fuori da reconstruction non vuoi chiamarle
         void vertexReconstruction(TClonesArray *hitsArray1,TClonesArray *hitsArray2); 
         double recZvert(Hit *hit1,Hit *hit2);
         
