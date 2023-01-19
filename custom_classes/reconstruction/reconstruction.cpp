@@ -98,8 +98,8 @@ void Reconstruction::runReconstruction()
 
     TFile hfile(root["outputPaths"]["treeSimPath"].As<std::string>().c_str());
     TTree *tree = (TTree*)hfile.Get(root["outputNames"]["treeSimName"].As<std::string>().c_str());
-    tree->SetDirectory(0);  // giogio
-    hfile.Close();  // giogio
+    //tree->SetDirectory(0);  // giogio
+    
 
     const int nlayer = root["n_detectors"].As<int>() - 1; // n_detectors counts beam pipe as well
     TBranch *br[nlayer];
@@ -113,7 +113,7 @@ void Reconstruction::runReconstruction()
     TClonesArray *hitsArray[nlayer];
     // qui proprio fuori di testa
     for (TClonesArray * &a: hitsArray)  a = new TClonesArray("Hit",100);
-    // for(int yy=0; yy<nlayer; yy++)  *hitsArray[yy] = TClonesArray("Hit",100); 
+    //for(int yy=0; yy<nlayer; yy++)  *hitsArray[yy] = TClonesArray("Hit",100); 
     Vertex vertex;
     bv->SetAddress(&vertex);
 
@@ -141,6 +141,7 @@ void Reconstruction::runReconstruction()
             // const int numHits = hitsArray[ll]->GetEntries();
             // e usi questa per ciclare dentro i loop annidati
             numHits[ll] = hitsArray[ll]->GetEntries();  
+            cout << "entries " << hitsArray[ll]->GetEntries() << ", " << numHits[ll] << endl;
             for(int ii=0;ii<numHits[ll];ii++)//smearing
             {
                 cout << "smearing " << ii << endl;
@@ -154,13 +155,16 @@ void Reconstruction::runReconstruction()
                 cout << "noise " << i << endl;
                 new(&hitsArray[ll][i]) Hit();
                 Hit * hit1 = (Hit*)hitsArray[ll]->At(i);  
-                hit1->noise();                     
+                cout << "test " << i << endl;
+                hit1->noise();               
+                cout << "test " << i << endl;      
             }
         }
 
         //vertexReconstruction(hitsArray[0], hitsArray[1]);
         for(int i=0; i<nlayer; i++) hitsArray[i]->Clear();
     }
+    hfile.Close();  // giogio
 }
     
 
