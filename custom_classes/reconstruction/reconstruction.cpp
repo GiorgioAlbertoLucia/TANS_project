@@ -30,6 +30,7 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2)
     double m,n,y = 0.;
     m = hit2->getY()-hit1->getY();
     n = hit2->getZ()-hit1->getZ();
+    cout<<" reconstruction z ricostruita:"<<n*(y-hit2->getY())/m + hit2->getZ()<<endl;
     return n*(y-hit2->getY())/m + hit2->getZ(); //from 3D line equations
 }
 
@@ -137,7 +138,9 @@ void Reconstruction::runReconstruction()
         if(ev%1000==0)    cout << "Processing event " << ev << "..." << endl;
         tree->GetEvent(ev);
         zVertVec.push_back(vertex.getZ());
+        cout<<" reecontruction vertice reale="<<zVertVec.push_back(vertex.getZ())<<endl;
         zMoltVec.push_back(vertex.getMultiplicity());
+        cout<<" reconstruction molt="<<zMoltVec.push_back(vertex.getMultiplicity())<<endl;
 
         for(int ll=0; ll<nlayer; ll++)
         { 

@@ -19,7 +19,7 @@
  * @param zVertRec1 
  * @param moltReal1 
  */
- void Plotter::addVector(vector<double> &zVertReal1, vector<double> &zVertRec1, vector<double> &moltReal1)
+ void Plotter::addVector(vector<double> &zVertReal1, vector<double> &zVertRec1, vector<double> &moltReal1) // e proprio non va provo con i puntatori
 {
    nEvents=zVertReal1.size();
    cout<<"nEvents="<<nEvents<<endl;
@@ -30,6 +30,7 @@
 
    for(int i=0;i<nEvents;i++)
    {
+    if(i==0) cout<<" z reale plotter="<<zVertReal1[i]<<" plotter z rec="<<zVertRec1[i]<<"plotter residuo="<<zVertRec1[i]*10000-zVertReal1[i]*10000<<"plotter molt="<<moltReal1[i]<<endl;
         zVertReal.push_back(zVertReal1[i]);
         zVertRec.push_back(zVertRec1[i]); 
         moltReal.push_back(moltReal1[i]);
@@ -66,6 +67,7 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
         {
           for(int i=0;i<n;i++)
           {
+            if(i==0) cout<<"residuo2="resVec[i]<<endl;
             hRes->Fill(resVec[i]);  
           }
         }
@@ -116,7 +118,12 @@ void Plotter::runPlots()
    
    int nMolt=18;
    double Molt[]={0.,1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,12.,15.,20.,30.,40.,50.,65.};
-   double errMolt[]={0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.}; // questa da vedere
+   double errMolt[nMolt]; 
+   for(int c=0;c<nMolt;c++)
+   {
+    errMolt[c]=sqrt(molt[c]);
+   }
+
    int arrN[]={10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10};
    
    arrN[0]=nEvents;
@@ -146,7 +153,7 @@ void Plotter::runPlots()
    bool bol=true;
    residues(arrHisto,Molt,nEvents,resolutionM,resolutionErrM,efficiencyM,efficiencyErrM,bol);
   
-   TGraphErrors *effmolt = new TGraphErrors(indexh,Molt,efficiencyM,errMolt,efficiencyErrM);
+   TGraphErrors *effmolt = new TGraphErrors(indexh,Molt,efficiencyM,errMolt,efficiencyErrM); //auto gr = new TGraphAsymmErrors(n,x,y,exl,exh,eyl,eyh);
    effmolt->SetTitle("Efficiency vs Moltiplicity");
    effmolt->GetXaxis()->SetTitle("Molticplicity");
    effmolt->GetYaxis()->SetTitle("Efficiency");
@@ -195,7 +202,7 @@ void Plotter::runPlots()
    
    residues(arrHisto,midZ,nEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol);
 
-   TGraphErrors *effZreal = new TGraphErrors(indexh,midZ,efficiencyZ,errZmid,efficiencyErrZ);
+   TGraphErrors *effZreal = new TGraphErrors(indexh,midZ,efficiencyZ,errZmid,efficiencyErrZ); //auto gr = new TGraphAsymmErrors(n,x,y,exl,exh,eyl,eyh);
    effZreal->SetTitle("Efficiency vs Vertex Z");
    effZreal->GetXaxis()->SetTitle("Z_true [#mum] ");
    effZreal->GetYaxis()->SetTitle("Efficiency");
