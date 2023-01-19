@@ -15,7 +15,7 @@ class Plotter
         
         ~Plotter(){}; 
 
-        void addVector(vector<double> zVertReal1, vector<double> zVertRec1, vector<double> moltReal1);
+        void addVector(vector<double> &zVertReal1, vector<double> &zVertRec1, vector<double> &moltReal1);
         void runPlots();
         void residues(TObjArray* arrHisto,double *Xarray, int nn, double *resolution,double *resolutionErr,double *efficiency,double *efficiencyErr,bool bol);
         
@@ -25,7 +25,7 @@ class Plotter
         vector <double> zVertRec;
         vector <double> moltReal;
         vector <double> resVec;
-        double nEvents;
+        int nEvents;
 
 
 

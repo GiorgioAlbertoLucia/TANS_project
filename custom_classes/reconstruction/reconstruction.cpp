@@ -143,7 +143,7 @@ void Reconstruction::runReconstruction()
         { 
             const int numHits = hitsArray[ll]->GetEntries();
             
-            for(int i=0;ii<numHits;i++)//smearing
+            for(int i=0;i<numHits;i++)//smearing
             {
                 Hit *hitptr2 = (Hit*)hitsArray[ll]->At(i);
                 hitptr2->smearing();
@@ -163,6 +163,9 @@ void Reconstruction::runReconstruction()
         for(int i=0; i<nlayer; i++) hitsArray[i]->Clear();
     }
     hfile.Close();  // giogio
+    Plotter plot;
+    plot.addVector(zVertVec,zVertVecRec,zMoltVec);
+    plot.runPlots();
 }
     
 

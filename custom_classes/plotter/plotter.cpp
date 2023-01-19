@@ -19,9 +19,10 @@
  * @param zVertRec1 
  * @param moltReal1 
  */
- void Plotter::addVector(vector<double> zVertReal1, vector<double> zVertRec1, vector<double> moltReal1)
+ void Plotter::addVector(vector<double> &zVertReal1, vector<double> &zVertRec1, vector<double> &moltReal1)
 {
    nEvents=zVertReal1.size();
+   cout<<"nEvents="<<nEvents<<endl;
    zVertReal.reserve(nEvents);
    zVertRec.reserve(nEvents);
    moltReal.reserve(nEvents);
@@ -97,6 +98,7 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
         entriesIn=entriesIn+hRes->GetBinContent(t);
       }
       efficiency[ab]=entriesIn/hRes->GetEntries();
+      efficiencyErr[ab]=0.;
     }
     //if(bol==true) output1->ls();
 }
@@ -111,19 +113,18 @@ void Plotter::runPlots()
 {
    TFile* output = new TFile("Reconstruction.root", "recreate"); 
    TObjArray* arrHisto = new TObjArray(); 
-   double n=zVertRec.size();
    
    int nMolt=18;
    double Molt[]={0.,1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,12.,15.,20.,30.,40.,50.,65.};
    double errMolt[]={0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.}; // questa da vedere
-   int arrN[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+   int arrN[]={10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10};
    
-   arrN[0]=n;
+   arrN[0]=nEvents;
    int indexh=0;
 
    for(int gg=1;gg<nMolt;gg++)
     {
-        for(int hh=0;hh<n;hh++)
+        for(int hh=0;hh<nEvents;hh++)
         {
             if((moltReal[hh]>Molt[gg]-Molt[gg]*0.1)&&(moltReal[hh]<Molt[gg]+Molt[gg]*0.1)) arrN[gg]++;
         }
@@ -132,7 +133,9 @@ void Plotter::runPlots()
    for(int i=0;i<nMolt;i++)
    {
         TH1D* resHisto;
-        resHisto =  new TH1D("resHisto",Form("Hist of Zrec-Ztrue Molt_%4.1f",Molt[i]), int(sqrt(arrN[i])),-2000.,2000.);
+        // check
+        resHisto =  new TH1D(Form("resHisto%d", i),Form("Hist of Zrec-Ztrue Molt_%4.1f",Molt[i]), int((arrN[i])),-2000.,2000.);
+        //resHisto =  new TH1D(Form("resHisto%d", i),Form("Hist of Zrec-Ztrue Molt_%4.1f",Molt[i]), int(sqrt(arrN[i])),-2000.,2000.);
         arrHisto->AddAtAndExpand(resHisto,indexh++);
    }
 
@@ -141,7 +144,7 @@ void Plotter::runPlots()
    double efficiencyM[indexh];
    double efficiencyErrM[indexh];
    bool bol=true;
-   residues(arrHisto,Molt,n,resolutionM,resolutionErrM,efficiencyM,efficiencyErrM,bol);
+   residues(arrHisto,Molt,nEvents,resolutionM,resolutionErrM,efficiencyM,efficiencyErrM,bol);
   
    TGraphErrors *effmolt = new TGraphErrors(indexh,Molt,efficiencyM,errMolt,efficiencyErrM);
    effmolt->SetTitle("Efficiency vs Moltiplicity");
@@ -168,8 +171,9 @@ void Plotter::runPlots()
    TH1D* histoZreal;
    histoZreal = new TH1D("histoZreal","Z of real vertex",int(60/bW),-30.,30.);
 
-   for(int y=0;y<n;y++)
+   for(int y=0;y<nEvents;y++)
    {
+    if (y==0) cout<<"xvertreal="<<zVertReal[y]<<endl;
       histoZreal->Fill(zVertReal[y]); 
    }
 
@@ -179,7 +183,7 @@ void Plotter::runPlots()
     midZ[j]=histoZreal->GetXaxis()->GetBinCenter(j);
     errZmid[j]=bW/2;
     TH1D* resHisto;
-    resHisto =  new TH1D("resHisto",Form("Hist of Zrec-Ztrue,  Ztrue:_%4.1f",midZ[j]), int(sqrt(histoZreal->GetBinContent(j))),-2000.,2000.);
+    resHisto =  new TH1D(Form("resHisto%d", j),Form("Hist of Zrec-Ztrue,  Ztrue:_%4.1f",midZ[j]), int(sqrt(histoZreal->GetBinContent(j)+1)),-2000.,2000.);//qui GetBinCintent prende 0
     arrHisto->AddAtAndExpand(resHisto,indexh++);
    }
 
@@ -189,7 +193,7 @@ void Plotter::runPlots()
    double efficiencyZ[indexh];
    double efficiencyErrZ[indexh];
    
-   residues(arrHisto,midZ,n,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol);
+   residues(arrHisto,midZ,nEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol);
 
    TGraphErrors *effZreal = new TGraphErrors(indexh,midZ,efficiencyZ,errZmid,efficiencyErrZ);
    effZreal->SetTitle("Efficiency vs Vertex Z");
