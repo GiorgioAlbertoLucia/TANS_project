@@ -7,6 +7,7 @@
 #include <TH1F.h>
 #include <TFile.h>
 #include <TTree.h>
+#include <TInterpreter.h>
 
 #include "simulation.hpp"
 #include "../event/event.hpp"
@@ -48,6 +49,9 @@ void Simulation::recordVertex(Vertex* vertex, const char * filePath) const
  */
 void Simulation::runSimulation(const int nEvents)
 {
+    cout << "--------------------------------------" << endl;
+    cout << "Begin simulation..." << endl;
+
     // initialize parser and event
     Yaml::Node root;
     Yaml::Parse(root, fConfigFile.c_str());
@@ -78,15 +82,12 @@ void Simulation::runSimulation(const int nEvents)
 
     vector<TClonesArray> hitArrayVector;
     hitArrayVector.reserve(nDetectors);
-    char name[50];
 
     for(int i=0; i<nDetectors; i++)
     {
         TClonesArray hitArray("Hit");    
         hitArrayVector.push_back(hitArray);
-
-        sprintf(name, "HitsL%d", i);
-        tree->Branch(name, &hitArrayVector[i]);
+        tree->Branch(Form("HitsL%d", i), &hitArrayVector[i]);
     }
 
     // read input distributions
@@ -124,15 +125,15 @@ void Simulation::runSimulation(const int nEvents)
     delete hMultiplicity;
     delete hEta;
     
-
+    
     TFile outFile(root["outputPaths"]["treeSimPath"].As<std::string>().c_str(), "recreate");
     tree->Write();
     outFile.Close();
+    cout << "TTree stored in " << root["outputPaths"]["treeSimPath"].As<std::string>() << endl;
 
     delete event;
     delete tree;
 }
-
 
 void Simulation::runSimulation2(const int nEvents)
 {
@@ -145,8 +146,9 @@ void Simulation::runSimulation2(const int nEvents)
     TTree * tree = new TTree("OhXmasTTree", "OhXmasTTree");
     tree->Branch("Vertex", &vertex);
 
+    gInterpreter->GenerateDictionary("vector<Hit>", "vector");
     vector<Hit> hits;
-    vector<Hit> *ptrhits = &hits;
+    tree->Branch("Hits", &hits);
     
     // input distributions
     TFile inFile("data/kinem.root");

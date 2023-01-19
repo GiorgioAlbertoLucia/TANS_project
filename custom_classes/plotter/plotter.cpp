@@ -50,9 +50,8 @@
  * @param efficiencyErr 
  * @param bol 
  */
-void Plotter::residues(TObjArray* arrHisto,double *Xarray, int nn,double *resolution,double *resolutionErr, double *efficiency, double *efficiencyErr, bool bol) 
+void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolution,double *resolutionErr, double *efficiency, double *efficiencyErr, bool bol) 
 {
-    double n=nn;
     int nHist=arrHisto->GetEntries();
     double mean[nHist];
     double bW=2.;

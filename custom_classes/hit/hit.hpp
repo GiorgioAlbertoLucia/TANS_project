@@ -12,7 +12,7 @@
 class Hit: public TObject, public PointCC
 {
     public:
-        Hit(): TObject(), PointCC(0., 0., 0.), fHitLayer(0){};
+        Hit(): TObject(), PointCC(0., 0., 0.), fPhi(0.), fHitLayer(0){};
         Hit(const double X, const double Y, const double Z, const int IL):  
             TObject(), PointCC(X, Y, Z), fHitLayer(IL), fPhi(this->evalPhi()){};
         Hit(const Hit& hit): TObject(), PointCC(hit.getX(), hit.getY(), hit.getZ()), fHitLayer(hit.fHitLayer), fPhi(hit.fPhi){};
@@ -22,7 +22,7 @@ class Hit: public TObject, public PointCC
         inline double getPhi() const {return fPhi;};
 
         void smearing();
-        void noise();
+        void noise(const int HitLayer);
       
 
     private:
@@ -33,10 +33,4 @@ class Hit: public TObject, public PointCC
 
 };
 
-#endif
-
-
-#ifdef MAKECINT
-#include <vector>
-#pragma link C++ class vector<Hit>+;
 #endif
