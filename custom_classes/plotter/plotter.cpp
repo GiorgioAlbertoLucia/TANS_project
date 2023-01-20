@@ -108,22 +108,15 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
       {
         for(int ii=0;ii<n;ii++)
         { 
-          if(ii==998)
+          
+          if((zVertReal[ii]>Xarray[ab]-bW)&&(zVertReal[ii]<Xarray[ab]+bW)) 
           {
-            cout<<"controllo 2"<<endl;
-            cout<<zVertReal[ii]<<" a "<<Xarray[ab]-bW<<endl;
-
-          }
-          if((zVertReal[ii]>Xarray[ab]-bW)&&(zVertReal[ii]<Xarray[ab]+bW)) {
-            cout<<"codice scemo, ii="<<ii<<endl;
-          hRes->Fill(resVec[ii]);//si rompe qui
-          
-          
-          rr++;
+            hRes->Fill(resVec[ii]);
+            rr++;
           }
           
         }
-        cout<<"uscito"<<endl;
+        cout<<"uscito"<<endl; ///aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
       }
       cout<<"uscito 2"<<endl;
       if(rr>0)
