@@ -30,7 +30,6 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2)
     double m,n,y = 0.;
     m = hit2->getY()-hit1->getY();
     n = hit2->getZ()-hit1->getZ();
-    cout<<" reconstruction z ricostruita:"<<n*(y-hit2->getY())/m + hit2->getZ()<<endl;
     return n*(y-hit2->getY())/m + hit2->getZ(); //from 3D line equations
 }
 
@@ -51,7 +50,7 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
     double binW = 0.5;
     TH1D* histoHit = new TH1D("histoHit","Vertex's z rec",int(60/binW),-30.,30.);  
     //qui arriva                                                                  
-    for(int i=0; i<hitsArray1->GetEntries(); i++)        //qui cicla 4 volte                    
+    for(int i=0; i<hitsArray1->GetEntries(); i++)                          
     {
 
         Hit *hitptr=(Hit*)hitsArray1->At(i);
@@ -120,7 +119,7 @@ void Reconstruction::runReconstruction()
     // qui proprio fuori di testa
     for (TClonesArray * &a: hitsArray)  a = new TClonesArray("Hit",100);
     //for(int yy=0; yy<nlayer; yy++)  *hitsArray[yy] = TClonesArray("Hit",100); 
-    Vertex vertex;
+    Vertex *vertex=new Vertex();
     bv->SetAddress(&vertex);
 
     for(int b=1; b<3; b++)
@@ -137,10 +136,9 @@ void Reconstruction::runReconstruction()
     {
         if(ev%1000==0)    cout << "Processing event " << ev << "..." << endl;
         tree->GetEvent(ev);
-        zVertVec.push_back(vertex.getZ());
-        cout<<" reecontruction vertice reale="<<zVertVec.push_back(vertex.getZ())<<endl;
-        zMoltVec.push_back(vertex.getMultiplicity());
-        cout<<" reconstruction molt="<<zMoltVec.push_back(vertex.getMultiplicity())<<endl;
+        zVertVec.push_back(vertex->getZ());
+        
+        zMoltVec.push_back(vertex->getMultiplicity());
 
         for(int ll=0; ll<nlayer; ll++)
         { 
@@ -165,7 +163,7 @@ void Reconstruction::runReconstruction()
         vertexReconstruction(hitsArray[0], hitsArray[1]);
         for(int i=0; i<nlayer; i++) hitsArray[i]->Clear();
     }
-    hfile.Close();  // giogio
+    hfile.Close();  
     Plotter plot;
     plot.addVector(zVertVec,zVertVecRec,zMoltVec);
     plot.runPlots();

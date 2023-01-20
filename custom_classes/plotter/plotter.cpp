@@ -60,21 +60,24 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
     if(bol==true) TFile* output1= new TFile("Residues.root", "recreate");
     for(int ab=0;ab<nHist;ab++)
     {
-      TH1D* hRes=(TH1D*)arrHisto->At(ab);
+      int rr=0;
+      TH1D* hRes=(TH1D*)arrHisto->At(ab);//fai un check sull'array di hist che passi qui
       if(bol==true)
       {
         if(ab==0)
         {
           for(int i=0;i<n;i++)
           {
-            if(i==0) cout<<"residuo2="resVec[i]<<endl;
-            hRes->Fill(resVec[i]);  
+            if(i==0||i==999) cout<<"residuo2="<<resVec[i]<<endl;
+            hRes->Fill(resVec[i]); 
+            rr++; 
           }
         }
         else 
         {
            for(int j=0;j<n;j++)
            {
+            if(j==999) cout<<"controllo 1"<<endl;
                if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1))  hRes->Fill(resVec[j]); 
            }
         }
@@ -84,23 +87,47 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
       else
       {
         for(int ii=0;ii<n;ii++)
-        {
-          if((zVertReal[ii]>Xarray[ab]-bW)&&(zVertReal[ii]<Xarray[ab]+bW))  hRes->Fill(resVec[ii]);
+        { 
+          if(ii==998)
+          {
+            cout<<"controllo 2"<<endl;
+            cout<<zVertReal[ii]<<" a "<<Xarray[ab]-bW<<endl;
+
+          }
+          if((zVertReal[ii]>Xarray[ab]-bW)&&(zVertReal[ii]<Xarray[ab]+bW)) {
+            cout<<"codice scemo, ii="<<ii<<endl;
+          hRes->Fill(resVec[ii]);//si rompe qui
+          
+          
+          rr++;
+          }
+          
         }
+        cout<<"uscito"<<endl;
       }
-      resolution[ab]=hRes->GetStdDev();
-      resolutionErr[ab]=hRes->GetStdDevError();
-      mean[ab]=hRes->GetMean();
-      double binMax,binMin;
-      binMax=hRes->GetBin(mean[ab]+3*resolution[ab]); 
-      binMin=hRes->GetBin(mean[ab]-3*resolution[ab]);
-      int entriesIn=0; 
-      for(int t=binMin;t<binMax;t++)
-      {
-        entriesIn=entriesIn+hRes->GetBinContent(t);
+      cout<<"uscito 2"<<endl;
+      if(rr>0)
+      {  
+        cout<<"dev std "<<"iston"<<ab<<"= "<<hRes->GetStdDev()<<endl;
+        resolution[ab]=hRes->GetStdDev();
+        resolutionErr[ab]=hRes->GetStdDevError();
+        mean[ab]=hRes->GetMean();
+        cout<<"uscito 3"<<endl;
+        const int binMax=hRes->GetBin(mean[ab]+3*resolution[ab]); 
+        const int binMin=hRes->GetBin(mean[ab]-3*resolution[ab]);
+        cout<<"uscito 4,bin max="<<binMax <<endl;
+        int entriesIn=0; 
+        if (ab==nHist-1) cout<<"controllo 3"<<endl;
+        for(int t=binMin;t<binMax;t++)
+        {
+          entriesIn=entriesIn+hRes->GetBinContent(t);
+          if((t==binMax-1)&&(ab==nHist-1)) cout<<"entries in"<<entriesIn<<endl;
+        }
+        efficiency[ab]=entriesIn/hRes->GetEntries();
+        efficiencyErr[ab]=0.;
+        if(ab==nHist-1) cout<<"aaaaa"<<endl;
       }
-      efficiency[ab]=entriesIn/hRes->GetEntries();
-      efficiencyErr[ab]=0.;
+      rr=0;
     }
     //if(bol==true) output1->ls();
 }
@@ -121,7 +148,7 @@ void Plotter::runPlots()
    double errMolt[nMolt]; 
    for(int c=0;c<nMolt;c++)
    {
-    errMolt[c]=sqrt(molt[c]);
+    errMolt[c]=sqrt(Molt[c]);
    }
 
    int arrN[]={10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10};
@@ -173,25 +200,29 @@ void Plotter::runPlots()
 
    arrHisto->Clear();
 
-   double bW=2;
-   double midZ[int(60./bW)];
+   const double bW=2.;
+   
    TH1D* histoZreal;
    histoZreal = new TH1D("histoZreal","Z of real vertex",int(60/bW),-30.,30.);
+   const int nbinsX = histoZreal->GetNbinsX();
+   double midZ[nbinsX];
 
    for(int y=0;y<nEvents;y++)
    {
-    if (y==0) cout<<"xvertreal="<<zVertReal[y]<<endl;
+    if (y==0||y==999) cout<<"xvertreal="<<zVertReal[y]<<endl;
       histoZreal->Fill(zVertReal[y]); 
    }
-
-   double errZmid[int(60./bW)];
-   for(int j=0;j<int(60/bW);j++)
+    
+   double errZmid[nbinsX];
+   TObjArray* arrHisto2 = new TObjArray(); 
+   for(int j=0;j<nbinsX;j++)
    {
-    midZ[j]=histoZreal->GetXaxis()->GetBinCenter(j);
+    midZ[j]=histoZreal->GetXaxis()->GetBinCenter(j+1);
+    if(j==0||j==1) cout<<"sddc "<<histoZreal->GetXaxis()->GetBinCenter(j+1)<<endl;
     errZmid[j]=bW/2;
-    TH1D* resHisto;
-    resHisto =  new TH1D(Form("resHisto%d", j),Form("Hist of Zrec-Ztrue,  Ztrue:_%4.1f",midZ[j]), int(sqrt(histoZreal->GetBinContent(j)+1)),-2000.,2000.);//qui GetBinCintent prende 0
-    arrHisto->AddAtAndExpand(resHisto,indexh++);
+    cout<<"fffgf"<<histoZreal->GetBinContent(j+1)<<endl;
+    TH1D* resHisto2 =  new TH1D(Form("resHisto%d", j),Form("Hist of Zrec-Ztrue,  Ztrue:_%4.1f",midZ[j]), int(sqrt(histoZreal->GetBinContent(j+1))+1),-2000.,2000.);//qui GetBinCintent prende 0
+    arrHisto2->AddAtAndExpand(resHisto2,indexh++);
    }
 
    bol=false;
@@ -199,9 +230,9 @@ void Plotter::runPlots()
    double resolutionErrZ[indexh];
    double efficiencyZ[indexh];
    double efficiencyErrZ[indexh];
-   
-   residues(arrHisto,midZ,nEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol);
-
+   cout<<"bbbb"<<endl;
+   residues(arrHisto2,midZ,nEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol);
+   cout<<"cccc"<<endl;
    TGraphErrors *effZreal = new TGraphErrors(indexh,midZ,efficiencyZ,errZmid,efficiencyErrZ); //auto gr = new TGraphAsymmErrors(n,x,y,exl,exh,eyl,eyh);
    effZreal->SetTitle("Efficiency vs Vertex Z");
    effZreal->GetXaxis()->SetTitle("Z_true [#mum] ");
