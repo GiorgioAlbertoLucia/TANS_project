@@ -10,6 +10,26 @@
 
 #include "plotter.hpp" 
 
+/*    PROTECTED   */
+/**
+ * @brief Basic settings for a TGraph
+ * 
+ * @param graph 
+ * @param title 
+ * @param xTitle 
+ * @param yTitle 
+ * @param markerStyle 
+ * @param color 
+ */
+void setGraph(TGraph* graph, const char * title, const char * xTitle = "x axis", 
+                      const char * yTitle = "y axis", const int markerStyle = 0, const int color = 0)
+{
+  graph->SetTitle(title);
+  graph->GetXaxis()->SetTitle(xTitle);
+  graph->GetYaxis()->SetTitle(yTitle);
+  graph->SetMarkerStyle(markerStyle);
+  graph->SetMarkerColor(color);
+}
 
 
 /**
@@ -181,20 +201,12 @@ void Plotter::runPlots()
    residues(arrHisto,Molt,nEvents,resolutionM,resolutionErrM,efficiencyM,efficiencyErrM,bol);
   
    TGraphErrors *effmolt = new TGraphErrors(indexh,Molt,efficiencyM,errMolt,efficiencyErrM); //auto gr = new TGraphAsymmErrors(n,x,y,exl,exh,eyl,eyh);
-   effmolt->SetTitle("Efficiency vs Moltiplicity");
-   effmolt->GetXaxis()->SetTitle("Molticplicity");
-   effmolt->GetYaxis()->SetTitle("Efficiency");
-   effmolt->SetMarkerStyle(8);
-   effmolt->SetMarkerColor(kBlue);
+   setGraph(effmolt, "Efficiency vs Multiplicity", "Multiplicity", "Effciency", 8, kBlue);
    effmolt->Draw();
    effmolt->Write();
 
    TGraphErrors *resmolt = new TGraphErrors(indexh,Molt,resolutionM,errMolt,resolutionErrM);
-   resmolt->SetTitle("Resolution vs Moltiplicity");
-   resmolt->GetXaxis()->SetTitle("Molticplicity");
-   resmolt->GetYaxis()->SetTitle("Resolution [#mum]");
-   resmolt->SetMarkerStyle(8);
-   resmolt->SetMarkerColor(kOrange-3);
+   setGraph(resmolt, "Resolution vs Multiplicity", "Multiplicity", "Resolution [#mum]", 8, kOrange-3);
    resmolt->Draw();
    resmolt->Write();//da scivere a MAsera nel readme, a molteplicità 0 ho messo quelli senza distinzione di molteplicità
 
@@ -233,21 +245,14 @@ void Plotter::runPlots()
    cout<<"bbbb"<<endl;
    residues(arrHisto2,midZ,nEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol);
    cout<<"cccc"<<endl;
+
    TGraphErrors *effZreal = new TGraphErrors(indexh,midZ,efficiencyZ,errZmid,efficiencyErrZ); //auto gr = new TGraphAsymmErrors(n,x,y,exl,exh,eyl,eyh);
-   effZreal->SetTitle("Efficiency vs Vertex Z");
-   effZreal->GetXaxis()->SetTitle("Z_true [#mum] ");
-   effZreal->GetYaxis()->SetTitle("Efficiency");
-   effZreal->SetMarkerStyle(8);
-   effZreal->SetMarkerColor(kGreen);
+   setGraph(effZreal, "Efficiency vs Vertex Z", "Z_true [#mum]", "Efficiency", 8, kGreen);
    effZreal->Draw();
    effZreal->Write();
 
    TGraphErrors *resZreal = new TGraphErrors(indexh,midZ,resolutionZ,errZmid,resolutionErrZ);
-   resZreal->SetTitle("Resolution vs Vertex Z");
-   resZreal->GetXaxis()->SetTitle("Z_true [#mum] ");
-   resZreal->GetYaxis()->SetTitle("Resolution [#mum] ");
-   resZreal->SetMarkerStyle(8);
-   resZreal->SetMarkerColor(kRed);
+   setGraph(resZreal, "Resolution vs Vertex Z", "Z_true [#mum]", "Resolution [#mum]", 8, kRed);
    resZreal->Draw();
    resZreal->Write();
 
