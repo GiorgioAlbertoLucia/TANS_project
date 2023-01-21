@@ -26,12 +26,17 @@
  * @param hit2 
  * @return double 
  */
-double Reconstruction::recZvert(Hit *hit1,Hit *hit2)
+double Reconstruction::recZvert(Hit *hit1,Hit *hit2,int ev)
 {
+    
     double m,n,y = 0.;
     m = hit2->getY()-hit1->getY();
     n = hit2->getZ()-hit1->getZ();
-    return n*(y-hit2->getY())/m + hit2->getZ(); //from 3D line equations
+    double zret=n*(y-hit2->getY())/m + hit2->getZ();
+    if(ev<3) cout<<"hit1 y="<<hit1->getY()<<"hit1 z="<<hit1->getZ()<<"hit2 y="<<hit2->getY()<<"hit2 z="<<hit2->getZ()<<endl;
+    if(ev<3) cout<<"zret"<<zret<<endl;
+    return zret; //from 3D line equations*/
+  
 }
 
 
@@ -67,6 +72,7 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
                     const double ztemp = recZvert(hitptr,hitptr1);
                     histoHit->Fill(ztemp);
                     zTrackVert.push_back(ztemp);
+                    if(ev<3) cout<<"ztemp="<<ztemp<<endl;
                 }
                 
             }
@@ -94,7 +100,7 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
         TH1D * th1 = new TH1D("check", "check", 100, zMax-binW/2, zMax+binW/2);
         for(unsigned long int aa=0; aa<zTrackVert.size(); aa++)          
         {
-            if((zTrackVert[aa]<zMax+binW/2)&&(zTrackVert[aa]>zMax-binW/2)) 
+            if((zTrackVert[aa]<=zMax+binW/2)&&(zTrackVert[aa]>=zMax-binW/2)) 
             {
                 zTrackVert1.push_back(zTrackVert[aa]);
                 if(check)   th1->Fill(zTrackVert[aa]);
@@ -115,8 +121,10 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
         delete th1;
 
         zVertVecRec.push_back(som/zTrackVert1.size());
+        if(ev<3) cout<<"zVertVecRec"<<som/zTrackVert1.size()<<endl;
     }
     else zVertVecRec.push_back(1000.);
+   
 }
 
 
@@ -164,10 +172,11 @@ void Reconstruction::runReconstruction()
     const int nEvents = tree->GetEntries();
     zVertVec.reserve(nEvents);          // fix vector sizes
     zMoltVec.reserve(nEvents);
+    zVertVecRec.reserve(nEvents);
 
     for(int ev=0; ev<nEvents; ev++)
     {
-        if(ev%10000==0)    cout << "Processing event " << ev << "..." << endl;
+        if(ev%30000==0)    cout << "Processing event " << ev << "..." << endl;
         tree->GetEvent(ev);
         zVertVec.push_back(vertex->getZ());
         
@@ -179,12 +188,12 @@ void Reconstruction::runReconstruction()
             const double detectorRadius = root["detectors"][ll]["radius"].As<double>();
             const double detectorLenght = root["detectors"][ll]["lenght"].As<double>();
             
-            for(int i=0;i<numHits;i++)//smearing
+            /*for(int i=0;i<numHits;i++)//smearing
             {
                 Hit *hitptr2 = (Hit*)hitsArray[ll]->At(i);
                 hitptr2->smearing();
                 
-            }
+            }*/
         
             int noi=int(gRandom->Rndm()*10);//add noise
             hitsArray[ll]->Expand(hitsArray[ll]->GetEntries()+noi);
@@ -204,12 +213,25 @@ void Reconstruction::runReconstruction()
         
         for(int i=0; i<nlayer; i++) hitsArray[i]->Clear();
     }
-    hfile.Close();  
-    Plotter plot;
-    plot.addVector(zVertVec,zVertVecRec,zMoltVec);
-    plot.runPlots();
+    hfile.Close(); 
+
+    //Plotter plot;
+    //plot.addVector(zVertVec,zVertVecRec,zMoltVec);
+    //plot.runPlots();
+    TH1D* histores = new TH1D("histores","Residuii",int(sqrt(nEvents)),-3000.,3000.);
+    TH1D* histores1 = new TH1D("histores1","Residuii1",int(sqrt(nEvents)),-3000.,3000.);
+    for(int j=0;j<nEvents;j++)
+    {
+        if(zVertVecRec[j]<999.) histores->Fill((zVertVecRec[j]-zVertVec[j])*10000);
+        if((zVertVecRec[j]*10000-zVertVec[j]*10000)<10000) histores1->Fill(zVertVecRec[j]*10000-zVertVec[j]*10000);
+    }
+    TCanvas* c4= new TCanvas("c4","residues",80,80,1500,1000);
+   c4->cd();
+   histores->Draw();
+   TCanvas* c5= new TCanvas("c5","residues1",80,80,1500,1000);
+   c5->cd();
+   histores1->Draw();
 }
-    
 
     
 
