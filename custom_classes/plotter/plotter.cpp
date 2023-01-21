@@ -7,6 +7,8 @@
 #include <TFile.h>
 #include <TObjArray.h>
 #include<TGraphErrors.h>
+#include<TGraphAsymmErrors.h>
+#include<TCanvas.h>
 
 #include "plotter.hpp" 
 
@@ -80,70 +82,55 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
     if(bol==true) TFile* output1= new TFile("Residues.root", "recreate");
     for(int ab=0;ab<nHist;ab++)
     {
-      int rr=0;
       TH1D* hRes=(TH1D*)arrHisto->At(ab);//fai un check sull'array di hist che passi qui
       if(bol==true)
       {
         if(ab==0)
         {
-          for(int i=0;i<n;i++)
-          {
-            if(i==0||i==999) cout<<"residuo2="<<resVec[i]<<endl;
-            hRes->Fill(resVec[i]); 
-            rr++; 
-          }
+          for(int i=0;i<n;i++) hRes->Fill(resVec[i]); 
         }
+
         else 
         {
-           for(int j=0;j<n;j++)
-           {
-            if(j==999) cout<<"controllo 1"<<endl;
-               if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1)) hRes->Fill(resVec[j]); //provato con u cout dopo e lo stampa quindi questo non dà pronlemi
-                }
+           for(int j=0;j<n;j++) if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1)) hRes->Fill(resVec[j]); //provato con u cout dopo e lo stampa quindi questo non dà pronlemi
         }
-        hRes->Write();
         hRes->Draw("E");
+        hRes->Write();
       }
+
       else
       {
         for(int ii=0;ii<n;ii++)
         { 
           
-          if((zVertReal[ii]>Xarray[ab]-bW)&&(zVertReal[ii]<Xarray[ab]+bW)) 
-          {
-            hRes->Fill(resVec[ii]);
-            rr++;
-          }
-          
+          if((zVertReal[ii]>Xarray[ab]-bW)&&(zVertReal[ii]<Xarray[ab]+bW)) hRes->Fill(resVec[ii]);
         }
-        cout<<"uscito"<<endl; ///aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
       }
-      cout<<"uscito 2"<<endl;
-      if(rr>0)
-      {  
-        cout<<"dev std "<<"iston"<<ab<<"= "<<hRes->GetStdDev()<<endl;
-        resolution[ab]=hRes->GetStdDev();
-        resolutionErr[ab]=hRes->GetStdDevError();
-        mean[ab]=hRes->GetMean();
-        cout<<"uscito 3"<<endl;
-        const int binMax=hRes->GetBin(mean[ab]+3*resolution[ab]); 
-        const int binMin=hRes->GetBin(mean[ab]-3*resolution[ab]);
-        cout<<"uscito 4,bin max="<<binMax <<endl;
-        int entriesIn=0; 
-        if (ab==nHist-1) cout<<"controllo 3"<<endl;
-        for(int t=binMin;t<binMax;t++)
-        {
+    
+      resolution[ab]=hRes->GetStdDev();
+      cout<<"risoluzione "<<ab<<" = "<<resolution[ab]<<endl;
+      resolutionErr[ab]=hRes->GetStdDevError();
+      cout<<"risoluzione err "<<ab<<" = "<<resolutionErr[ab]<<endl;
+      mean[ab]=hRes->GetMean();
+      cout<<"media "<<ab<<" = "<<mean[ab]<<endl;
+      const int binMax=hRes->GetBin(mean[ab]+3*resolution[ab]); 
+      const int binMin=hRes->GetBin(mean[ab]-3*resolution[ab]);
+      cout<<"bin max="<<binMax<<" binmin="<<binMin <<endl;
+      int entriesIn=0; 
+      if (ab==nHist-1) cout<<"controllo 3"<<endl;
+      for(int t=binMin;t<binMax;t++)
+      {
           entriesIn=entriesIn+hRes->GetBinContent(t);
-          if((t==binMax-1)&&(ab==nHist-1)) cout<<"entries in"<<entriesIn<<endl;
-        }
-        efficiency[ab]=entriesIn/hRes->GetEntries();
-        efficiencyErr[ab]=0.;
-        if(ab==nHist-1) cout<<"aaaaa"<<endl;
+           
       }
-      rr=0;
+      if(hRes->GetEntries()>0.) efficiency[ab]=entriesIn/hRes->GetEntries();
+      else efficiency[ab]=0.;
+      cout<<"efficienza="<<efficiency[ab]<<endl;
+      if (hRes->GetEntries()>0.) efficiencyErr[ab]=sqrt(entriesIn/(hRes->GetEntries()*hRes->GetEntries()) + entriesIn*entriesIn/(hRes->GetEntries()*hRes->GetEntries()*hRes->GetEntries()) ); //poisson and propagation
+      else efficiencyErr[ab]=0.;
+      cout<<"efficienza err="<<efficiencyErr[ab]<<endl;
     }
-    //if(bol==true) output1->ls();
-}
+  }
 
 
 
@@ -194,15 +181,27 @@ void Plotter::runPlots()
    bool bol=true;
    residues(arrHisto,Molt,nEvents,resolutionM,resolutionErrM,efficiencyM,efficiencyErrM,bol);
   
-   TGraphErrors *effmolt = new TGraphErrors(indexh,Molt,efficiencyM,errMolt,efficiencyErrM); //auto gr = new TGraphAsymmErrors(n,x,y,exl,exh,eyl,eyh);
+   double errEffMhigh[indexh];
+   for(int i=0;i<indexh;i++)
+   {
+    if(efficiencyM[i]+efficiencyErrM[i]>=1) errEffMhigh[i]=0.;
+    else errEffMhigh[i]=efficiencyErrM[i];
+   } 
+
+   TGraphAsymmErrors *effmolt = new TGraphAsymmErrors(indexh,Molt,efficiencyM,errMolt,errMolt,efficiencyErrM,errEffMhigh);
    setGraph(effmolt, "Efficiency vs Multiplicity", "Multiplicity", "Effciency", 8, kBlue);
+   TCanvas* c1= new TCanvas("c1","Efficiency vs Multiplicity",80,80,1500,1000);
+   c1->cd();
    effmolt->Draw();
    effmolt->Write();
 
    TGraphErrors *resmolt = new TGraphErrors(indexh,Molt,resolutionM,errMolt,resolutionErrM);
    setGraph(resmolt, "Resolution vs Multiplicity", "Multiplicity", "Resolution [#mum]", 8, kOrange-3);
+   TCanvas* c2= new TCanvas("c2","Resolution vs Multiplicity",80,80,1500,1000);
+   c2->cd();
    resmolt->Draw();
    resmolt->Write();//da scivere a MAsera nel readme, a molteplicità 0 ho messo quelli senza distinzione di molteplicità
+
 
    arrHisto->Clear();
 
@@ -213,18 +212,14 @@ void Plotter::runPlots()
    const int nbinsX = histoZreal->GetNbinsX();
    double midZ[nbinsX];
 
-   for(int y=0;y<nEvents;y++)
-   {
-    if (y==0||y==999) cout<<"xvertreal="<<zVertReal[y]<<endl;
-      histoZreal->Fill(zVertReal[y]); 
-   }
+   for(int y=0;y<nEvents;y++) histoZreal->Fill(zVertReal[y]); 
+   
     
    double errZmid[nbinsX];
    TObjArray* arrHisto2 = new TObjArray(); 
    for(int j=0;j<nbinsX;j++)
    {
     midZ[j]=histoZreal->GetXaxis()->GetBinCenter(j+1);
-    if(j==0||j==1) cout<<"sddc "<<histoZreal->GetXaxis()->GetBinCenter(j+1)<<endl;
     errZmid[j]=bW/2;
     TH1D* resHisto2 =  new TH1D(Form("resHisto%d", j),Form("Hist of Zrec-Ztrue,  Ztrue:_%4.1f",midZ[j]), int(sqrt(histoZreal->GetBinContent(j+1))+1),-2000.,2000.);//qui GetBinCintent prende 0
     arrHisto2->AddAtAndExpand(resHisto2,indexh2++);
@@ -237,17 +232,35 @@ void Plotter::runPlots()
    double efficiencyErrZ[indexh2];
    residues(arrHisto2,midZ,nEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol);
   
+   cout<<"controllo fuori da funzione"<<endl;
+   for(int i=0;i<indexh2;i++)
+   {
+    cout<<"eff n "<<i+1<<" = "<<efficiencyZ[i]<<endl;
+   }
 
-   TGraphErrors *effZreal = new TGraphErrors(indexh2,midZ,efficiencyZ,errZmid,efficiencyErrZ); //auto gr = new TGraphAsymmErrors(n,x,y,exl,exh,eyl,eyh);
-   setGraph(effZreal, "Efficiency vs Vertex Z", "Z_true [#mum]", "Efficiency", 8, kGreen);
+   double errEffZhigh[indexh2];
+   for(int i=0;i<indexh2;i++)
+   {
+    if(efficiencyZ[i]+efficiencyErrZ[i]>=1) errEffZhigh[i]=1-efficiencyZ[i];
+    else errEffZhigh[i]=efficiencyErrZ[i];
+   } 
+   TGraphAsymmErrors *effZreal = new TGraphAsymmErrors(indexh2,midZ,efficiencyZ,errZmid,errZmid,efficiencyErrZ,errEffZhigh); 
+   setGraph(effZreal, "Efficiency vs Vertex Z", "Z_true [cm]", "Efficiency", 8, kGreen);
+   TCanvas* c3= new TCanvas("c3","Efficiency vs Vertex Z",80,80,1500,1000);
+   c3->cd();
    effZreal->Draw();
    effZreal->Write();
 
    TGraphErrors *resZreal = new TGraphErrors(indexh2,midZ,resolutionZ,errZmid,resolutionErrZ);
-   setGraph(resZreal, "Resolution vs Vertex Z", "Z_true [#mum]", "Resolution [#mum]", 8, kRed);
+   setGraph(resZreal, "Resolution vs Vertex Z", "Z_true [cm]", "Resolution [#mum]", 8, kRed);
+   TCanvas* c4= new TCanvas("c4","Resolution vs Vertex Z",80,80,1500,1000);
+   c4->cd();
    resZreal->Draw();
    resZreal->Write();
 
+   output->Write();
+   output->Close();
+
    
    
      
@@ -256,4 +269,4 @@ void Plotter::runPlots()
    
    
      
-}
+
