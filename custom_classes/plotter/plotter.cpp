@@ -7,6 +7,8 @@
 #include <TFile.h>
 #include <TObjArray.h>
 #include<TGraphErrors.h>
+#include<TGraphAsymmErrors.h>
+#include<TCanvas.h>
 
 #include "plotter.hpp" 
 
@@ -80,34 +82,46 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
     if(bol==true) TFile* output1= new TFile("Residues.root", "recreate");
     for(int ab=0;ab<nHist;ab++)
     {
-      int rr=0;
-      TH1D* hRes=(TH1D*)arrHisto->At(ab);//fai un check sull'array di hist che passi qui
+      TH1D* hRes=(TH1D*)arrHisto->At(ab);
+      double nEventsArr[nHist];
       if(bol==true)
       {
         if(ab==0)
         {
-          for(int i=0;i<n;i++)
+          for(int i=0;i<n;i++)  
           {
-            if(i==0||i==999) cout<<"residuo2="<<resVec[i]<<endl;
-            hRes->Fill(resVec[i]); 
-            rr++; 
+            if(resVec[i]<10000) hRes->Fill(resVec[i]); 
+            nEventsArr[ab]++;
+
           }
         }
+
         else 
         {
            for(int j=0;j<n;j++)
+<<<<<<< HEAD
            {
             if(j==999) cout<<"controllo 1"<<endl;
                if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1))  hRes->Fill(resVec[j]); 
+=======
+           { 
+              if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1))
+              {
+                nEventsArr[ab]++;
+                if (resVec[j]<10000) hRes->Fill(resVec[j]);
+              } 
+>>>>>>> 6bcb4065d1826433d7087f62b3234a0a16651295
            }
         }
-        hRes->Write();
         hRes->Draw("E");
+        hRes->Write();
       }
+
       else
       {
         for(int ii=0;ii<n;ii++)
         { 
+<<<<<<< HEAD
           if(ii==998)
           {
             cout<<"controllo 2"<<endl;
@@ -120,37 +134,44 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
           
           
           rr++;
-          }
+=======
           
+          if((zVertReal[ii]>Xarray[ab]-bW) && (zVertReal[ii]<Xarray[ab]+bW))
+          {
+            nEventsArr[ab]++;
+            if(resVec[ii]<10000) hRes->Fill(resVec[ii]);
+>>>>>>> 6bcb4065d1826433d7087f62b3234a0a16651295
+          }
         }
+<<<<<<< HEAD
         cout<<"uscito"<<endl;
+=======
+>>>>>>> 6bcb4065d1826433d7087f62b3234a0a16651295
       }
-      cout<<"uscito 2"<<endl;
-      if(rr>0)
-      {  
-        cout<<"dev std "<<"iston"<<ab<<"= "<<hRes->GetStdDev()<<endl;
-        resolution[ab]=hRes->GetStdDev();
-        resolutionErr[ab]=hRes->GetStdDevError();
-        mean[ab]=hRes->GetMean();
-        cout<<"uscito 3"<<endl;
-        const int binMax=hRes->GetBin(mean[ab]+3*resolution[ab]); 
-        const int binMin=hRes->GetBin(mean[ab]-3*resolution[ab]);
-        cout<<"uscito 4,bin max="<<binMax <<endl;
-        int entriesIn=0; 
-        if (ab==nHist-1) cout<<"controllo 3"<<endl;
-        for(int t=binMin;t<binMax;t++)
-        {
-          entriesIn=entriesIn+hRes->GetBinContent(t);
-          if((t==binMax-1)&&(ab==nHist-1)) cout<<"entries in"<<entriesIn<<endl;
-        }
-        efficiency[ab]=entriesIn/hRes->GetEntries();
-        efficiencyErr[ab]=0.;
-        if(ab==nHist-1) cout<<"aaaaa"<<endl;
+    
+      resolution[ab]=hRes->GetStdDev();
+      
+      resolutionErr[ab]=hRes->GetStdDevError();
+     
+      mean[ab]=hRes->GetMean();
+      
+      const int binMax=hRes->GetBin(mean[ab]+3*resolution[ab]); 
+      const int binMin=hRes->GetBin(mean[ab]-3*resolution[ab]);
+      double entriesIn=0.; 
+      for(int t=binMin;t<binMax;t++)
+      {
+          if(t>0) entriesIn=entriesIn+hRes->GetBinContent(t);//controllare sta cosa
+           
       }
-      rr=0;
+     
+      if(nEventsArr[ab]>0.) efficiency[ab]=entriesIn/nEventsArr[ab];
+      else efficiency[ab]=0.;
+      cout<<"efficienza="<<efficiency[ab]<<endl;
+      if (nEventsArr[ab]>0.) efficiencyErr[ab]=sqrt((entriesIn/(nEventsArr[ab]*nEventsArr[ab])) + entriesIn*entriesIn/(nEventsArr[ab]*nEventsArr[ab]*nEventsArr[ab]) ); //poisson and propagation
+      else efficiencyErr[ab]=0.;
+      cout<<"efficienza err="<<efficiencyErr[ab]<<endl;
     }
-    //if(bol==true) output1->ls();
-}
+  }
 
 
 
@@ -175,12 +196,16 @@ void Plotter::runPlots()
    
    arrN[0]=nEvents;
    int indexh=0;
+<<<<<<< HEAD
+=======
+   int indexh2=0;
+>>>>>>> 6bcb4065d1826433d7087f62b3234a0a16651295
 
    for(int gg=1;gg<nMolt;gg++)
     {
         for(int hh=0;hh<nEvents;hh++)
         {
-            if((moltReal[hh]>Molt[gg]-Molt[gg]*0.1)&&(moltReal[hh]<Molt[gg]+Molt[gg]*0.1)) arrN[gg]++;
+            if(resVec[hh]<10000 && (moltReal[hh]>Molt[gg]-Molt[gg]*0.1) && (moltReal[hh]<Molt[gg]+Molt[gg]*0.1)) arrN[gg]++;
         }
     }
 
@@ -188,7 +213,7 @@ void Plotter::runPlots()
    {
         TH1D* resHisto;
         // check
-        resHisto =  new TH1D(Form("resHisto%d", i),Form("Hist of Zrec-Ztrue Molt_%4.1f",Molt[i]), int((arrN[i])),-2000.,2000.);
+        resHisto =  new TH1D(Form("resHisto%d", i),Form("Hist of Zrec-Ztrue Molt_%4.1f",Molt[i]), int(sqrt(arrN[i])),-2000.,2000.);
         //resHisto =  new TH1D(Form("resHisto%d", i),Form("Hist of Zrec-Ztrue Molt_%4.1f",Molt[i]), int(sqrt(arrN[i])),-2000.,2000.);
         arrHisto->AddAtAndExpand(resHisto,indexh++);
    }
@@ -200,15 +225,27 @@ void Plotter::runPlots()
    bool bol=true;
    residues(arrHisto,Molt,nEvents,resolutionM,resolutionErrM,efficiencyM,efficiencyErrM,bol);
   
-   TGraphErrors *effmolt = new TGraphErrors(indexh,Molt,efficiencyM,errMolt,efficiencyErrM); //auto gr = new TGraphAsymmErrors(n,x,y,exl,exh,eyl,eyh);
+   double errEffMhigh[indexh];
+   for(int i=0;i<indexh;i++)
+   {
+    if(efficiencyM[i]+efficiencyErrM[i]>=1) errEffMhigh[i]=0.;
+    else errEffMhigh[i]=efficiencyErrM[i];
+   } 
+
+   TGraphAsymmErrors *effmolt = new TGraphAsymmErrors(indexh,Molt,efficiencyM,errMolt,errMolt,efficiencyErrM,errEffMhigh);
    setGraph(effmolt, "Efficiency vs Multiplicity", "Multiplicity", "Effciency", 8, kBlue);
+   TCanvas* c1= new TCanvas("c1","Efficiency vs Multiplicity",80,80,1500,1000);
+   c1->cd();
    effmolt->Draw();
    effmolt->Write();
 
    TGraphErrors *resmolt = new TGraphErrors(indexh,Molt,resolutionM,errMolt,resolutionErrM);
    setGraph(resmolt, "Resolution vs Multiplicity", "Multiplicity", "Resolution [#mum]", 8, kOrange-3);
+   TCanvas* c2= new TCanvas("c2","Resolution vs Multiplicity",80,80,1500,1000);
+   c2->cd();
    resmolt->Draw();
    resmolt->Write();//da scivere a MAsera nel readme, a molteplicità 0 ho messo quelli senza distinzione di molteplicità
+
 
    arrHisto->Clear();
 
@@ -219,18 +256,14 @@ void Plotter::runPlots()
    const int nbinsX = histoZreal->GetNbinsX();
    double midZ[nbinsX];
 
-   for(int y=0;y<nEvents;y++)
-   {
-    if (y==0||y==999) cout<<"xvertreal="<<zVertReal[y]<<endl;
-      histoZreal->Fill(zVertReal[y]); 
-   }
+   for(int y=0;y<nEvents;y++) histoZreal->Fill(zVertReal[y]); 
+   
     
    double errZmid[nbinsX];
    TObjArray* arrHisto2 = new TObjArray(); 
    for(int j=0;j<nbinsX;j++)
    {
-    midZ[j]=histoZreal->GetXaxis()->GetBinCenter(j+1);
-    if(j==0||j==1) cout<<"sddc "<<histoZreal->GetXaxis()->GetBinCenter(j+1)<<endl;
+    midZ[j]=histoZreal->GetXaxis()->GetBinCenter(j+1);//provare a togliere +1
     errZmid[j]=bW/2;
     cout<<"fffgf"<<histoZreal->GetBinContent(j+1)<<endl;
     TH1D* resHisto2 =  new TH1D(Form("resHisto%d", j),Form("Hist of Zrec-Ztrue,  Ztrue:_%4.1f",midZ[j]), int(sqrt(histoZreal->GetBinContent(j+1))+1),-2000.,2000.);//qui GetBinCintent prende 0
@@ -246,6 +279,7 @@ void Plotter::runPlots()
    residues(arrHisto2,midZ,nEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol);
    cout<<"cccc"<<endl;
 
+<<<<<<< HEAD
    TGraphErrors *effZreal = new TGraphErrors(indexh,midZ,efficiencyZ,errZmid,efficiencyErrZ); //auto gr = new TGraphAsymmErrors(n,x,y,exl,exh,eyl,eyh);
    setGraph(effZreal, "Efficiency vs Vertex Z", "Z_true [#mum]", "Efficiency", 8, kGreen);
    effZreal->Draw();
@@ -253,10 +287,39 @@ void Plotter::runPlots()
 
    TGraphErrors *resZreal = new TGraphErrors(indexh,midZ,resolutionZ,errZmid,resolutionErrZ);
    setGraph(resZreal, "Resolution vs Vertex Z", "Z_true [#mum]", "Resolution [#mum]", 8, kRed);
+=======
+   double errEffZhigh[indexh2];
+   for(int i=0;i<indexh2;i++)
+   {
+    if(efficiencyZ[i]+efficiencyErrZ[i]>=1) errEffZhigh[i]=1-efficiencyZ[i];
+    else errEffZhigh[i]=efficiencyErrZ[i];
+   } 
+   TGraphAsymmErrors *effZreal = new TGraphAsymmErrors(indexh2,midZ,efficiencyZ,errZmid,errZmid,efficiencyErrZ,errEffZhigh); 
+   setGraph(effZreal, "Efficiency vs Vertex Z", "Z_true [cm]", "Efficiency", 8, kGreen);
+   TCanvas* c3= new TCanvas("c3","Efficiency vs Vertex Z",80,80,1500,1000);
+   c3->cd();
+   effZreal->Draw();
+   effZreal->Write();
+
+   TGraphErrors *resZreal = new TGraphErrors(indexh2,midZ,resolutionZ,errZmid,resolutionErrZ);
+   setGraph(resZreal, "Resolution vs Vertex Z", "Z_true [cm]", "Resolution [#mum]", 8, kRed);
+   TCanvas* c4= new TCanvas("c4","Resolution vs Vertex Z",80,80,1500,1000);
+   c4->cd();
+>>>>>>> 6bcb4065d1826433d7087f62b3234a0a16651295
    resZreal->Draw();
    resZreal->Write();
+
+   output->Write();
+   output->Close();
 
    
    
      
 }
+<<<<<<< HEAD
+=======
+   
+   
+     
+
+>>>>>>> 6bcb4065d1826433d7087f62b3234a0a16651295
