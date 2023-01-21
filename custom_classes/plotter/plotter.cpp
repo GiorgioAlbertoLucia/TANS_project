@@ -99,18 +99,12 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
         else 
         {
            for(int j=0;j<n;j++)
-<<<<<<< HEAD
-           {
-            if(j==999) cout<<"controllo 1"<<endl;
-               if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1))  hRes->Fill(resVec[j]); 
-=======
            { 
               if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1))
               {
                 nEventsArr[ab]++;
                 if (resVec[j]<10000) hRes->Fill(resVec[j]);
               } 
->>>>>>> 6bcb4065d1826433d7087f62b3234a0a16651295
            }
         }
         hRes->Draw("E");
@@ -121,32 +115,13 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
       {
         for(int ii=0;ii<n;ii++)
         { 
-<<<<<<< HEAD
-          if(ii==998)
-          {
-            cout<<"controllo 2"<<endl;
-            cout<<zVertReal[ii]<<" a "<<Xarray[ab]-bW<<endl;
-
-          }
-          if((zVertReal[ii]>Xarray[ab]-bW)&&(zVertReal[ii]<Xarray[ab]+bW)) {
-            cout<<"codice scemo, ii="<<ii<<endl;
-          hRes->Fill(resVec[ii]);//si rompe qui
-          
-          
-          rr++;
-=======
           
           if((zVertReal[ii]>Xarray[ab]-bW) && (zVertReal[ii]<Xarray[ab]+bW))
           {
             nEventsArr[ab]++;
             if(resVec[ii]<10000) hRes->Fill(resVec[ii]);
->>>>>>> 6bcb4065d1826433d7087f62b3234a0a16651295
           }
         }
-<<<<<<< HEAD
-        cout<<"uscito"<<endl;
-=======
->>>>>>> 6bcb4065d1826433d7087f62b3234a0a16651295
       }
     
       resolution[ab]=hRes->GetStdDev();
@@ -196,10 +171,7 @@ void Plotter::runPlots()
    
    arrN[0]=nEvents;
    int indexh=0;
-<<<<<<< HEAD
-=======
    int indexh2=0;
->>>>>>> 6bcb4065d1826433d7087f62b3234a0a16651295
 
    for(int gg=1;gg<nMolt;gg++)
     {
@@ -279,15 +251,6 @@ void Plotter::runPlots()
    residues(arrHisto2,midZ,nEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol);
    cout<<"cccc"<<endl;
 
-<<<<<<< HEAD
-   TGraphErrors *effZreal = new TGraphErrors(indexh,midZ,efficiencyZ,errZmid,efficiencyErrZ); //auto gr = new TGraphAsymmErrors(n,x,y,exl,exh,eyl,eyh);
-   setGraph(effZreal, "Efficiency vs Vertex Z", "Z_true [#mum]", "Efficiency", 8, kGreen);
-   effZreal->Draw();
-   effZreal->Write();
-
-   TGraphErrors *resZreal = new TGraphErrors(indexh,midZ,resolutionZ,errZmid,resolutionErrZ);
-   setGraph(resZreal, "Resolution vs Vertex Z", "Z_true [#mum]", "Resolution [#mum]", 8, kRed);
-=======
    double errEffZhigh[indexh2];
    for(int i=0;i<indexh2;i++)
    {
@@ -305,7 +268,6 @@ void Plotter::runPlots()
    setGraph(resZreal, "Resolution vs Vertex Z", "Z_true [cm]", "Resolution [#mum]", 8, kRed);
    TCanvas* c4= new TCanvas("c4","Resolution vs Vertex Z",80,80,1500,1000);
    c4->cd();
->>>>>>> 6bcb4065d1826433d7087f62b3234a0a16651295
    resZreal->Draw();
    resZreal->Write();
 
@@ -316,10 +278,7 @@ void Plotter::runPlots()
    
      
 }
-<<<<<<< HEAD
-=======
    
    
      
 
->>>>>>> 6bcb4065d1826433d7087f62b3234a0a16651295
