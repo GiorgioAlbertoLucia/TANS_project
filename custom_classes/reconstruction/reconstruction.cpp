@@ -46,7 +46,7 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2,int ev)
 * @param hitsArray1 TClonesArray of Hit - all hits on the first layer
 * @param hitsArray2 TClonesArray of Hit - all hits on the second layer
 */
-void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray *hitsArray2, bool check)
+void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray *hitsArray2, int ev)
 {    
     vector<double> zTrackVert;      // stores z coordinates after reconstruction
 
@@ -110,7 +110,7 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
         double som = 0.;
         for(unsigned long int a=0; a<zTrackVert1.size(); a++) som = som+zTrackVert1[a];
 
-        if(check)
+        if(ev<3)
         {
             cout << "zMax = " << zMax << endl;
             TFile file("output/check.root", "recreate");
@@ -203,13 +203,13 @@ void Reconstruction::runReconstruction()
                 hit1->noise(detectorRadius, detectorLenght);               
             }
         }
-        if(ev%1000==0)     
+        if(ev<3)     
         {
             cout << "event " << ev << endl;
-            vertexReconstruction(hitsArray[0], hitsArray[1], true);
+            vertexReconstruction(hitsArray[0], hitsArray[1], ev);
             cout << "zTrue = " << zVertVec[ev] << endl;
         }
-        else                vertexReconstruction(hitsArray[0], hitsArray[1], false);
+        vertexReconstruction(hitsArray[0], hitsArray[1], ev);
         
         for(int i=0; i<nlayer; i++) hitsArray[i]->Clear();
     }
