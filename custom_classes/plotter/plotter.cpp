@@ -98,8 +98,8 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
            for(int j=0;j<n;j++)
            {
             if(j==999) cout<<"controllo 1"<<endl;
-               if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1)) hRes->Fill(resVec[j]); //provato con u cout dopo e lo stampa quindi questo non dà pronlemi
-                }
+               if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1))  hRes->Fill(resVec[j]); 
+           }
         }
         hRes->Write();
         hRes->Draw("E");
@@ -108,15 +108,22 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
       {
         for(int ii=0;ii<n;ii++)
         { 
-          
-          if((zVertReal[ii]>Xarray[ab]-bW)&&(zVertReal[ii]<Xarray[ab]+bW)) 
+          if(ii==998)
           {
-            hRes->Fill(resVec[ii]);
-            rr++;
+            cout<<"controllo 2"<<endl;
+            cout<<zVertReal[ii]<<" a "<<Xarray[ab]-bW<<endl;
+
+          }
+          if((zVertReal[ii]>Xarray[ab]-bW)&&(zVertReal[ii]<Xarray[ab]+bW)) {
+            cout<<"codice scemo, ii="<<ii<<endl;
+          hRes->Fill(resVec[ii]);//si rompe qui
+          
+          
+          rr++;
           }
           
         }
-        cout<<"uscito"<<endl; ///aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        cout<<"uscito"<<endl;
       }
       cout<<"uscito 2"<<endl;
       if(rr>0)
@@ -168,7 +175,6 @@ void Plotter::runPlots()
    
    arrN[0]=nEvents;
    int indexh=0;
-      int indexh2=0;
 
    for(int gg=1;gg<nMolt;gg++)
     {
@@ -226,32 +232,29 @@ void Plotter::runPlots()
     midZ[j]=histoZreal->GetXaxis()->GetBinCenter(j+1);
     if(j==0||j==1) cout<<"sddc "<<histoZreal->GetXaxis()->GetBinCenter(j+1)<<endl;
     errZmid[j]=bW/2;
+    cout<<"fffgf"<<histoZreal->GetBinContent(j+1)<<endl;
     TH1D* resHisto2 =  new TH1D(Form("resHisto%d", j),Form("Hist of Zrec-Ztrue,  Ztrue:_%4.1f",midZ[j]), int(sqrt(histoZreal->GetBinContent(j+1))+1),-2000.,2000.);//qui GetBinCintent prende 0
-    arrHisto2->AddAtAndExpand(resHisto2,indexh2++);
+    arrHisto2->AddAtAndExpand(resHisto2,indexh++);
    }
 
    bol=false;
-   double resolutionZ[indexh2];
-   double resolutionErrZ[indexh2];
-   double efficiencyZ[indexh2];
-   double efficiencyErrZ[indexh2];
+   double resolutionZ[indexh];
+   double resolutionErrZ[indexh];
+   double efficiencyZ[indexh];
+   double efficiencyErrZ[indexh];
+   cout<<"bbbb"<<endl;
    residues(arrHisto2,midZ,nEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol);
-  
+   cout<<"cccc"<<endl;
 
-   TGraphErrors *effZreal = new TGraphErrors(indexh2,midZ,efficiencyZ,errZmid,efficiencyErrZ); //auto gr = new TGraphAsymmErrors(n,x,y,exl,exh,eyl,eyh);
+   TGraphErrors *effZreal = new TGraphErrors(indexh,midZ,efficiencyZ,errZmid,efficiencyErrZ); //auto gr = new TGraphAsymmErrors(n,x,y,exl,exh,eyl,eyh);
    setGraph(effZreal, "Efficiency vs Vertex Z", "Z_true [#mum]", "Efficiency", 8, kGreen);
    effZreal->Draw();
    effZreal->Write();
 
-   TGraphErrors *resZreal = new TGraphErrors(indexh2,midZ,resolutionZ,errZmid,resolutionErrZ);
+   TGraphErrors *resZreal = new TGraphErrors(indexh,midZ,resolutionZ,errZmid,resolutionErrZ);
    setGraph(resZreal, "Resolution vs Vertex Z", "Z_true [#mum]", "Resolution [#mum]", 8, kRed);
    resZreal->Draw();
    resZreal->Write();
-
-   
-   
-     
-}
 
    
    
