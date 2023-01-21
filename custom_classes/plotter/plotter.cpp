@@ -82,17 +82,30 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
     if(bol==true) TFile* output1= new TFile("Residues.root", "recreate");
     for(int ab=0;ab<nHist;ab++)
     {
-      TH1D* hRes=(TH1D*)arrHisto->At(ab);//fai un check sull'array di hist che passi qui
+      TH1D* hRes=(TH1D*)arrHisto->At(ab);
+      double nEventsArr[nHist];
       if(bol==true)
       {
         if(ab==0)
         {
-          for(int i=0;i<n;i++) hRes->Fill(resVec[i]); 
+          for(int i=0;i<n;i++)  
+          {
+            if(resVec[i]<10000) hRes->Fill(resVec[i]); 
+            nEventsArr[ab]++;
+
+          }
         }
 
         else 
         {
-           for(int j=0;j<n;j++) if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1)) hRes->Fill(resVec[j]); //provato con u cout dopo e lo stampa quindi questo non dà pronlemi
+           for(int j=0;j<n;j++)
+           { 
+              if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1))
+              {
+                nEventsArr[ab]++;
+                if (resVec[j]<10000) hRes->Fill(resVec[j]);
+              } 
+           }
         }
         hRes->Draw("E");
         hRes->Write();
@@ -103,30 +116,33 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
         for(int ii=0;ii<n;ii++)
         { 
           
-          if((zVertReal[ii]>Xarray[ab]-bW)&&(zVertReal[ii]<Xarray[ab]+bW)) hRes->Fill(resVec[ii]);
+          if((zVertReal[ii]>Xarray[ab]-bW) && (zVertReal[ii]<Xarray[ab]+bW))
+          {
+            nEventsArr[ab]++;
+            if(resVec[ii]<10000) hRes->Fill(resVec[ii]);
+          }
         }
       }
     
       resolution[ab]=hRes->GetStdDev();
-      cout<<"risoluzione "<<ab<<" = "<<resolution[ab]<<endl;
+      
       resolutionErr[ab]=hRes->GetStdDevError();
-      cout<<"risoluzione err "<<ab<<" = "<<resolutionErr[ab]<<endl;
+     
       mean[ab]=hRes->GetMean();
-      cout<<"media "<<ab<<" = "<<mean[ab]<<endl;
+      
       const int binMax=hRes->GetBin(mean[ab]+3*resolution[ab]); 
       const int binMin=hRes->GetBin(mean[ab]-3*resolution[ab]);
-      cout<<"bin max="<<binMax<<" binmin="<<binMin <<endl;
-      int entriesIn=0; 
-      if (ab==nHist-1) cout<<"controllo 3"<<endl;
+      double entriesIn=0.; 
       for(int t=binMin;t<binMax;t++)
       {
-          entriesIn=entriesIn+hRes->GetBinContent(t);
+          if(t>0) entriesIn=entriesIn+hRes->GetBinContent(t);//controllare sta cosa
            
       }
-      if(hRes->GetEntries()>0.) efficiency[ab]=entriesIn/hRes->GetEntries();
+     
+      if(nEventsArr[ab]>0.) efficiency[ab]=entriesIn/nEventsArr[ab];
       else efficiency[ab]=0.;
       cout<<"efficienza="<<efficiency[ab]<<endl;
-      if (hRes->GetEntries()>0.) efficiencyErr[ab]=sqrt(entriesIn/(hRes->GetEntries()*hRes->GetEntries()) + entriesIn*entriesIn/(hRes->GetEntries()*hRes->GetEntries()*hRes->GetEntries()) ); //poisson and propagation
+      if (nEventsArr[ab]>0.) efficiencyErr[ab]=sqrt((entriesIn/(nEventsArr[ab]*nEventsArr[ab])) + entriesIn*entriesIn/(nEventsArr[ab]*nEventsArr[ab]*nEventsArr[ab]) ); //poisson and propagation
       else efficiencyErr[ab]=0.;
       cout<<"efficienza err="<<efficiencyErr[ab]<<endl;
     }
@@ -155,13 +171,13 @@ void Plotter::runPlots()
    
    arrN[0]=nEvents;
    int indexh=0;
-      int indexh2=0;
+   int indexh2=0;
 
    for(int gg=1;gg<nMolt;gg++)
     {
         for(int hh=0;hh<nEvents;hh++)
         {
-            if((moltReal[hh]>Molt[gg]-Molt[gg]*0.1)&&(moltReal[hh]<Molt[gg]+Molt[gg]*0.1)) arrN[gg]++;
+            if(resVec[hh]<10000 && (moltReal[hh]>Molt[gg]-Molt[gg]*0.1) && (moltReal[hh]<Molt[gg]+Molt[gg]*0.1)) arrN[gg]++;
         }
     }
 
@@ -169,7 +185,7 @@ void Plotter::runPlots()
    {
         TH1D* resHisto;
         // check
-        resHisto =  new TH1D(Form("resHisto%d", i),Form("Hist of Zrec-Ztrue Molt_%4.1f",Molt[i]), int((arrN[i])),-2000.,2000.);
+        resHisto =  new TH1D(Form("resHisto%d", i),Form("Hist of Zrec-Ztrue Molt_%4.1f",Molt[i]), int(sqrt(arrN[i])),-2000.,2000.);
         //resHisto =  new TH1D(Form("resHisto%d", i),Form("Hist of Zrec-Ztrue Molt_%4.1f",Molt[i]), int(sqrt(arrN[i])),-2000.,2000.);
         arrHisto->AddAtAndExpand(resHisto,indexh++);
    }
@@ -219,7 +235,7 @@ void Plotter::runPlots()
    TObjArray* arrHisto2 = new TObjArray(); 
    for(int j=0;j<nbinsX;j++)
    {
-    midZ[j]=histoZreal->GetXaxis()->GetBinCenter(j+1);
+    midZ[j]=histoZreal->GetXaxis()->GetBinCenter(j+1);//provare a togliere +1
     errZmid[j]=bW/2;
     TH1D* resHisto2 =  new TH1D(Form("resHisto%d", j),Form("Hist of Zrec-Ztrue,  Ztrue:_%4.1f",midZ[j]), int(sqrt(histoZreal->GetBinContent(j+1))+1),-2000.,2000.);//qui GetBinCintent prende 0
     arrHisto2->AddAtAndExpand(resHisto2,indexh2++);
@@ -232,11 +248,6 @@ void Plotter::runPlots()
    double efficiencyErrZ[indexh2];
    residues(arrHisto2,midZ,nEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol);
   
-   cout<<"controllo fuori da funzione"<<endl;
-   for(int i=0;i<indexh2;i++)
-   {
-    cout<<"eff n "<<i+1<<" = "<<efficiencyZ[i]<<endl;
-   }
 
    double errEffZhigh[indexh2];
    for(int i=0;i<indexh2;i++)
@@ -265,7 +276,6 @@ void Plotter::runPlots()
    
      
 }
-
    
    
      
