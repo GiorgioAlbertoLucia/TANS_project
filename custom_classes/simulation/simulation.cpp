@@ -8,6 +8,7 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TInterpreter.h>
+#include <TStopwatch.h>
 
 #include "simulation.hpp"
 #include "../event/event.hpp"
@@ -50,7 +51,10 @@ void Simulation::recordVertex(Vertex* vertex, const char * filePath) const
 void Simulation::runSimulation(const int nEvents)
 {
     cout << "--------------------------------------" << endl;
-    cout << "Begin simulation..." << endl;
+    cout << "Begin simulation..." << endl << endl;
+
+    TStopwatch timer;
+    timer.Start();
 
     // initialize parser and event
     Yaml::Node root;
@@ -128,8 +132,15 @@ void Simulation::runSimulation(const int nEvents)
     
     TFile outFile(root["outputPaths"]["treeSimPath"].As<std::string>().c_str(), "recreate");
     tree->Write();
-    outFile.Close();
+
+    cout << endl;
     cout << "TTree stored in " << root["outputPaths"]["treeSimPath"].As<std::string>() << endl;
+    cout << "Simulation ended." << endl;
+    cout << "Real time: " << timer.RealTime() << "s" << endl;
+    cout << "CPU time: " << timer.CpuTime()  << "s" << endl;
+    cout << "File size:" << outFile.GetBytesWritten()*1e-6 << " MB" << endl;
+
+    outFile.Close();
 
     delete event;
     delete tree;
@@ -146,7 +157,7 @@ void Simulation::runSimulation2(const int nEvents)
     TTree * tree = new TTree("OhXmasTTree", "OhXmasTTree");
     tree->Branch("Vertex", &vertex);
 
-    gInterpreter->GenerateDictionary("vector<Hit>", "vector");
+    //gInterpreter->GenerateDictionary("vector<Hit>", "vector");
     vector<Hit> hits;
     tree->Branch("Hits", &hits);
     
