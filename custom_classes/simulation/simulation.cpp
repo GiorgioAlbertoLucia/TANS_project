@@ -85,41 +85,52 @@ void Simulation::runSimulation(const int nEvents)
     tree->Branch("Vertex", &vertex);
 
     vector<TClonesArray> hitArrayVector;
-    hitArrayVector.reserve(nDetectors);
+    hitArrayVector.reserve(nDetectors-1);   // skip beam pipe
 
-    for(int i=0; i<nDetectors; i++)
+    for(int i=0; i<nDetectors-1; i++)         // nDetectors-1: skip beam pipe
     {
         TClonesArray hitArray("Hit");    
         hitArrayVector.push_back(hitArray);
-        tree->Branch(Form("HitsL%d", i), &hitArrayVector[i]);
+        tree->Branch(Form("HitsL%d", i+1), &hitArrayVector[i]);
     }
 
-    // read input distributions
+    cout << "Reading distributions from " << root["inputPaths"]["distributions"].As<std::string>() << endl;
     TFile inFile(root["inputPaths"]["distributions"].As<std::string>().c_str());
 
-    TH1I * hMultiplicity = new TH1I("hMultiplicity", "check", 100, 0, 10);
-    TH1F * hEta = (TH1F*)inFile.Get("heta2");
+    TH1I * hMultiplicity = (TH1I*)inFile.Get("hmul");
+    TH1F * hEta = (TH1F*)inFile.Get("heta");
     
     hMultiplicity->SetDirectory(0);
     hEta->SetDirectory(0);
     inFile.Close();
 
-    // process events (vertex generation and particle transport through all layers of the detector)
+
     for(int ev=0; ev<nEvents; ev++)
     {
-        if(ev%1000==0)  cout << "Processing event " << ev << "..." << endl;
+        if(ev%10000==0)  cout << "Processing event " << ev << "..." << endl;
 
         vertex = event->partGeneration(*hMultiplicity, *hEta);
 
         if(ev==0)        // record hits from first event in a .txt file 
         {
-            cout << "Recording first event hits for a 3D model..." << endl;
+            cout << "\t(Recording first event hits for a 3D model)" << endl;
+            string recordSimPath = root["outputPaths"]["recordSimPath"].As<std::string>();
 
-            this->recordVertex(&vertex, root["outputPaths"]["recordSimPath"].As<std::string>().c_str());
+            this->recordVertex(&vertex, recordSimPath.c_str());
             for(int i=0; i<nDetectors; i++) 
-            {hitArrayVector[i] = event->partTransport2(detectorVector[i], true, root["outputPaths"]["recordSimPath"].As<std::string>());}
+            {
+                if(i==0)    event->partTransport2(detectorVector[i], true, recordSimPath);
+                else        hitArrayVector[i-1] = event->partTransport2(detectorVector[i], true, recordSimPath);
+            }
         }
-        else    for(int i=0; i<nDetectors; i++) hitArrayVector[i] = event->partTransport2(detectorVector[i], false);
+        else
+        {
+            for(int i=0; i<nDetectors; i++) 
+            {
+                if(i==0)    event->partTransport2(detectorVector[i], false);
+                else        hitArrayVector[i-1] = event->partTransport2(detectorVector[i], false);
+            }
+        }   
         
         tree->Fill();
         for(TClonesArray clone: hitArrayVector) clone.Clear();
@@ -128,14 +139,23 @@ void Simulation::runSimulation(const int nEvents)
 
     delete hMultiplicity;
     delete hEta;
+
+    timer.Stop();    
+    cout << "Simulation ended." << endl;
+    cout << "Real time: " << timer.RealTime() << "s" << endl;
+    cout << "CPU time: " << timer.CpuTime()  << "s" << endl;
+
+    timer.Reset();
     
+    cout << endl;
+    cout << "Writing data in a file..." << endl;
+    timer.Start();
     
     TFile outFile(root["outputPaths"]["treeSimPath"].As<std::string>().c_str(), "recreate");
     tree->Write();
 
-    cout << endl;
+    timer.Stop();
     cout << "TTree stored in " << root["outputPaths"]["treeSimPath"].As<std::string>() << endl;
-    cout << "Simulation ended." << endl;
     cout << "Real time: " << timer.RealTime() << "s" << endl;
     cout << "CPU time: " << timer.CpuTime()  << "s" << endl;
     cout << "File size:" << outFile.GetBytesWritten()*1e-6 << " MB" << endl;

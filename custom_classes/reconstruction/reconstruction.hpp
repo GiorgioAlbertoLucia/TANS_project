@@ -1,13 +1,16 @@
 #ifndef RECONSTRUCTION_H
 #define RECONSTRUCTION_H
-#include <TObject.h>
+
 #include <vector>
+
+#include <TObject.h>
 #include "TClonesArray.h"
+
 #include "../pointCC/pointCC.hpp"
 #include "../hit/hit.hpp"
 #include "../vertex/vertex.hpp"
-class Reconstruction
 
+class Reconstruction
 {
     public:
         Reconstruction(){};
@@ -17,7 +20,7 @@ class Reconstruction
         void runReconstruction();
 
         // io proporrei di mettere queste due protected, tanto fuori da reconstruction non vuoi chiamarle
-        void vertexReconstruction(TClonesArray *hitsArray1,TClonesArray *hitsArray2); 
+        void vertexReconstruction(TClonesArray *hitsArray1,TClonesArray *hitsArray2, bool check); 
         double recZvert(Hit *hit1,Hit *hit2);
         
         

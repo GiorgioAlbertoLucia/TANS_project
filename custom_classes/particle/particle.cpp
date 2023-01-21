@@ -8,15 +8,6 @@
 
 /* PROTECTED */
 
-void Particle::updateHitPos(const double X, const double Y, const double Z, const bool updateLayer)
-{
-    int layer;
-    if (updateLayer)    layer = fLastHP.getHitLayer()+1;
-    else                layer = fLastHP.getHitLayer();
-
-    fLastHP = Hit(X, Y, Z, layer);
-}
-
 void Particle::rotate(const double phi, const double theta, double (&vec)[3])
 {
     double rotMat[3][3] =  {{-sin(phi), -cos(phi)*cos(theta),   cos(phi)*sin(theta)},
@@ -46,7 +37,7 @@ Particle::Particle(const double Phi, const double Eta, Vertex& vertex):
 fPhi(Phi), 
 fEta(Eta)
 {
-    fLastHP = Hit(vertex.getX(), vertex.getY(), vertex.getZ(), -1);
+    fLastHP = Hit(vertex.getX(), vertex.getY(), vertex.getZ());
 }
 
 Particle::Particle(const Particle& particle):
@@ -86,10 +77,10 @@ Hit Particle::transport(Detector& detector)
 
     // create a hit
     Hit hit;
-    hit = Hit(x0+c1*t, y0+c2*t, z0+c3*t, fLastHP.getHitLayer()+1);
+    hit = Hit(x0+c1*t, y0+c2*t, z0+c3*t);
 
     // update last hit position for the particle (outside the detector)
-    updateHitPos(x0+c1*t, y0+c2*t, z0+c3*t+detector.width, true);
+    fLastHP = Hit(x0+c1*t, y0+c2*t, z0+c3*t+detector.width);
 
     // check cout
     // cout << "particle " << fLastHP.getX() << ", " << fLastHP.getY() << ", " << fLastHP.getZ() << endl;

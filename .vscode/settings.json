@@ -58,7 +58,8 @@
         "scanvbb.C": "cpp",
         "Analysis.C": "cpp",
         "ReadTree.C": "cpp",
-        "CompileAll.C": "cpp"
+        "CompileAll.C": "cpp",
+        "Simulation.C": "cpp"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
 }

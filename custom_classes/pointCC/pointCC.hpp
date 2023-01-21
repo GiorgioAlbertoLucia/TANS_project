@@ -19,7 +19,7 @@ class PointCC
         inline double getZ() const {return fZ;};
 
         inline double evalRadius(){return (sqrt(fX*fX+fY*fY));};
-        double evalPhi();
+        double getPhi();
         /**
          * @brief Vector addition
          * 

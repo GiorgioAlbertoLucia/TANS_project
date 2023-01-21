@@ -11,7 +11,7 @@ PointCC PointCC::operator+(const PointCC& point)
     return temp;
 }
 
-double PointCC::evalPhi()
+double PointCC::getPhi()
 {
     if(fY>0)    return acos(fX/this->evalRadius());
     return (2. * TMath::Pi() - acos(fX/this->evalRadius()));

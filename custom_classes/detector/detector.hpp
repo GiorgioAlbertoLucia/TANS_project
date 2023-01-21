@@ -2,7 +2,7 @@
 #define DETECTOR_H
 
 /**
- * @brief cylindrical particle detecor
+ * @brief Struct that represents a cylindrical particle detector
  * 
  * @param[in] radius radius of the detector [cm]
  * @param[in] width width of the detector [cm]

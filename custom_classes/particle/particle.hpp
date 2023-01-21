@@ -26,23 +26,6 @@ class Particle
         
         
     protected:
-        /**
-         * @brief Update last hit position with given coordinates
-         * 
-         * @param X 
-         * @param Y 
-         * @param Z 
-         * @param updateLayer choose if it should update the last layer index
-         * @return * void 
-         */
-        void updateHitPos(const double X, const double Y, const double Z, const bool updateLayer=true);
-        /**
-         * @brief Rotate a 3d vector through angles phi and theta
-         * 
-         * @param phi 
-         * @param theta 
-         * @param vec 
-         */
         void rotate(const double phiRot, const double thetaRot, double (&vec)[3]);
 
     private:
