@@ -1,4 +1,4 @@
-#include <Riostream.h>
+#include <Riostream.h>//nuovo plotter
 #include <string>
 #include <vector>
 #include <TH1I.h>
@@ -90,7 +90,7 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
         {
           for(int i=0;i<n;i++)  
           {
-            if(resVec[i]<10000) hRes->Fill(resVec[i]); 
+            if(zVertRec[i]<999.) hRes->Fill(resVec[i]); 
             nEventsArr[ab]++;
 
           }
@@ -103,7 +103,7 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
               if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1))
               {
                 nEventsArr[ab]++;
-                if (resVec[j]<10000) hRes->Fill(resVec[j]);
+                if (zVertRec[j]<999.) hRes->Fill(resVec[j]);
               } 
            }
         }
@@ -119,7 +119,7 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
           if((zVertReal[ii]>Xarray[ab]-bW) && (zVertReal[ii]<Xarray[ab]+bW))
           {
             nEventsArr[ab]++;
-            if(resVec[ii]<10000) hRes->Fill(resVec[ii]);
+            if(zVertRec[ii]<999.) hRes->Fill(resVec[ii]);
           }
         }
       }
@@ -272,11 +272,6 @@ void Plotter::runPlots()
    output->Write();
    output->Close();
 
-   
-   
-     
-}
-   
    
      
 
