@@ -57,7 +57,8 @@
         "ConvertTxtToRoot.C": "cpp",
         "scanvbb.C": "cpp",
         "Analysis.C": "cpp",
-        "ReadTree.C": "cpp"
+        "ReadTree.C": "cpp",
+        "CompileAll.C": "cpp"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
 }
