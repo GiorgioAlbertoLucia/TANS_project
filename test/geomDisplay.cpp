@@ -73,6 +73,7 @@ void geomDisplay()
     TFile outFile(root["outputPaths"]["3DmodelPath"].As<string>().c_str(), "recreate");
     canvas->Write();
     outFile.Close();
+    cout << endl;
     cout << "3D model saved in file " << root["outputPaths"]["3DmodelPath"].As<string>() << "." << endl;
 
 }
