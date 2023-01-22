@@ -123,6 +123,15 @@ TClonesArray Event::partTransport2(Detector& detector, bool record, string recor
             recordArray[i][1] = hit->getY();
             recordArray[i][2] = hit->getZ();
         }
+
+        //if(abs(hit->evalRadius() - detector.radius) > 1)
+        //{
+        //    cout << "Radius = " << hit->evalRadius() << endl;
+        //    cout << "detectorR = " << detector.radius << endl << endl;
+        //    cout << "theta = " << fParticleArray[i].evalTheta() << endl;
+        //    
+        //}
+        
     }
 
     if(record)  this->recordTracks(recordFile.c_str(), recordArray, multiplicity);

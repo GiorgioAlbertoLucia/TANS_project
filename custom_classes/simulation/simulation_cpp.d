@@ -43,6 +43,7 @@ custom_classes/simulation/simulation_cpp.so: /usr/local/Cellar/root/6.26.04_1/in
 custom_classes/simulation/simulation_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TVectorDfwd.h
 custom_classes/simulation/simulation_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TFitResultPtr.h
 custom_classes/simulation/simulation_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TH1F.h
+custom_classes/simulation/simulation_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TH1D.h
 custom_classes/simulation/simulation_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TFile.h
 custom_classes/simulation/simulation_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/Compression.h
 custom_classes/simulation/simulation_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TDirectoryFile.h

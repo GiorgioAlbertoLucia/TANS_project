@@ -17,9 +17,10 @@
 #include "../vertex/vertex.hpp"
 #include "../plotter/plotter.hpp"
 #include "../../yaml/Yaml.hpp"
+#include "../recorder/recorder.hpp"
 #include "reconstruction.hpp"
 
-
+/*  PROTECTED   */
 /**
  * @brief return z from tracking's line
  * 
@@ -36,9 +37,7 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2,int ev)
     //if(ev<3) cout<<"hit1 y="<<hit1->getY()<<"hit1 z="<<hit1->getZ()<<"hit2 y="<<hit2->getY()<<"hit2 z="<<hit2->getZ()<<endl;
     //if(ev<3) cout<<"zret"<<zret<<endl;
     return z0; //from 3D line equations*/
-  
 }
-
 
 /**
 * @brief Loops on hits points in order to find vertex's Z
@@ -51,11 +50,13 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
     vector<double> zTrackVert;      // stores z coordinates after reconstruction
 
     double binW = .5;
-    TH1D* histoHit = new TH1D("histoHit","Vertex's z rec",int(60./binW),-60.*binW,60.*binW);  
-                                                                     
+    TH1D* histoHit = new TH1D("histoHit","Vertex's z rec",int(60./binW),-60.*binW,60.*binW); 
+    TH1D* hist = new TH1D(Form("check%d",ev),Form("check%d",ev),10,0.,10.); 
+                        
     for(int i=0; i<hitsArray1->GetEntries(); i++)                          
     {   
         Hit *hitptr=(Hit*)hitsArray1->At(i);
+        if(ev<3)   hist->Fill(hitptr->evalRadius());
         if ((hitptr->getZ()<13.5)&&(hitptr->getZ()>-13.5))  // checks if the hit was registered inside the detector lenght
         {   
             for(int j=0; j<hitsArray2->GetEntries(); j++)
@@ -76,13 +77,19 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
         }
        
     }
+    if(ev<3)
+    {
+        TCanvas * canvas = new TCanvas(Form("canvas%d", ev), Form("canvas%d", ev));
+        hist->DrawCopy();
+    }
+    delete hist;
 
     int binmax = histoHit->GetMaximumBin();
     double zMax = histoHit->GetXaxis()->GetBinCenter(binmax);
     int nEvntsMax=histoHit->GetBinContent(binmax);
     int nMaxBin=0;
 
-    if(ev<3)   cout << "binmax = "<< binmax << endl << "nEventsMax = " << nEvntsMax << endl;
+    if(ev<100)   cout << "event = "<< ev << "; nEventsMax = " << nEvntsMax << endl;
 
     for(int rr=1;rr<histoHit->GetNbinsX();rr++)
     {
@@ -130,7 +137,7 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
    
 }
 
-
+/*  PUBLIC     */
 /**
  * @brief read data from tree
  * 
@@ -188,7 +195,7 @@ void Reconstruction::runReconstruction()
         
         zMoltVec.push_back(vertex->getMultiplicity());
 
-        for(int ll=0; ll<nlayer; ll++)
+        for(int ll=1; ll<nlayer; ll++)  // skip beam pipe
         { 
             const int numHits = hitsArray[ll]->GetEntries();
             const double detectorRadius = root["detectors"][ll]["radius"].As<double>();
@@ -200,7 +207,7 @@ void Reconstruction::runReconstruction()
                 hitptr2->smearing();
                 
             }
-        
+
             int noi=int(gRandom->Rndm()*10);//add noise
             hitsArray[ll]->Expand(hitsArray[ll]->GetEntries()+noi);
             for(int i=numHits; i<numHits+noi; i++)
@@ -211,10 +218,17 @@ void Reconstruction::runReconstruction()
         }
         
         vertexReconstruction(hitsArray[0], hitsArray[1], ev);
-        if(ev<3)     
-        {
-            cout << "event " << ev << endl;
-            cout << "zTrue = " << zVertVec[ev] << endl;
+        //if(ev<3)     
+        //{
+        //    cout << "event " << ev << endl;
+        //    cout << "zTrue = " << zVertVec[ev] << endl;
+        //}
+
+        if(ev==6)   // save event reconstructed tracks
+        {   
+            Recorder * recorder = Recorder::getInstance("data/recordReconstruction.txt");
+            recorder->recordReconstruction(hitsArray[0], hitsArray[1], zVertVec[ev]);
+            recorder->Destroy();
         }
 
         for(int i=0; i<nlayer; i++) hitsArray[i]->Clear();
@@ -235,15 +249,15 @@ void Reconstruction::runReconstruction()
     //Plotter plot;
     //plot.addVector(zVertVec,zVertVecRec,zMoltVec);
     //plot.runPlots();
-    TH1D* histores = new TH1D("histores","Residuii",int(sqrt(nEvents)),-20000.,20000.);
-    //TH1D* histores = new TH1D("histores","Residuii",int(sqrt(nEvents)),-3000.,3000.);
+    //TH1D* histores = new TH1D("histores","Residuii",int(sqrt(nEvents)),-20000.,20000.);
+    TH1D* histores = new TH1D("histores","Residuii",int(sqrt(nEvents)),-3000.,3000.);
     TH1D* histores1 = new TH1D("histores1","Residuii1",int(sqrt(nEvents)),-3000.,3000.);
     for(int j=0;j<nEvents;j++)
     {
-        if(zVertVecRec[j]<999.) histores->Fill((zVertVec[j])*10000);
-        if((zVertVecRec[j]*10000-zVertVec[j]*10000)<10000) histores1->Fill(zVertVecRec[j]*10000);
-        //if(zVertVecRec[j]<999.) histores->Fill((zVertVecRec[j]-zVertVec[j])*10000);
-        //if((zVertVecRec[j]*10000-zVertVec[j]*10000)<10000) histores1->Fill(zVertVecRec[j]*10000-zVertVec[j]*10000);
+        //if(zVertVecRec[j]<999.) histores->Fill((zVertVec[j])*10000);
+        //if((zVertVecRec[j]*10000-zVertVec[j]*10000)<10000) histores1->Fill(zVertVecRec[j]*10000);
+        if(zVertVecRec[j]<999.) histores->Fill((zVertVecRec[j]-zVertVec[j])*10000);
+        if((zVertVecRec[j]*10000-zVertVec[j]*10000)<10000) histores1->Fill(zVertVecRec[j]*10000-zVertVec[j]*10000);
     }
     TCanvas* c4= new TCanvas("c4","residues",80,80,1500,1000);
     c4->cd();

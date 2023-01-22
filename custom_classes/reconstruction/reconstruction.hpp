@@ -19,7 +19,8 @@ class Reconstruction
     
         void runReconstruction();
 
-        // io proporrei di mettere queste due protected, tanto fuori da reconstruction non vuoi chiamarle
+    protected:
+        void recordTracks(const char* filePath, TClonesArray *hitsArray1, TClonesArray *hitsArray2, PointCC recVert);
         void vertexReconstruction(TClonesArray *hitsArray1,TClonesArray *hitsArray2, int ev); 
         double recZvert(Hit *hit1,Hit *hit2,int ev);
         

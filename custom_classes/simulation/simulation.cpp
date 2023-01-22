@@ -5,6 +5,7 @@
 
 #include <TH1I.h>
 #include <TH1F.h>
+#include <TH1D.h>
 #include <TFile.h>
 #include <TTree.h>
 #include <TInterpreter.h>
