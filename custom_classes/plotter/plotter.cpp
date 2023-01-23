@@ -52,7 +52,7 @@ void setGraph(TGraph* graph, const char * title, const char * xTitle = "x axis",
 
    for(int i=0;i<nEvents;i++)
    {
-    if(i==0) cout<<" z reale plotter="<<zVertReal1[i]<<" plotter z rec="<<zVertRec1[i]<<"plotter residuo="<<zVertRec1[i]*10000-zVertReal1[i]*10000<<"plotter molt="<<moltReal1[i]<<endl;
+    
         zVertReal.push_back(zVertReal1[i]);
         zVertRec.push_back(zVertRec1[i]); 
         moltReal.push_back(moltReal1[i]);
@@ -90,7 +90,7 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
         {
           for(int i=0;i<n;i++)  
           {
-            if(resVec[i]<10000) hRes->Fill(resVec[i]); 
+            if(zVertRec[i]<999.) hRes->Fill(resVec[i]); 
             nEventsArr[ab]++;
 
           }
@@ -103,7 +103,7 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
               if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1))
               {
                 nEventsArr[ab]++;
-                if (resVec[j]<10000) hRes->Fill(resVec[j]);
+                if (zVertRec[j]<999.) hRes->Fill(resVec[j]);
               } 
            }
         }
@@ -119,7 +119,7 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
           if((zVertReal[ii]>Xarray[ab]-bW) && (zVertReal[ii]<Xarray[ab]+bW))
           {
             nEventsArr[ab]++;
-            if(resVec[ii]<10000) hRes->Fill(resVec[ii]);
+            if(zVertRec[ii]<999.) hRes->Fill(resVec[ii]);
           }
         }
       }
@@ -237,19 +237,17 @@ void Plotter::runPlots()
    {
     midZ[j]=histoZreal->GetXaxis()->GetBinCenter(j+1);//provare a togliere +1
     errZmid[j]=bW/2;
-    cout<<"fffgf"<<histoZreal->GetBinContent(j+1)<<endl;
     TH1D* resHisto2 =  new TH1D(Form("resHisto%d", j),Form("Hist of Zrec-Ztrue,  Ztrue:_%4.1f",midZ[j]), int(sqrt(histoZreal->GetBinContent(j+1))+1),-2000.,2000.);//qui GetBinCintent prende 0
-    arrHisto2->AddAtAndExpand(resHisto2,indexh++);
+    arrHisto2->AddAtAndExpand(resHisto2,indexh2++);
    }
 
    bol=false;
-   double resolutionZ[indexh];
-   double resolutionErrZ[indexh];
-   double efficiencyZ[indexh];
-   double efficiencyErrZ[indexh];
-   cout<<"bbbb"<<endl;
+   double resolutionZ[indexh2];
+   double resolutionErrZ[indexh2];
+   double efficiencyZ[indexh2];
+   double efficiencyErrZ[indexh2];
    residues(arrHisto2,midZ,nEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol);
-   cout<<"cccc"<<endl;
+  
 
    double errEffZhigh[indexh2];
    for(int i=0;i<indexh2;i++)
@@ -278,7 +276,3 @@ void Plotter::runPlots()
    
      
 }
-   
-   
-     
-

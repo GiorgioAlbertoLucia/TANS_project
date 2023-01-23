@@ -77,14 +77,68 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
         }
        
     }
-    if(ev<3)
+     int size=int(zTrackVert.size());
+    
+    for(int g=0;g<size;g++)
     {
-        TCanvas * canvas = new TCanvas(Form("canvas%d", ev), Form("canvas%d", ev));
-        hist->DrawCopy();
+        
+        double  temp=0.;
+        for(int w=g+1;w<size;w++)
+        {
+            
+            if(zTrackVert[g]>zTrackVert[w]) 
+            {   
+                
+                temp=zTrackVert[g];
+                zTrackVert[g]=zTrackVert[w];
+                zTrackVert[w]=temp;
+                
+            }
+        }
     }
-    delete hist;
+    
+    if(size>0)
+    {   
+      int k=0;
+      int nummax=0;
+      int indmax=0;
+      int num=0;
+      for(int i=0;i<size;i++)
+      {
+        k=i;
+        num=0;
+        while((zTrackVert[k]<zTrackVert[i]+0.5) && (zTrackVert[k]>=zTrackVert[i]))
+        {
+            num++;
+            k++;
+        }
+        if(num>nummax)
+        { 
+            nummax=num;
+            indmax=i;
+        }
+        if((num>0) && (num==nummax))
+        {
+            indmax=-1;
+            break;
+        }
+      }
+      if(indmax>=0)
+      {
+        double som=0.;
+        for(int g=indmax;g<indmax+nummax;g++)
+        {
+            som=som+zTrackVert[g];
+        }
+        zVertVecRec.push_back(som/nummax);
+      }
+      else zVertVecRec.push_back(1000.);
+    }
+    else zVertVecRec.push_back(1000.);
 
-    int binmax = histoHit->GetMaximumBin();
+   
+
+    /*int binmax = histoHit->GetMaximumBin();
     double zMax = histoHit->GetXaxis()->GetBinCenter(binmax);
     int nEvntsMax=histoHit->GetBinContent(binmax);
     int nMaxBin=0;
@@ -96,13 +150,7 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
        if(histoHit->GetBinContent(rr)==nEvntsMax)  nMaxBin++;
     }
 
-    if(ev<3)
-    {
-        TFile file(Form("output/hist%d.root", ev), "recreate");
-        histoHit->Write();
-        file.Close();
-    }
-    delete histoHit;
+    
 
     vector<double> zTrackVert1;
 
@@ -132,8 +180,8 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
         delete th1;
 
         zVertVecRec.push_back(som/zTrackVert1.size());
-    }
-    else zVertVecRec.push_back(1000.);
+    }*/
+    
    
 }
 
@@ -218,18 +266,14 @@ void Reconstruction::runReconstruction()
         }
         
         vertexReconstruction(hitsArray[0], hitsArray[1], ev);
-        //if(ev<3)     
-        //{
-        //    cout << "event " << ev << endl;
-        //    cout << "zTrue = " << zVertVec[ev] << endl;
-        //}
+      
 
-        if(ev==6)   // save event reconstructed tracks
+        /*if(ev==6)   // save event reconstructed tracks
         {   
             Recorder * recorder = Recorder::getInstance(root["recording"]["reconstruction"]["path"].As<std::string>().c_str());
             recorder->recordReconstruction(hitsArray[0], hitsArray[1], zVertVec[ev]);
             recorder->destroy();
-        }
+        }*/
 
         for(int i=0; i<nlayer; i++) hitsArray[i]->Clear();
     }
@@ -273,6 +317,7 @@ void Reconstruction::runReconstruction()
     cout << "CPU time: " << timer.CpuTime()  << "s" << endl;
 }
 
+    
     
 
 
