@@ -7,34 +7,9 @@
 #include <TMath.h>
 
 #include "event.hpp"
+#include "../recorder/recorder.hpp"
 
 ClassImp(Event)
-
-/*  PROTECTED  */
-
-/**
- * @brief Records hits of all particles through a detector in a .txt file. It can be used to create a 
- * 3D model with tracks
- * 
- * @param filePath 
- * @param recordArray 
- * @param multiplicity 
- */
-void Event::recordTracks(const char * filePath, double recordArray[][3], const int multiplicity) const
-{
-    ofstream file(filePath, std::ios::app);
-    
-    for(int i=0; i<multiplicity; i++)
-    {
-        if(i==0)    file << "    " << "-   Particles:" << endl;;
-        file << "            -   " << "x: " << recordArray[i][0] << " #cm" << endl;
-        file << "                " << "y: " << recordArray[i][1] << " #cm" << endl;
-        file << "                " << "z: " << recordArray[i][2] << " #cm" << endl;
-        file << endl;
-    }
-    
-    file.close();
-}
 
 /*   PRIVATE   */
 
@@ -76,25 +51,6 @@ Vertex Event::partGeneration(TH1I& hMultiplicity, TH1F& hEta)
 }
 
 /**
- * @brief executes particle transport through a given detector (if multiple scattering is assumed for that detector,
- * it will be performed). A vector containing positions of hits on the detector is returned.
- * 
- * @param detector 
- * @return vector<Hit> 
- */
-vector<Hit> Event::partTransport(Detector& detector)
-{
-    vector<Hit> IPvec;
-    IPvec.reserve(fPrimaryVertex.getMultiplicity());
-
-    for (Particle& part: fParticleArray)    IPvec.push_back(part.transport(detector));
-
-    if (detector.multipleScattering)    for (Particle& part: fParticleArray)     part.multipleScattering();
-
-    return IPvec;
-}
-
-/**
  * @brief Executes particle transport through a given detector. Writes position of all hits if record is true
  * (this can be used to create 3D models with tracks). Returns a TClonesArray of hits.
  * @param detector 
@@ -102,7 +58,7 @@ vector<Hit> Event::partTransport(Detector& detector)
  * @param recordFile 
  * @return TClonesArray 
  */
-TClonesArray Event::partTransport2(Detector& detector, bool record, string recordFile)
+TClonesArray Event::partTransport(Detector& detector, bool rec, string recordFile)
 {
     const int multiplicity = fPrimaryVertex.getMultiplicity();
 
@@ -117,29 +73,26 @@ TClonesArray Event::partTransport2(Detector& detector, bool record, string recor
         Hit * hit = (Hit*)ptrhits->At(i);
         * hit = fParticleArray[i].transport(detector);
 
-        if(record)
+        if(rec)
         {
             recordArray[i][0] = hit->getX();
             recordArray[i][1] = hit->getY();
             recordArray[i][2] = hit->getZ();
         }
-
-        //if(abs(hit->evalRadius() - detector.radius) > 1)
-        //{
-        //    cout << "Radius = " << hit->evalRadius() << endl;
-        //    cout << "detectorR = " << detector.radius << endl << endl;
-        //    cout << "theta = " << fParticleArray[i].evalTheta() << endl;
-        //    
-        //}
-        
     }
 
-    if(record)  this->recordTracks(recordFile.c_str(), recordArray, multiplicity);
+    if(rec)  
+    {
+        Recorder * recorder = Recorder::getInstance(recordFile.c_str());
+        recorder->recordTracks(recordArray, multiplicity);
+        recorder->destroy();
+    }
 
     if (detector.multipleScattering)    for (Particle& part: fParticleArray)     part.multipleScattering();
 
     return hits;
 }
+
 
 /**
  * @brief Clears Particle Array and sets Primary Vertex to (0., 0., 0., 0)

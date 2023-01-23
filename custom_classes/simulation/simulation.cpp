@@ -16,32 +16,12 @@
 #include "../detector/detector.hpp"
 #include "../hit/hit.hpp"
 #include "../../yaml/Yaml.hpp"
+#include "../recorder/recorder.hpp"
 
 /*      PROTECTED   */
 
-/**
- * @brief Creates a .txt file containing information on a vertex
- * 
- * @param vertex 
- * @param filePath 
- */
-void Simulation::recordVertex(Vertex* vertex, const char * filePath) const
-{
-    ofstream file(filePath);
 
-    file << "Vertex:" << endl;
-    file << "    " << "x: " << vertex->getX() << " #cm" << endl;
-    file << "    " << "y: " << vertex->getY() << " #cm" << endl;
-    file << "    " << "z: " << vertex->getZ() << " #cm" << endl;
-    file << "    " << "multiplicity: " << vertex->getMultiplicity() << endl;
-
-    file << endl;
-    file << "DetectorLayers:" << " # first layer is the beam pipe" << endl;
-
-    file.close();
-}
-
-/*       PRIVATE    */
+/*       PUBLIC    */
 
 /**
  * @brief Runs a simulation for n events. For each event, a vertex is generated and particles are transported through a detector.
@@ -80,8 +60,8 @@ void Simulation::runSimulation(const int nEvents)
     }
 
     // initialize ttree
-    TTree * tree = new TTree(root["outputNames"]["treeSimName"].As<std::string>().c_str(), 
-                             root["outputNames"]["treeSimName"].As<std::string>().c_str());
+    TTree * tree = new TTree(root["tree"]["simulation"]["name"].As<std::string>().c_str(), 
+                             root["tree"]["simulation"]["name"].As<std::string>().c_str());
     
     tree->Branch("Vertex", &vertex);
 
@@ -95,41 +75,45 @@ void Simulation::runSimulation(const int nEvents)
         tree->Branch(Form("HitsL%d", i+1), &hitArrayVector[i]);
     }
 
-    cout << "Reading distributions from " << root["inputPaths"]["distributions"].As<std::string>() << endl;
-    TFile inFile(root["inputPaths"]["distributions"].As<std::string>().c_str());
+    // get distributions from files
+    cout << "Reading distributions from " << root["input"]["distributions"]["path"].As<std::string>() << endl;
+    TFile inFile(root["input"]["distributions"]["path"].As<std::string>().c_str());
 
-    TH1I * hMultiplicity = (TH1I*)inFile.Get("hmul");
-    TH1F * hEta = (TH1F*)inFile.Get("heta");
+    TH1I * hMultiplicity = (TH1I*)inFile.Get(root["input"]["distributions"]["multName"].As<std::string>().c_str());
+    TH1F * hEta = (TH1F*)inFile.Get(root["input"]["distributions"]["etaName"].As<std::string>().c_str());
     
     hMultiplicity->SetDirectory(0);
     hEta->SetDirectory(0);
     inFile.Close();
 
-
+    // generate events
     for(int ev=0; ev<nEvents; ev++)
     {
         if(ev%10000==0)  cout << "Processing event " << ev << "..." << endl;
 
         vertex = event->partGeneration(*hMultiplicity, *hEta);
 
-        if(ev==0)        // record hits from first event in a .txt file 
+        if(ev==6)        // record hits from single event in a .txt file 
         {
-            cout << "\t(Recording first event hits for a 3D model)" << endl;
-            string recordSimPath = root["outputPaths"]["recordSimPath"].As<std::string>();
+            string recordSimPath = root["recording"]["simulation"]["path"].As<std::string>();
+            cout << "\t(Recording first event hits for a 3D model in " << recordSimPath << ")" << endl;
 
-            this->recordVertex(&vertex, recordSimPath.c_str());
+            Recorder * recorder = Recorder::getInstance(recordSimPath.c_str());
+            recorder->beginRecordSimulation(vertex);
+            recorder->destroy();
+
             for(int i=0; i<nDetectors; i++) 
             {
-                if(i==0)    event->partTransport2(detectorVector[i], true, recordSimPath);
-                else        hitArrayVector[i-1] = event->partTransport2(detectorVector[i], true, recordSimPath);
+                if(i==0)    event->partTransport(detectorVector[i], true, recordSimPath);
+                else        hitArrayVector[i-1] = event->partTransport(detectorVector[i], true, recordSimPath);
             }
         }
         else
         {
             for(int i=0; i<nDetectors; i++) 
             {
-                if(i==0)    event->partTransport2(detectorVector[i], false);
-                else        hitArrayVector[i-1] = event->partTransport2(detectorVector[i], false);
+                if(i==0)    event->partTransport(detectorVector[i], false);
+                else        hitArrayVector[i-1] = event->partTransport(detectorVector[i], false);
             }
         }   
         
@@ -152,11 +136,11 @@ void Simulation::runSimulation(const int nEvents)
     cout << "Writing data in a file..." << endl;
     timer.Start();
     
-    TFile outFile(root["outputPaths"]["treeSimPath"].As<std::string>().c_str(), "recreate");
+    TFile outFile(root["tree"]["simulation"]["path"].As<std::string>().c_str(), "recreate");
     tree->Write();
 
     timer.Stop();
-    cout << "TTree stored in " << root["outputPaths"]["treeSimPath"].As<std::string>() << endl;
+    cout << "TTree stored in " << root["tree"]["simulation"]["path"].As<std::string>() << endl;
     cout << "Real time: " << timer.RealTime() << "s" << endl;
     cout << "CPU time: " << timer.CpuTime()  << "s" << endl;
     cout << "File size:" << outFile.GetBytesWritten()*1e-6 << " MB" << endl;
@@ -167,45 +151,3 @@ void Simulation::runSimulation(const int nEvents)
     delete tree;
 }
 
-void Simulation::runSimulation2(const int nEvents)
-{
-    
-    Event * event = new Event();
-    Vertex vertex;
-    Detector detector1 = {3., 0.08, 27., false};
-
-    //TTree * tree = new TTree(fTreeName.c_str(), "Simulation");
-    TTree * tree = new TTree("OhXmasTTree", "OhXmasTTree");
-    tree->Branch("Vertex", &vertex);
-
-    //gInterpreter->GenerateDictionary("vector<Hit>", "vector");
-    vector<Hit> hits;
-    tree->Branch("Hits", &hits);
-    
-    // input distributions
-    TFile inFile("data/kinem.root");
-    TH1I * hMultiplicity = new TH1I("hMultiplicity", "check", 100, 0, 10);
-    TH1F * hEta = (TH1F*)inFile.Get("heta2");
-    hMultiplicity->SetDirectory(0);
-    hEta->SetDirectory(0);
-    inFile.Close();
-
-    for (int i=0; i<nEvents; i++)
-    {
-        vertex = event->partGeneration(*hMultiplicity, *hEta);
-        hits.reserve(event->getVertex().getMultiplicity());
-        for (int j=0; j<event->getVertex().getMultiplicity(); j++)  hits.push_back(event->partTransport(detector1)[j]);
-
-        tree->Fill();
-        hits.clear();
-        event->clear();
-    }
-
-    TFile file("data/simulation.root", "recreate");
-    tree->Write();
-    file.Close();
-
-    //delete event;
-    //delete tree;
-    
-}

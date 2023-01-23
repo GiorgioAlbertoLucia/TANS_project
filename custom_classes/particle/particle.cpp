@@ -80,25 +80,10 @@ Hit Particle::transport(Detector& detector)
     if(theta==0)    hit = Hit(0., 0., 14.);
     else            hit = Hit(x0+c1*t, y0+c2*t, z0+c3*t);
 
-    // update last hit position for the particle (outside the detector)
+    // update last hit position for the particle 
     if(theta==0)    fLastHP = Hit(0., 0., 14.);
-    else            fLastHP = Hit(x0+c1*t, y0+c2*t, z0+c3*t+detector.width);
-
-    //if(abs(((x0+c1*t)*(x0+c1*t)+(y0+c2*t)*(y0+c2*t))-(R*R))>0.001)
-    //{
-    //    cout << "check 1" << endl;
-    //    cout << "R = " << R << endl;
-    //    cout << "computed R = " << sqrt((x0+c1*t)*(x0+c1*t)+(y0+c2*t)*(y0+c2*t)) << endl;
-    //    cout << "detector radius = " << detector.radius << endl << endl;
-    //}
-    //if(((x0+c1*t)*(x0+c1*t)+(y0+c2*t)*(y0+c2*t))==(R*R))    cout << "giusto" << endl;
-    //if(R != fLastHP.evalRadius())
-    //{
-    //    cout << "check 2" << endl;
-    //    cout << "R = " << R << endl;
-    //    cout << "computed R = " << fLastHP.evalRadius() << endl;
-    //    cout << "detector radius = " << detector.radius << endl << endl;
-    //}
+    else            fLastHP = Hit(x0+c1*t, y0+c2*t, z0+c3*t);
+    
 
     // check cout
     // cout << "particle " << fLastHP.getX() << ", " << fLastHP.getY() << ", " << fLastHP.getZ() << endl;

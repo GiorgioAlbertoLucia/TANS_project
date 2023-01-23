@@ -154,9 +154,9 @@ void Reconstruction::runReconstruction()
     Yaml::Node root;
     Yaml::Parse(root, fConfigFile.c_str());
 
-    // initialize TTree 
-    TFile hfile(root["outputPaths"]["treeSimPath"].As<std::string>().c_str());
-    TTree *tree = (TTree*)hfile.Get(root["outputNames"]["treeSimName"].As<std::string>().c_str());
+    // initialize TTree (read simulation data)
+    TFile hfile(root["tree"]["simulation"]["path"].As<std::string>().c_str());
+    TTree *tree = (TTree*)hfile.Get(root["tree"]["simulation"]["name"].As<std::string>().c_str());
     //tree->SetDirectory(0);  // giogio
 
 
@@ -226,9 +226,9 @@ void Reconstruction::runReconstruction()
 
         if(ev==6)   // save event reconstructed tracks
         {   
-            Recorder * recorder = Recorder::getInstance("data/recordReconstruction.txt");
+            Recorder * recorder = Recorder::getInstance(root["recording"]["reconstruction"]["path"].As<std::string>().c_str());
             recorder->recordReconstruction(hitsArray[0], hitsArray[1], zVertVec[ev]);
-            recorder->Destroy();
+            recorder->destroy();
         }
 
         for(int i=0; i<nlayer; i++) hitsArray[i]->Clear();

@@ -11,9 +11,9 @@ class Recorder
         Recorder(const Recorder& recorder) = delete;
 
         static Recorder* getInstance(const char * filePath);
-        static void Destroy();
+        static void destroy();
         
-        void recordSimulation() const;
+        void beginRecordSimulation(Vertex& vertex) const;
         void recordReconstruction(TClonesArray * hitsArray1, TClonesArray * hitsArray2, const double zRec) const;
 
         void recordTracks(vector<Hit> recordArray) const;
