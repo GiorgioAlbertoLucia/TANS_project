@@ -42,7 +42,7 @@ Recorder* Recorder::getInstance(const char * fFilePath)
  * @brief Destroy singleton object
  * 
  */
-void Recorder::Destroy()
+void Recorder::destroy()
 {
     if(fInstancePtr)    delete fInstancePtr;
     fInstancePtr = NULL;
@@ -107,9 +107,23 @@ void Recorder::recordVertex(Vertex& vertex) const
     file.close();
 }
 
-void Recorder::recordSimulation() const
+/**
+ * @brief Creates a .txt file and records vertex position
+ * 
+ * @param vertex 
+ */
+void Recorder::beginRecordSimulation(Vertex& vertex) const
 {
+    // create output file
+    ofstream createFile(fFilePath.c_str());
+    createFile << "# Simulated hit points and vertex for a single event " << endl;
+    createFile.close();
 
+    recordVertex(vertex);
+
+    ofstream file(fFilePath.c_str(), std::ios::app);
+    file << endl << "DetectorLayers:" << " # beam pipe is included" << endl;
+    file.close();
 }
 
 /**
@@ -153,6 +167,7 @@ void Recorder::recordReconstruction(TClonesArray * hitsArray1, TClonesArray * hi
 
     // create output file
     ofstream createFile(fFilePath.c_str());
+    createFile << "# Reconstructed hit points and vertex for a single event " << endl;
     createFile.close();
 
     // x and y coordinates of the vertex are generated from a gaussian distribution
@@ -160,7 +175,7 @@ void Recorder::recordReconstruction(TClonesArray * hitsArray1, TClonesArray * hi
     recordVertex(vertex);
 
     ofstream file(fFilePath.c_str(), std::ios::app);
-    file << endl << "DetectorLayers:" << " # beam pipe is excluded" << endl;
+    file << endl << endl << "DetectorLayers:" << " # beam pipe is excluded" << endl;
     file.close();
 
     recordTracks(HitL1);

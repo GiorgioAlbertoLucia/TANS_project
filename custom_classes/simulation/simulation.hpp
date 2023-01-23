@@ -20,21 +20,6 @@ class Simulation
         inline std::string getConfigFile() const {return fConfigFile;};
 
         void runSimulation(const int nEvents);
-        /**
-         * @brief version with vectors
-         * 
-         * @param nEvents 
-         */
-        void runSimulation2(const int nEvents);
-
-    protected:
-        /**
-         * @brief Function to call during simulation of a event. Will create a .txt file storing positions of particles
-         * during transport. Intended to be used to display the event with TGeoManager
-         * 
-         */
-        //void recordTracks(Vertex* vertex,vector<TClonesArray>* hitsArrayVector) const;
-        void recordVertex(Vertex* vertex, const char * filePath) const;
 
     private:
         std::string fTreeName;          // description for ROOT if this becomes a TObject - probably not necessary

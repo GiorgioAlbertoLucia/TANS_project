@@ -3,6 +3,6 @@
 
 void testPlotter()
 {
-    Reconstruction * rec = new Reconstruction("simulation", "config/simulationCfg.txt");
+    Reconstruction * rec = new Reconstruction("config/configFile.txt");
     rec->runReconstruction();
 }

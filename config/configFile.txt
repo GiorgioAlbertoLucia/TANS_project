@@ -1,0 +1,54 @@
+# This is a configuation file used for simulation, reconstruction, analysis and 3D represetantion
+# of a collider experiment. This file can be properly read using Yaml class 
+# (more info at https://github.com/jimmiebergmann/mini-yaml)
+
+
+# Detector informations
+n_detectors:  3   # beam pipe included
+
+detectors:
+    -   radius:                 3       #cm
+        width:                  0.08    #cm
+        lenght:                 27      #cm
+        multiple_scattering:    true
+
+    -   radius:                 4       #cm
+        width:                  0.02    #cm
+        lenght:                 27      #cm
+        multiple_scattering:    false
+
+    -   radius:                 7       #cm
+        width:                  0.02    #cm
+        lenght:                 27      #cm
+        multiple_scattering:    false
+
+
+# TTree informations (written in simulation, read in reconstruction and analysis)
+tree:
+    simulation:
+        path:   data/simulationTree.root
+        name:   simulation
+
+
+# Event recordings (used to build tracks in a 3D model)
+recording:
+    simulation:
+            path:       data/recordSimulation.txt   
+    reconstruction:
+            path:       data/recordReconstruction.txt
+
+
+# input files informations
+input:
+    distributions:  
+        path:       data/kinem.root     # file storing custom distributions for eta, multiplicity
+        etaName:    heta                # name of the eta distribution (TH1F)
+        multName:   hmul                # name of the multiplicity distribution (TH1I)
+
+
+# output files informations
+output:
+    3Dmodel:
+        path:   output/3Dmodel.root     # file the 3Dmodel will be saved into
+    graphs:
+        path:   output/plots.root
