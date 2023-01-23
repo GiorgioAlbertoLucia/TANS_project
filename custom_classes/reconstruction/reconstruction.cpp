@@ -1,5 +1,6 @@
-#include <TRandom3.h>
 #include <vector>
+
+#include <TRandom3.h>
 #include "TClonesArray.h"
 #include <TFile.h>
 #include <TTree.h>
@@ -9,12 +10,14 @@
 #include <TAxis.h>
 #include <TCanvas.h>
 #include <TF1.h>
+#include <TStopwatch.h>
 
 #include "../hit/hit.hpp"
 #include "../pointCC/pointCC.hpp"
 #include "../vertex/vertex.hpp"
 #include "../plotter/plotter.hpp"
 #include "../../yaml/Yaml.hpp"
+//#include "../recorder/recorder.hpp"
 #include "reconstruction.hpp"
 
 
@@ -43,7 +46,7 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2,int ev)
  * @param hitsArray1 
  * @param hitsArray2 
  */
-void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray *hitsArray2){
+void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray *hitsArray2, int ev){
     double phi = 0.;
     double deltaPhi = 0.01; 
     double ztemp = 0;
@@ -63,7 +66,7 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
                 Hit *hitptr1=(Hit*)hitsArray2->At(j);
                 if((hitptr1->getPhi()<phi+deltaPhi) && (hitptr1->getPhi()>phi-deltaPhi)  && (hitptr1->getZ()<13.5) && (hitptr1->getZ()>-13.5))
                 {
-                    ztemp = recZvert( hitptr,hitptr1);
+                    ztemp = recZvert( hitptr,hitptr1, ev);
                     zTrackVert.push_back(ztemp);
                 }
                 
@@ -104,6 +107,7 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
         k=i;
         num=0;
         while((zTrackVert[k]<zTrackVert[i]+0.5) && (zTrackVert[k]>=zTrackVert[i]))
+        // siccome il vettore è ordinato, il secondo check mi sembra superfluo (ma non rompe le scatole)
         {
             num++;
             k++;
@@ -133,6 +137,104 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
     else zVertVecRec.push_back(1000.);
 }
 
+/**
+* @brief Loops on hits points in order to find vertex's Z
+* 
+* @param hitsArray1 TClonesArray of Hit - all hits on the first layer
+* @param hitsArray2 TClonesArray of Hit - all hits on the second layer
+*/
+void Reconstruction::vertexReconstruction2(TClonesArray *hitsArray1, TClonesArray *hitsArray2, int ev)
+{    
+    vector<double> zTrackVert;      // stores z coordinates after reconstruction
+
+    double binW = .5;
+    TH1D* histoHit = new TH1D("histoHit","Vertex's z rec",int(60./binW),-60.*binW,60.*binW); 
+    TH1D* hist = new TH1D(Form("check%d",ev),Form("check%d",ev),10,0.,10.); 
+                        
+    for(int i=0; i<hitsArray1->GetEntries(); i++)                          
+    {   
+        Hit *hitptr=(Hit*)hitsArray1->At(i);
+        if(ev<3)   hist->Fill(hitptr->evalRadius());
+        if ((hitptr->getZ()<13.5)&&(hitptr->getZ()>-13.5))  // checks if the hit was registered inside the detector lenght
+        {   
+            for(int j=0; j<hitsArray2->GetEntries(); j++)
+            {
+                const double phi = hitptr->getPhi();
+                const double deltaPhi = 0.01;
+
+                Hit *hitptr1=(Hit*)hitsArray2->At(j);
+
+                if((hitptr1->getPhi()<phi+deltaPhi) && (hitptr1->getPhi()>phi-deltaPhi) && (hitptr1->getZ()>-13.5) && (hitptr1->getZ()<13.5))
+                {
+                    const double ztemp = recZvert(hitptr, hitptr1, ev);
+                    histoHit->Fill(ztemp);
+                    zTrackVert.push_back(ztemp);
+                }
+                
+            }
+        }
+       
+    }
+    if(ev<3)
+    {
+        TCanvas * canvas = new TCanvas(Form("canvas%d", ev), Form("canvas%d", ev));
+        hist->DrawCopy();
+    }
+    delete hist;
+
+    int binmax = histoHit->GetMaximumBin();
+    double zMax = histoHit->GetXaxis()->GetBinCenter(binmax);
+    int nEvntsMax=histoHit->GetBinContent(binmax);
+    int nMaxBin=0;
+
+    if(ev<100)   cout << "event = "<< ev << "; nEventsMax = " << nEvntsMax << endl;
+
+    for(int rr=1;rr<histoHit->GetNbinsX();rr++)
+    {
+       if(histoHit->GetBinContent(rr)==nEvntsMax)  nMaxBin++;
+    }
+
+    if(ev<3)
+    {
+        TFile file(Form("output/hist%d.root", ev), "recreate");
+        histoHit->Write();
+        file.Close();
+    }
+    delete histoHit;
+
+    vector<double> zTrackVert1;
+
+    if(nMaxBin==1)
+    {
+        TH1D * th1 = new TH1D("check", "check", 100, zMax-binW/2, zMax+binW/2);
+        for(unsigned long int aa=0; aa<zTrackVert.size(); aa++)          
+        {
+            if((zTrackVert[aa]<=zMax+binW/2)&&(zTrackVert[aa]>=zMax-binW/2)) 
+            {
+                zTrackVert1.push_back(zTrackVert[aa]);
+                if(ev<3)   th1->Fill(zTrackVert[aa]);
+            }
+        }
+        
+        double som = 0.;
+        for(unsigned long int a=0; a<zTrackVert1.size(); a++) som = som+zTrackVert1[a];
+
+        if(ev<3)
+        {
+            cout << "zMax = " << zMax << endl;
+            TFile file(Form("output/check%d.root", ev), "recreate");
+            th1->Write();
+            file.Close();
+            cout << "som = " << som/zTrackVert1.size() << endl;
+        }
+        delete th1;
+
+        zVertVecRec.push_back(som/zTrackVert1.size());
+    }
+    else zVertVecRec.push_back(1000.);
+   
+}
+
 
 /**
  * @brief read data from tree
@@ -140,12 +242,19 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
  */
 void Reconstruction::runReconstruction()
 { 
-    cout<<"begin reconstruction..."<<endl;
+    cout << "-------------------------------------------" << endl;
+    cout << "Begin reconstruction..." << endl;
+
+    TStopwatch timer;
+    timer.Start();
+
+    // initialize parser
     Yaml::Node root;
     Yaml::Parse(root, fConfigFile.c_str());
 
-    TFile hfile(root["outputPaths"]["treeSimPath"].As<std::string>().c_str());
-    TTree *tree = (TTree*)hfile.Get(root["outputNames"]["treeSimName"].As<std::string>().c_str());
+    // initialize TTree (read simulation data)
+    TFile hfile(root["tree"]["simulation"]["path"].As<std::string>().c_str());
+    TTree *tree = (TTree*)hfile.Get(root["tree"]["simulation"]["name"].As<std::string>().c_str());
     //tree->SetDirectory(0);  // giogio
 
 
@@ -154,24 +263,23 @@ void Reconstruction::runReconstruction()
     TBranch *br[nlayer];
     TBranch *bv = tree->GetBranch("Vertex");
     
-    for(int b=1; b<3; b++)
+    for(int b=0; b<nlayer; b++)
     {
-        br[b-1]=tree->GetBranch(Form("HitsL%d",b));
+        br[b]=tree->GetBranch(Form("HitsL%d",b+1));
     }
 
     TClonesArray *hitsArray[nlayer];
-    // qui proprio fuori di testa
     for (TClonesArray * &a: hitsArray)  a = new TClonesArray("Hit",100);
-    //for(int yy=0; yy<nlayer; yy++)  *hitsArray[yy] = TClonesArray("Hit",100); 
+    
     Vertex *vertex=new Vertex();
     bv->SetAddress(&vertex);
 
-    for(int b=1; b<3; b++)
+    for(int b=0; b<nlayer; b++)
     {
-          br[b-1]->SetAddress(&hitsArray[b-1]);
+          br[b]->SetAddress(&hitsArray[b]);
     }
 
-    // questo te lo metto nella stessa logica di quello che abbiamo fatto per plotter
+    
     const int nEvents = tree->GetEntries();
     zVertVec.reserve(nEvents);          // fix vector sizes
     zMoltVec.reserve(nEvents);
@@ -207,10 +315,27 @@ void Reconstruction::runReconstruction()
             }
         }
 
-        vertexReconstruction(hitsArray[0], hitsArray[1],ev);
-        for(int i=0; i<nlayer; i++) hitsArray[i]->Clear();
+        vertexReconstruction2(hitsArray[0], hitsArray[1],ev);
+        //if(ev==6)   // save event reconstructed tracks
+        //{   
+        //    Recorder * recorder = Recorder::getInstance(root["recording"]["reconstruction"]["path"].As<std::string>().c_str());
+        //    recorder->recordReconstruction(hitsArray[0], hitsArray[1], zVertVec[ev]);
+        //    recorder->destroy();
+        //}
+        //for(int i=0; i<nlayer; i++) hitsArray[i]->Clear();
     }
     hfile.Close(); 
+
+    timer.Stop();  
+    cout << endl;
+    cout << "Reconstruction ended." << endl;
+    cout << "Real time: " << timer.RealTime() << "s" << endl;
+    cout << "CPU time: " << timer.CpuTime()  << "s" << endl;
+
+    timer.Reset();
+    cout << endl << "-----------------------------" << endl;
+    cout << "Drawing plots..." << endl;
+    timer.Start();
 
     Plotter plot;
     plot.addVector(zVertVec,zVertVecRec,zMoltVec);
@@ -225,14 +350,19 @@ void Reconstruction::runReconstruction()
         histores2->Fill(zVertVec[j]*10000);
     }
     TCanvas* c41= new TCanvas("c41","residues",80,80,1500,1000);
-   c41->cd();
-   histores->Draw();
-   TCanvas* c51= new TCanvas("c51","rec",80,80,1500,1000);
-   c51->cd();
-   histores1->Draw();
+    c41->cd();
+    histores->Draw();
+    TCanvas* c51= new TCanvas("c51","rec",80,80,1500,1000);
+    c51->cd();
+    histores1->Draw();
     TCanvas* c61= new TCanvas("c61","real",80,80,1500,1000);
-   c61->cd();
-   histores2->Draw();
-  
+    c61->cd();
+    histores2->Draw();
+    
+    timer.Stop();
+    cout << endl;
+    cout << "Process ended." << endl;
+    cout << "Real time: " << timer.RealTime() << "s" << endl;
+    cout << "CPU time: " << timer.CpuTime()  << "s" << endl;
  
 }
