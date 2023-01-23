@@ -98,9 +98,9 @@ void Simulation::runSimulation(const int nEvents)
             string recordSimPath = root["recording"]["simulation"]["path"].As<std::string>();
             cout << "\t(Recording first event hits for a 3D model in " << recordSimPath << ")" << endl;
 
-            Recorder * recorder = Recorder::getInstance(recordSimPath.c_str());
+            /*Recorder * recorder = Recorder::getInstance(recordSimPath.c_str());
             recorder->beginRecordSimulation(vertex);
-            recorder->destroy();
+            recorder->destroy();*/
 
             for(int i=0; i<nDetectors; i++) 
             {
