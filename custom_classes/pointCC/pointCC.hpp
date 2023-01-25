@@ -4,35 +4,34 @@
 #include <cmath>
 
 /**
- * @brief point in a 3d space in cartesian coordinates
+ * @brief point in a 3d space in cylindric coordinates
  * 
  */
 class PointCC
 {
     public:
-        inline PointCC(): fX(0.), fY(0.), fZ(0.){};
-        inline PointCC(const double X, const double Y, const double Z): fX(X), fY(Y), fZ(Z){};
+        inline PointCC(): fR(0.), fPhi(0.), fZ(0.){};
+        inline PointCC(const double R, const double Phi, const double Z): fR(R), fPhi(Phi), fZ(Z){};
         ~PointCC(){};
 
-        inline double getX() const {return fX;};
-        inline double getY() const {return fY;};
+        inline double getRadius() const {return fR;};
+        inline double getPhi() const {return fPhi;};
         inline double getZ() const {return fZ;};
 
-        inline double evalRadius(){return (sqrt(fX*fX+fY*fY));};
-        double getPhi();
+        inline double getX() const {return (fR * cos(fPhi));};
+        inline double getY() const {return (fR * sin(fPhi));};
+
         /**
          * @brief Vector addition
          * 
          * @param point 
          * @return PointCC 
          */
-        PointCC operator+(const PointCC& point);
-
-        //void smearing();
+        //PointCC operator+(const PointCC& point);
 
     protected:
-        double fX;
-        double fY;
+        double fR;
+        double fPhi;
         double fZ;
 
 };

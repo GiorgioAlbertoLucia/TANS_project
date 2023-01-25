@@ -1,6 +1,8 @@
-#include "hit.hpp"
 #include <TMath.h>
 #include <TRandom3.h>
+
+#include "hit.hpp"
+#include "../detector/detector.hpp"
 
 #ifdef MAKECINT
 #include <vector>
@@ -13,16 +15,7 @@ ClassImp(Hit)
 void Hit::smearing()
 {
     fZ += gRandom->Gaus(0., 0.0120);
-
-    double phi;
-    const double r = this->evalRadius();
-
-    if(fX > 0)  phi = atan(fY/fZ);
-    else        phi = atan(fY/fX) + TMath::Pi();
-    phi += gRandom->Gaus(0.,0.003)/r;
-    
-    fX = r * cos(phi);
-    fY = r * sin(phi);
+    fPhi += gRandom->Gaus(0.,0.003);
 }
 
 /**
@@ -32,10 +25,9 @@ void Hit::smearing()
  * 
  * @param detectorRadius 
  */
-void Hit::noise(const double detectorRadius, const double detectorLenght)
+void Hit::noise(Detector& detector)
 {
-    fZ = gRandom->Rndm()*detectorLenght-(detectorLenght/2.);
-    double phi = gRandom->Rndm()*2*TMath::Pi();
-    fX = detectorRadius * cos(phi);
-    fY = detectorRadius * sin(phi);
+    fZ = gRandom->Rndm()*detector.lenght-(detector.lenght/2.);
+    fPhi = gRandom->Rndm()*2*TMath::Pi();
+    fR = detector.radius - detector.width/2.;
 }

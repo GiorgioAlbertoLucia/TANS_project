@@ -74,21 +74,22 @@ Hit Particle::transport(Detector& detector)
     const double Delta = (x0*c1 + y0*c2)*(x0*c1 + y0*c2) - (c1*c1 + c2*c2)*(x0*x0 + y0*y0 - R*R);
 
     const double t = (-(x0*c1 + y0*c2) + sqrt(Delta))/(c1*c1 + c2*c2);
+    const double x = x0+c1*t;
+    const double y = y0+c2*t;
+    
+    double phi;
+    if(x > 0)   phi = atan(y/x);
+    else        phi = atan(y/x) + TMath::Pi();
 
     // create a hit
     Hit hit;
     if(theta==0)    hit = Hit(0., 0., 14.);
-    else            hit = Hit(x0+c1*t, y0+c2*t, z0+c3*t);
+    else            hit = Hit(sqrt(x*x + y*y), phi, z0+c3*t);
 
     // update last hit position for the particle 
     if(theta==0)    fLastHP = Hit(0., 0., 14.);
-    else            fLastHP = Hit(x0+c1*t, y0+c2*t, z0+c3*t);
+    else            fLastHP = Hit(sqrt(x*x + y*y), phi, z0+c3*t);
     
-
-    // check cout
-    // cout << "particle " << fLastHP.getX() << ", " << fLastHP.getY() << ", " << fLastHP.getZ() << endl;
-    // cout << "phi = " << fPhi << "; eta = " << fEta << endl;
-
     return hit;
 }
 

@@ -29,10 +29,10 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2)
 {
     
     double m,n,y = 0.;
-    m = hit2->getY()-hit1->getY();
+    m = hit2->getRadius()-hit1->getRadius();
     n = hit2->getZ()-hit1->getZ();
   
-    double zret=n*(y-hit2->getY())/m + hit2->getZ(); //from 3D line equations*/
+    double zret=n*(y-hit2->getRadius())/m + hit2->getZ(); //from 3D line equations*/
     return zret; 
 }
 
@@ -244,8 +244,11 @@ void Reconstruction::runReconstruction()
         for(int ll=1; ll<nlayer; ll++)
         { 
             const int numHits = hitsArray[ll]->GetEntries();
-            const double detectorRadius = root["detectors"][ll]["radius"].As<double>();
-            const double detectorLenght = root["detectors"][ll]["lenght"].As<double>();
+        
+            Detector detector = {root["detectors"][ll]["radius"].As<double>(),
+                                 root["detectors"][ll]["width"].As<double>(),
+                                 root["detectors"][ll]["lenght"].As<double>(),
+                                 root["detectors"][ll]["multiple_scattering"].As<bool>(),};
             
             for(int i=0;i<numHits;i++)//smearing
             {
@@ -259,7 +262,7 @@ void Reconstruction::runReconstruction()
             for(int i=numHits; i<numHits+noi; i++)
             {
                 Hit * hit1 = (Hit*)hitsArray[ll]->ConstructedAt(i);
-                hit1->noise(detectorRadius, detectorLenght);               
+                hit1->noise(detector);               
             }
         }
 

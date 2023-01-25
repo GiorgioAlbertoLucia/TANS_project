@@ -2,19 +2,11 @@
 
 #include <TMath.h>
 
-PointCC PointCC::operator+(const PointCC& point)
-{
-    PointCC temp;
-    temp.fX = fX + point.fX;
-    temp.fY = fY + point.fY;
-    temp.fZ = fZ + point.fZ;
-    return temp;
-}
-
-double PointCC::getPhi()
-{
-   
-         if(fY>0)    return acos(fX/this->evalRadius());
-    return (2. * TMath::Pi() - acos(fX/this->evalRadius()));
-
-}
+//PointCC PointCC::operator+(const PointCC& point)
+//{
+//    //PointCC temp;
+//    //temp.fR = fR + point.fR;
+//    //temp.fPhi = fPhi + point.fPhi;
+//    //temp.fZ = fZ + point.fZ;
+//    //return temp;
+//}

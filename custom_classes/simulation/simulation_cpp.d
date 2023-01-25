@@ -85,8 +85,8 @@ custom_classes/simulation/simulation_cpp.so: /usr/local/Cellar/root/6.26.04_1/in
 custom_classes/simulation/simulation_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/custom_classes/vertex/vertex.hpp
 custom_classes/simulation/simulation_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/custom_classes/hit/hit.hpp
 custom_classes/simulation/simulation_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/custom_classes/pointCC/pointCC.hpp
-custom_classes/simulation/simulation_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/custom_classes/event/event.hpp
 custom_classes/simulation/simulation_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/custom_classes/detector/detector.hpp
+custom_classes/simulation/simulation_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/custom_classes/event/event.hpp
 custom_classes/simulation/simulation_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/custom_classes/particle/particle.hpp
 custom_classes/simulation/simulation_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/yaml/Yaml.hpp
 custom_classes/simulation/simulation_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/custom_classes/recorder/recorder.hpp
