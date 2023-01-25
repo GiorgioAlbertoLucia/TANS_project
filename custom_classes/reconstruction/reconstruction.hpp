@@ -20,9 +20,8 @@ class Reconstruction
         void runReconstruction();
 
     protected:
-        void vertexReconstruction2(TClonesArray *hitsArray1, TClonesArray *hitsArray2, int ev);
-        void vertexReconstruction(TClonesArray *hitsArray1,TClonesArray *hitsArray2, int ev); 
-        double recZvert(Hit *hit1,Hit *hit2,int ev);
+        void vertexReconstruction(TClonesArray *hitsArray1,TClonesArray *hitsArray2); 
+        double recZvert(Hit *hit1,Hit *hit2);
         
         
     private:

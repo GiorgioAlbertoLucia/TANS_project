@@ -224,7 +224,7 @@ void Plotter::runPlots()
    const double bW=2.;
    
    TH1D* histoZreal;
-   histoZreal = new TH1D("histoZreal","Z of real vertex",int(60/bW),-30.,30.);
+   histoZreal = new TH1D("histoZreal","Z of real vertex",int(60/bW),-31.,29.);
    const int nbinsX = histoZreal->GetNbinsX();
    double midZ[nbinsX];
 
