@@ -164,7 +164,7 @@ void Plotter::runPlots()
    double errMolt[nMolt]; 
    for(int c=0;c<nMolt;c++)
    {
-    errMolt[c]=sqrt(Molt[c]);
+    errMolt[c]=(Molt[c+1]-Molt[c])/2;
    }
 
    int arrN[]={10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10};
@@ -208,14 +208,14 @@ void Plotter::runPlots()
    setGraph(effmolt, "Efficiency vs Multiplicity", "Multiplicity", "Effciency", 8, kBlue);
    TCanvas* c1= new TCanvas("c1","Efficiency vs Multiplicity",80,80,1500,1000);
    c1->cd();
-   effmolt->Draw();
+   effmolt->Draw("ap");
    effmolt->Write();
 
    TGraphErrors *resmolt = new TGraphErrors(indexh,Molt,resolutionM,errMolt,resolutionErrM);
    setGraph(resmolt, "Resolution vs Multiplicity", "Multiplicity", "Resolution [#mum]", 8, kOrange-3);
    TCanvas* c2= new TCanvas("c2","Resolution vs Multiplicity",80,80,1500,1000);
    c2->cd();
-   resmolt->Draw();
+   resmolt->Draw("ap");
    resmolt->Write();//da scivere a MAsera nel readme, a molteplicità 0 ho messo quelli senza distinzione di molteplicità
 
 
@@ -259,14 +259,14 @@ void Plotter::runPlots()
    setGraph(effZreal, "Efficiency vs Vertex Z", "Z_true [cm]", "Efficiency", 8, kGreen);
    TCanvas* c3= new TCanvas("c3","Efficiency vs Vertex Z",80,80,1500,1000);
    c3->cd();
-   effZreal->Draw();
+   effZreal->Draw("ap");
    effZreal->Write();
 
    TGraphErrors *resZreal = new TGraphErrors(indexh2,midZ,resolutionZ,errZmid,resolutionErrZ);
    setGraph(resZreal, "Resolution vs Vertex Z", "Z_true [cm]", "Resolution [#mum]", 8, kRed);
    TCanvas* c4= new TCanvas("c4","Resolution vs Vertex Z",80,80,1500,1000);
    c4->cd();
-   resZreal->Draw();
+   resZreal->Draw("ap");
    resZreal->Write();
 
    output->Write();

@@ -27,14 +27,14 @@
  */
 double Reconstruction::recZvert(Hit *hit1,Hit *hit2)
 {
-    
-    double m,n,y = 0.;
-    m = hit2->getRadius()-hit1->getRadius();
-    n = hit2->getZ()-hit1->getZ();
-  
-    double zret=n*(y-hit2->getRadius())/m + hit2->getZ(); //from 3D line equations*/
-    return zret; 
+    double r1,z1,r2,z2;
+    r1=hit1->getRadius();
+    r2=hit2->getRadius();
+    z1=hit1->getZ();
+    z2=hit2->getZ();
+    return (z2*r1-z1*r2)/(r1-r2);
 }
+
 
 
 /**
@@ -209,7 +209,7 @@ void Reconstruction::runReconstruction()
     
     TBranch *br[nlayer];
     TBranch *bv = tree->GetBranch("Vertex");
-    
+    //TH1D* smear = new TH1D("smear","smearing",10000,-0.5,0.5);
     for(int b=0; b<nlayer; b++)
     {
         br[b]=tree->GetBranch(Form("HitsL%d",b+1));
@@ -235,6 +235,7 @@ void Reconstruction::runReconstruction()
 
     for(int ev=0; ev<nEvents; ev++)
     {
+        double sme=0.;
         if(ev%30000==0)    cout << "Processing event " << ev << "..." << endl;
         tree->GetEvent(ev);
         zVertVec.push_back(vertex->getZ());
@@ -251,9 +252,11 @@ void Reconstruction::runReconstruction()
                                  root["detectors"][ll]["multiple_scattering"].As<bool>(),};
             
             for(int i=0;i<numHits;i++)//smearing
-            {
+            {  
                 Hit *hitptr2 = (Hit*)hitsArray[ll]->At(i);
+                //sme=hitptr2->getPhi();
                 hitptr2->smearing();
+                //smear->Fill(sme-hitptr2->getPhi());
                 
             }
         
@@ -292,6 +295,7 @@ void Reconstruction::runReconstruction()
     TCanvas* c61= new TCanvas("c61","real",80,80,1500,1000);
    c61->cd();
    histores2->Draw();
+
   
  
 }

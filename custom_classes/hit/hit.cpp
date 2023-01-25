@@ -15,7 +15,7 @@ ClassImp(Hit)
 void Hit::smearing()
 {
     fZ += gRandom->Gaus(0., 0.0120);
-    fPhi += gRandom->Gaus(0.,0.003);
+    fPhi += gRandom->Gaus(0.,0.003)/fR;
 }
 
 /**
