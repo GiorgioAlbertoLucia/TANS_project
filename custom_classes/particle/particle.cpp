@@ -83,12 +83,14 @@ Hit Particle::transport(Detector& detector)
 
     // create a hit
     Hit hit;
-    if(theta==0)    hit = Hit(0., 0., 14.);
-    else            hit = Hit(sqrt(x*x + y*y), phi, z0+c3*t);
+    //if(theta==0)    hit = Hit(0., 0., 14.);
+    //else            
+    hit = Hit(sqrt(x*x + y*y), phi, z0+c3*t);
 
     // update last hit position for the particle 
-    if(theta==0)    fLastHP = Hit(0., 0., 14.);
-    else            fLastHP = Hit(sqrt(x*x + y*y), phi, z0+c3*t);
+    //if(theta==0)    fLastHP = Hit(0., 0., 14.);
+    //else            
+    fLastHP = Hit(sqrt(x*x + y*y), phi, z0+c3*t);
     
     return hit;
 }

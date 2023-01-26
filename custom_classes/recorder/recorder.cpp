@@ -14,11 +14,11 @@ Recorder * Recorder::fInstancePtr = NULL;
 /*  PROTECTED   */
 double Recorder::recZvert(Hit *hit1,Hit *hit2) const
 {
-    const double m = hit2->getY()-hit1->getY();
-    const double n = hit2->getZ()-hit1->getZ();
-
-    double z0 = hit2->getZ() - n/m*hit2->getY();
-    return z0; //from 3D line equations*/
+    const double r1 = hit1->getRadius();
+    const double r2 = hit2->getRadius();
+    const double z1 = hit1->getZ();
+    const double z2 = hit2->getZ();
+    return (z2*r1-z1*r2)/(r1-r2);
 }
 
 /*  PUBLIC  */
@@ -112,7 +112,7 @@ void Recorder::recordVertex(Vertex& vertex) const
  * 
  * @param vertex 
  */
-void Recorder::beginRecordSimulation(Vertex& vertex) const
+void Recorder::beginRecordSimulation(Vertex& vertex, const int nDetectors) const
 {
     // create output file
     ofstream createFile(fFilePath.c_str());
@@ -122,7 +122,8 @@ void Recorder::beginRecordSimulation(Vertex& vertex) const
     recordVertex(vertex);
 
     ofstream file(fFilePath.c_str(), std::ios::app);
-    file << endl << "DetectorLayers:" << " # beam pipe is included" << endl;
+    file << endl << endl << "nLayers:    " << nDetectors << endl;
+    file << "DetectorLayers:" << " # beam pipe is included" << endl;
     file.close();
 }
 
@@ -147,7 +148,7 @@ void Recorder::recordReconstruction(TClonesArray * hitsArray1, TClonesArray * hi
         {   
             for(int j=0; j<hitsArray2->GetEntries(); j++)
             {
-                Hit *hit2=(Hit*)hitsArray2->At(j);
+                Hit *hit2 = (Hit*)hitsArray2->At(j);
                 HitL1.reserve(hitsArray1->GetEntries());
                 HitL2.reserve(hitsArray2->GetEntries());
 
@@ -155,7 +156,7 @@ void Recorder::recordReconstruction(TClonesArray * hitsArray1, TClonesArray * hi
                     && (hit2->getZ()>-13.5) && (hit2->getZ()<13.5))
                 {
                     const double z = recZvert(hit1, hit2);
-                    if(abs(z-zRec)<0.5)    
+                    if(abs(z-zRec)<1.)    
                     {
                         HitL1.push_back(*hit1);
                         HitL2.push_back(*hit2);
@@ -175,7 +176,8 @@ void Recorder::recordReconstruction(TClonesArray * hitsArray1, TClonesArray * hi
     recordVertex(vertex);
 
     ofstream file(fFilePath.c_str(), std::ios::app);
-    file << endl << endl << "DetectorLayers:" << " # beam pipe is excluded" << endl;
+    file << endl << endl << "nLayers:    2" << endl;
+    file << "DetectorLayers:" << " # beam pipe is excluded" << endl;
     file.close();
 
     recordTracks(HitL1);

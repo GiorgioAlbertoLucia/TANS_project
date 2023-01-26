@@ -14,6 +14,7 @@ void loadMacros(TString myopt="fast")
     // FILE MANAGMENT
     gSystem->CompileMacro("yaml/Yaml.cpp",opt.Data());
     gSystem->CompileMacro("custom_classes/recorder/recorder.cpp",opt.Data());
+    gSystem->CompileMacro("custom_classes/modelBuilder/modelBuilder.cpp", opt.Data());
 
     // SIMULATION
     gSystem->CompileMacro("custom_classes/event/event.cpp",opt.Data());

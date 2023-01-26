@@ -16,6 +16,7 @@
 #include "../pointCC/pointCC.hpp"
 #include "../vertex/vertex.hpp"
 #include "../plotter/plotter.hpp"
+#include "../recorder/recorder.hpp"
 #include "../../yaml/Yaml.hpp"
 #include "reconstruction.hpp"
 
@@ -277,6 +278,12 @@ void Reconstruction::runReconstruction()
         }
 
         vertexReconstruction(hitsArray[0], hitsArray[1]);
+        if(ev==105)   // save event reconstructed tracks
+        {   
+            Recorder * recorder = Recorder::getInstance(root["recording"]["reconstruction"]["path"].As<std::string>().c_str());
+            recorder->recordReconstruction(hitsArray[0], hitsArray[1], zVertVec[ev]);
+            recorder->destroy();
+        }
         for(int i=0; i<nlayer; i++) hitsArray[i]->Clear();
     }
     hfile.Close(); 

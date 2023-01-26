@@ -93,14 +93,14 @@ void Simulation::runSimulation(const int nEvents)
 
         vertex = event->partGeneration(*hMultiplicity, *hEta);
 
-        if(ev==6)        // record hits from single event in a .txt file 
+        if(ev==105)        // record hits from single event in a .txt file 
         {
             string recordSimPath = root["recording"]["simulation"]["path"].As<std::string>();
             cout << "\t(Recording first event hits for a 3D model in " << recordSimPath << ")" << endl;
 
-            /*Recorder * recorder = Recorder::getInstance(recordSimPath.c_str());
-            recorder->beginRecordSimulation(vertex);
-            recorder->destroy();*/
+            Recorder * recorder = Recorder::getInstance(recordSimPath.c_str());
+            recorder->beginRecordSimulation(vertex, nDetectors);
+            recorder->destroy();
 
             for(int i=0; i<nDetectors; i++) 
             {

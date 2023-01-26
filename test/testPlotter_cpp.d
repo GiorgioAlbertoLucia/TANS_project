@@ -36,6 +36,7 @@
 ./test/testPlotter_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/./custom_classes/pointCC/pointCC.hpp
 ./test/testPlotter_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/./custom_classes/hit/hit.hpp
 ./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/Riostream.h
+./test/testPlotter_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/./custom_classes/detector/detector.hpp
 ./test/testPlotter_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/./custom_classes/vertex/vertex.hpp
 ./test/testPlotter_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/./custom_classes/reconstruction/reconstruction.hpp
 ./test/testPlotter_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/./custom_classes/reconstruction/reconstruction.hpp

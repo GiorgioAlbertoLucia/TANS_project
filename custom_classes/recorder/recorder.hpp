@@ -13,7 +13,7 @@ class Recorder
         static Recorder* getInstance(const char * filePath);
         static void destroy();
         
-        void beginRecordSimulation(Vertex& vertex) const;
+        void beginRecordSimulation(Vertex& vertex, const int nDetectors) const;
         void recordReconstruction(TClonesArray * hitsArray1, TClonesArray * hitsArray2, const double zRec) const;
 
         void recordTracks(vector<Hit> recordArray) const;

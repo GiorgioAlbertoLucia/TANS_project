@@ -81,12 +81,12 @@ TClonesArray Event::partTransport(Detector& detector, bool rec, string recordFil
         }
     }
 
-    /*if(rec)  
+    if(rec)  
     {
         Recorder * recorder = Recorder::getInstance(recordFile.c_str());
         recorder->recordTracks(recordArray, multiplicity);
         recorder->destroy();
-    }*/
+    }
 
     if (detector.multipleScattering)    for (Particle& part: fParticleArray)     part.multipleScattering();
 
