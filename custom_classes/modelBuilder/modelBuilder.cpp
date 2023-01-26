@@ -131,7 +131,7 @@ void ModelBuilder::createDetectorLayout(const char * configFile)
  * kBlue   = 600, kYellow = 400, kMagenta = 616,  kCyan   = 432,  kOrange = 800,
  * kSpring = 820, kTeal   = 840, kAzure   =  860, kViolet = 880,  kPink   = 900
  */
-void ModelBuilder::addParticleTracks(const char * recordFile, unsigned long int color)
+void ModelBuilder::addParticleTracks(const char * recordFile, unsigned long int color = 1, const int style = 1)
 {
     Yaml::Node recordRoot;
     Yaml::Parse(recordRoot, recordFile);
@@ -178,11 +178,11 @@ void ModelBuilder::addParticleTracks(const char * recordFile, unsigned long int 
                                     recordRoot["DetectorLayers"][j]["Particles"][i]["x"].As<double>(),
                                     recordRoot["DetectorLayers"][j]["Particles"][i]["y"].As<double>(),
                                     recordRoot["DetectorLayers"][j]["Particles"][i]["z"].As<double>());
-            cout << "n = " << fNPoints << endl;
             fNPoints++;
         }
 
         fLineVector[i].SetLineColor(color);
+        fLineVector[i].SetLineStyle(style);
     }
 }
 
