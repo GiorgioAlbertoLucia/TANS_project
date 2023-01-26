@@ -12,19 +12,19 @@ detectors:
         width:                  0.08    #cm
         lenght:                 27      #cm
         multiple_scattering:    true
-        color:                  424
+        color:                  424     #kCyan-8
 
     -   radius:                 4       #cm
         width:                  0.02    #cm
         lenght:                 27      #cm
         multiple_scattering:    false
-        color:                  798
+        color:                  798     #kOrange-2 
 
     -   radius:                 7       #cm
         width:                  0.02    #cm
         lenght:                 27      #cm
         multiple_scattering:    false
-        color:                  798
+        color:                  798     #kOrange-2
 
 
 # TTree informations (written in simulation, read in reconstruction and analysis)
