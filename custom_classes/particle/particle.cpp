@@ -77,9 +77,9 @@ Hit Particle::transport(Detector& detector)
     const double x = x0+c1*t;
     const double y = y0+c2*t;
     
-    double phi;
-    if(x > 0)   phi = atan(y/x);
-    else        phi = atan(y/x) + TMath::Pi();
+    double phi = atan(y/x);
+    if(x < 0)   phi += TMath::Pi();
+    if(phi < 0) phi += 2. * TMath::Pi();
 
     // create a hit
     Hit hit;

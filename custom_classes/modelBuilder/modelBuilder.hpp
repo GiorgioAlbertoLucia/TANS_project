@@ -2,6 +2,7 @@
 #define MODELBUILDER_H
 
 #include <string>
+#include <vector>
 
 #include "../yaml/Yaml.hpp"
 
@@ -24,10 +25,11 @@ class ModelBuilder
         static void destroy();
 
         void initializeTotalSpace(const double x, const double y, const double z);
-        void createDetectorLayout(const char * configFile) const;
-        void addParticleTracks(const char * configFile) const;
+        void createDetectorLayout(const char * configFile);
+        void addParticleTracks(const char * configFile, unsigned long int color);
+        void deleteTracks();
 
-        void saveAs(const char * fFilePath) const;
+        void saveAs(const char * filePath) const;
 
 
 
@@ -39,6 +41,9 @@ class ModelBuilder
 
         TGeoManager * fManager;             // manager to create 3D model
         TGeoVolume * fSpace;                // total volume of the model
+        vector<TPolyLine3D> fLineVector;    // vector with lines
+
+        static int fNPoints;                 // number of points set for tracks
         
 
 

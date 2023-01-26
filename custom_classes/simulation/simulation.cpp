@@ -143,7 +143,7 @@ void Simulation::runSimulation(const int nEvents)
     cout << "TTree stored in " << root["tree"]["simulation"]["path"].As<std::string>() << endl;
     cout << "Real time: " << timer.RealTime() << "s" << endl;
     cout << "CPU time: " << timer.CpuTime()  << "s" << endl;
-    cout << "File size:" << outFile.GetBytesWritten()*1e-6 << " MB" << endl;
+    cout << "File size:" << outFile.GetBytesWritten()*1e-6 << " MB" << endl << endl;
 
     outFile.Close();
 

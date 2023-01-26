@@ -1,5 +1,6 @@
-#include <TRandom3.h>
 #include <vector>
+
+#include <TRandom3.h>
 #include "TClonesArray.h"
 #include <TFile.h>
 #include <TTree.h>
@@ -9,6 +10,7 @@
 #include <TAxis.h>
 #include <TCanvas.h>
 #include <TF1.h>
+#include <TStopwatch.h>
 
 #include "../hit/hit.hpp"
 #include "../pointCC/pointCC.hpp"
@@ -196,11 +198,16 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
  */
 void Reconstruction::runReconstruction()
 { 
-    cout<<"begin reconstruction..."<<endl;
+    cout << "-------------------------------------------" << endl;
+    cout << "Begin reconstruction..." << endl;
+
+    TStopwatch timer;
+    timer.Start();
+    
     Yaml::Node root;
     Yaml::Parse(root, fConfigFile.c_str());
 
-     TFile hfile(root["tree"]["simulation"]["path"].As<std::string>().c_str());
+    TFile hfile(root["tree"]["simulation"]["path"].As<std::string>().c_str());
     TTree *tree = (TTree*)hfile.Get(root["tree"]["simulation"]["name"].As<std::string>().c_str());
     //tree->SetDirectory(0);  // giogio
 
@@ -274,6 +281,17 @@ void Reconstruction::runReconstruction()
     }
     hfile.Close(); 
 
+    timer.Stop();  
+    cout << endl;
+    cout << "Reconstruction ended." << endl;
+    cout << "Real time: " << timer.RealTime() << " s" << endl;
+    cout << "CPU time: " << timer.CpuTime()  << " s" << endl;
+
+    timer.Reset();
+    cout << endl << "-----------------------------" << endl;
+    cout << "Drawing plots..." << endl;
+    timer.Start();
+
     Plotter plot;
     plot.addVector(zVertVec,zVertVecRec,zMoltVec);
     plot.runPlots();
@@ -296,6 +314,9 @@ void Reconstruction::runReconstruction()
    c61->cd();
    histores2->Draw();
 
-  
- 
+    timer.Stop();
+    cout << endl;
+    cout << "Process ended." << endl;
+    cout << "Real time: " << timer.RealTime() << " s" << endl;
+    cout << "CPU time: " << timer.CpuTime()  << " s" << endl;
 }
