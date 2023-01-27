@@ -1,5 +1,5 @@
 # This is a configuation file used for simulation, reconstruction, analysis and 3D represetantion
-# of a collider experiment. This file can be properly read using Yaml class 
+# of a collider experiment. This file can be properly read using mini-yaml package 
 # (more info at https://github.com/jimmiebergmann/mini-yaml)
 
 
