@@ -10,11 +10,7 @@
 #include<TGraphAsymmErrors.h>
 #include<TCanvas.h>
 
-#include "plotter.hpp" 
-
-/*    PROTECTED   */
-/**
- * @brief Basic settings for a TGraph
+ @brief Basic settings for a TGraph
  * 
  * @param graph 
  * @param title 
@@ -34,135 +30,12 @@ void setGraph(TGraph* graph, const char * title, const char * xTitle = "x axis",
 }
 
 
-/**
- * @brief  copy vectors in plotter DM
- * 
- * @param zVertReal1 
- * @param zVertRec1 
- * @param moltReal1 
- */
- void Plotter::addVector(vector<double> &zVertReal1, vector<double> &zVertRec1, vector<double> &moltReal1) // e proprio non va provo con i puntatori
-{
-   nEvents=zVertReal1.size();
-   cout<<"nEvents="<<nEvents<<endl;
-   zVertReal.reserve(nEvents);
-   zVertRec.reserve(nEvents);
-   moltReal.reserve(nEvents);
-   resVec.reserve(nEvents);
-
-   for(int i=0;i<nEvents;i++)
-   {
-    
-        zVertReal.push_back(zVertReal1[i]);
-        zVertRec.push_back(zVertRec1[i]); 
-        moltReal.push_back(moltReal1[i]);
-        resVec.push_back(zVertRec1[i]*10000-zVertReal1[i]*10000);
-   }
-}
-
-
-
-/**
- * @brief histos for residues, calculation of resolution and efficiency. 
- * 
- * @param arrHisto 
- * @param Xarray 
- * @param nn 
- * @param resolution 
- * @param resolutionErr 
- * @param efficiency 
- * @param efficiencyErr 
- * @param bol 
- */
-void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolution,double *resolutionErr, double *efficiency, double *efficiencyErr, bool bol) 
-{
-    int nHist=arrHisto->GetEntries();
-    double mean[nHist];
-    double bW=2.;
-    if(bol==true) TFile* output1= new TFile("Residues.root", "recreate");
-    for(int ab=0;ab<nHist;ab++)
-    {
-      TH1D* hRes=(TH1D*)arrHisto->At(ab);
-      double nEventsArr[nHist];
-      if(bol==true)
-      {
-        /*if(ab==0)
-        {
-          for(int i=0;i<n;i++)  
-          {
-            if(zVertRec[i]<999.) hRes->Fill(resVec[i]); 
-            nEventsArr[ab]++;
-
-          }
-        }
-
-        else 
-        {*/
-           for(int j=0;j<n;j++)
-           { 
-              if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1))
-              {
-                nEventsArr[ab]++;
-                if (zVertRec[j]<999.) hRes->Fill(resVec[j]);
-              } 
-           }
-        
-        hRes->Draw("E");
-        hRes->Write();
-      }
-
-      else
-      {
-        for(int ii=0;ii<n;ii++)
-        { 
-          
-          if((zVertReal[ii]>Xarray[ab]-bW) && (zVertReal[ii]<Xarray[ab]+bW))
-          {
-            nEventsArr[ab]++;
-            if(zVertRec[ii]<999.) hRes->Fill(resVec[ii]);
-          }
-        }
-      }
-      if(ab==3) cout<<"entrate nell'isto"<<hRes->GetEntries();
-      resolution[ab]=hRes->GetStdDev();
-      
-      resolutionErr[ab]=hRes->GetStdDevError();
-     
-      mean[ab]=hRes->GetMean();
-      
-      const int binMax=hRes->FindBin(mean[ab]+3*resolution[ab]); 
-      if(bol==true) cout<<"+ 3 sigma molt="<<Xarray[ab]<<" ="<<mean[ab]+3*resolution[ab]<<" -3 sigma="<<mean[ab]-3*resolution[ab]<<endl;
-      const int binMin=hRes->FindBin(mean[ab]-3*resolution[ab]);
-      double entriesIn=0.; 
-      if(bol==true) cout<<"molt="<<Xarray[ab]<<" max="<<binMax<<" min="<<binMin<<endl;
-      for(int t=binMin;t<binMax;t++)
-      {
-           entriesIn=entriesIn+hRes->GetBinContent(t);//controllare sta cosa
-           
-      }
-
-      if(bol==true) cout<<"entriesIn="<<entriesIn<<" n="<<nEventsArr[ab]<<endl;
-      if(nEventsArr[ab]>0.) efficiency[ab]=entriesIn/nEventsArr[ab];
-      else efficiency[ab]=0.;
-      cout<<"efficienza="<<efficiency[ab]<<endl;
-      if (nEventsArr[ab]>0.) efficiencyErr[ab]=sqrt((entriesIn/(nEventsArr[ab]*nEventsArr[ab])) + entriesIn*entriesIn/(nEventsArr[ab]*nEventsArr[ab]*nEventsArr[ab]) ); //poisson and propagation
-      else efficiencyErr[ab]=0.;
-      cout<<"efficienza err="<<efficiencyErr[ab]<<endl;
-    }
-  }
-
-
-
-/**
- * @brief create and save Graph of resolution and efficiency vs Ztrue and Moltiplicity of vertex
- * 
- */
-void Plotter::runPlots()
+void runPlots()
 {
    TFile* output = new TFile("Reconstruction.root", "recreate"); 
    TObjArray* arrHisto = new TObjArray(); 
    
-   int nMolt=17;
+   int nMolt=18;
    double Molt[]={1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,12.,15.,20.,30.,40.,50.,65.};
    double errMolt[nMolt]; 
    for(int c=0;c<nMolt;c++)
@@ -171,25 +44,27 @@ void Plotter::runPlots()
     if(c>0) errMolt[c]=(Molt[c]-Molt[c-1])/2;
    }
 
-   int arrN[]={10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10};
-   
+   double Zvert[]={-20.,-18.,-16.,-14.,-12.,-10}
 
+   int arrN[]={10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10};
+   
+   arrN[0]=nEvents;
    int indexh=0;
    int indexh2=0;
 
-   /*for(int gg=0;gg<nMolt;gg++)
+   for(int gg=1;gg<nMolt;gg++)
     {
         for(int hh=0;hh<nEvents;hh++)
         {
             if(resVec[hh]<10000 && (moltReal[hh]>Molt[gg]-Molt[gg]*0.1) && (moltReal[hh]<Molt[gg]+Molt[gg]*0.1)) arrN[gg]++;
         }
-    }*/
+    }
 
    for(int i=0;i<nMolt;i++)
    {
         TH1D* resHisto;
         // check
-        resHisto =  new TH1D(Form("resHisto%d", i),Form("Hist of Zrec-Ztrue Molt_%4.1f",Molt[i]), 8000,-2000.,2000.);
+        resHisto =  new TH1D(Form("resHisto%d", i),Form("Hist of Zrec-Ztrue Molt_%4.1f",Molt[i]), int(sqrt(arrN[i])),-2000.,2000.);
         //resHisto =  new TH1D(Form("resHisto%d", i),Form("Hist of Zrec-Ztrue Molt_%4.1f",Molt[i]), int(sqrt(arrN[i])),-2000.,2000.);
         arrHisto->AddAtAndExpand(resHisto,indexh++);
    }
