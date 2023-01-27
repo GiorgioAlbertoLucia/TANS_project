@@ -171,7 +171,7 @@ void Plotter::runPlots()
    double errMolt[nMolt]; 
    for(int c=0;c<nMolt;c++)
    {
-    if (c==0) errMolt[c]=(Molt[+1]-Molt[c])/2;
+    if (c==0) errMolt[c]=(Molt[c+1]-Molt[c])/2;
     if(c>0) errMolt[c]=(Molt[c]-Molt[c-1])/2;
    }
 
@@ -208,7 +208,7 @@ void Plotter::runPlots()
    double errEffMhigh[indexh];
    for(int i=0;i<indexh;i++)
    {
-    if(efficiencyM[i]+efficiencyErrM[i]>=1) errEffMhigh[i]=0.;
+    if(efficiencyM[i]+efficiencyErrM[i]>=1) errEffMhigh[i]=1-efficiencyM[i];
     else errEffMhigh[i]=efficiencyErrM[i];
    } 
 
