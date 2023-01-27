@@ -76,7 +76,7 @@ void setGraph(TGraph* graph, const char * title, const char * xTitle = "x axis",
  */
 void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolution,double *resolutionErr, double *efficiency, double *efficiencyErr, bool bol) 
 {
-    int nHist=arrHisto->GetEntries();
+    const int nHist=arrHisto->GetEntries();
     double mean[nHist];
     double bW=2.;
     if(bol==true) TFile* output1= new TFile("Residues.root", "recreate");
@@ -84,6 +84,7 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
     {
       TH1D* hRes=(TH1D*)arrHisto->At(ab);
       double nEventsArr[nHist];
+      for(int i=0; i<nHist; i++)  nEventsArr[i] = 0.;
       if(bol==true)
       {
         /*if(ab==0)
