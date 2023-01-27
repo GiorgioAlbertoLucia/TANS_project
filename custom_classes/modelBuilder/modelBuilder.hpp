@@ -24,7 +24,7 @@ class ModelBuilder
 
         void initializeTotalSpace(const double x, const double y, const double z);
         void createDetectorLayout(const char * configFile);
-        void addParticleTracks(const char * recordFile, unsigned long int color);
+        void addParticleTracks(const char * recordFile, unsigned long int color, const int style);
         void deleteTracks();
 
         void draw() const;
