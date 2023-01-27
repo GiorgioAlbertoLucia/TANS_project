@@ -109,6 +109,10 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
         
         hRes->Draw("E");
         hRes->Write();
+      
+        cout<<"---elemento="<<ab<<" molt="<<Xarray[ab]<<" ----"<<endl;
+        cout<<"elemento del vettore"<<nEventsArr[ab]<<endl;
+        cout<<"entrate nell'isto"<<hRes->GetEntries()<<endl;
       }
 
       else
@@ -123,7 +127,7 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
           }
         }
       }
-      if(ab==3) cout<<"entrate nell'isto"<<hRes->GetEntries();
+  
       resolution[ab]=hRes->GetStdDev();
       
       resolutionErr[ab]=hRes->GetStdDevError();
@@ -131,10 +135,10 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
       mean[ab]=hRes->GetMean();
       
       const int binMax=hRes->FindBin(mean[ab]+3*resolution[ab]); 
-      if(bol==true) cout<<"+ 3 sigma molt="<<Xarray[ab]<<" ="<<mean[ab]+3*resolution[ab]<<" -3 sigma="<<mean[ab]-3*resolution[ab]<<endl;
+      if(bol==true) cout<<"+ 3 sigma ="<<Xarray[ab]<<" ="<<mean[ab]+3*resolution[ab]<<" -3 sigma="<<mean[ab]-3*resolution[ab]<<endl;
       const int binMin=hRes->FindBin(mean[ab]-3*resolution[ab]);
       double entriesIn=0.; 
-      if(bol==true) cout<<"molt="<<Xarray[ab]<<" max="<<binMax<<" min="<<binMin<<endl;
+      if(bol==true) cout<<" max="<<binMax<<" min="<<binMin<<endl;
       for(int t=binMin;t<binMax;t++)
       {
            entriesIn=entriesIn+hRes->GetBinContent(t);//controllare sta cosa
