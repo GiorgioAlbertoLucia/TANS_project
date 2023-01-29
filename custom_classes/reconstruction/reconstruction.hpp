@@ -16,7 +16,7 @@ class Reconstruction
         Reconstruction(const Reconstruction& reconstruction) = delete;  // delete copy constructor for singleton object
         void operator=(const Reconstruction& reconstruction) = delete;  // delete operator= for singleton object
 
-        static Recostruction * getInstance(const char * configFile);
+        static Reconstruction * getInstance(const char * configFile);
         static void destroy();
     
         void runReconstruction();
