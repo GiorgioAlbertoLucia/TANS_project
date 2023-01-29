@@ -10,7 +10,8 @@
 #include<TGraphAsymmErrors.h>
 #include<TCanvas.h>
 
- @brief Basic settings for a TGraph
+/**
+ * @brief Set the Graph object
  * 
  * @param graph 
  * @param title 

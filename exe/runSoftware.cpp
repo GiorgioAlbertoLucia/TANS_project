@@ -3,7 +3,7 @@ void runSoftware(const int nEvents=100000, unsigned int seed=5467)
     gRandom->SetSeed(seed);
 
     // SIMULATION
-    Simulation * sim = new Simulation("simulation", "config/configFile.txt");
+    Simulation * sim = Simulation::getInstance("config/configFile.txt");
     sim->runSimulation(nEvents);
 
     // RECONSTRUCTION
@@ -18,6 +18,6 @@ void runSoftware(const int nEvents=100000, unsigned int seed=5467)
     mb->addParticleTracks("data/recordSimulation.txt", 632);
     mb->addParticleTracks("data/recordReconstruction.txt", 860, 2);
 
-    mb->draw();
+    //mb->draw();
     mb->saveAs("output/3Dmodel.root");
 }

@@ -12,18 +12,23 @@
 class Simulation
 {
     public:
-        Simulation(){};
-        Simulation(const char * TreeName, const char * ConfigFile): fTreeName(TreeName), fConfigFile(ConfigFile){};
-        ~Simulation(){};
+        Simulation(const Simulation& simulation) = delete; // delete copy constructor for a singleton class
 
-        inline std::string getTreeName() const {return fTreeName;};
+        static Simulation* getInstance(const char * configFile);
+        static void destroy();
+
         inline std::string getConfigFile() const {return fConfigFile;};
 
         void runSimulation(const int nEvents);
 
     private:
-        std::string fTreeName;          // description for ROOT if this becomes a TObject - probably not necessary
-        std::string fConfigFile;    //
+        Simulation(){};
+        Simulation(const char * configFile): fConfigFile(configFile){};
+        ~Simulation(){};
+
+        static Simulation *fInstancePtr;    // static pointer to the instance of the class
+
+        std::string fConfigFile;            //  path to the configuration file used
 
 
 };

@@ -9,9 +9,18 @@
 #include "../vertex/vertex.hpp"
 #include "recorder.hpp"
 
+/*   STATIC DATA MEMBER  */
 Recorder * Recorder::fInstancePtr = NULL;
 
 /*  PROTECTED   */
+
+/**
+ * @brief Reconstruct z coordinate of the vertex.
+ * 
+ * @param hit1 
+ * @param hit2 
+ * @return double 
+ */
 double Recorder::recZvert(Hit *hit1,Hit *hit2) const
 {
     const double r1 = hit1->getRadius();
@@ -31,10 +40,7 @@ double Recorder::recZvert(Hit *hit1,Hit *hit2) const
  */
 Recorder* Recorder::getInstance(const char * fFilePath)
 {
-    if(fInstancePtr == NULL) 
-    {
-        fInstancePtr = new Recorder(fFilePath);
-    }
+    if(fInstancePtr == NULL)    fInstancePtr = new Recorder(fFilePath);
     return fInstancePtr;
 }
 
@@ -74,7 +80,9 @@ void Recorder::recordTracks(double recordArray[][3], const int multiplicity) con
 
 /**
  * @brief Records hits of all particles through a detector in a .txt file. It can be used to create a 
- * 3D model with tracks
+ * 3D model with tracks.
+ * 
+ * Must be used AFTER either beginRecordSimulation or beginRecordReconstruction
  * 
  * @param recordArray 
  */
@@ -94,6 +102,11 @@ void Recorder::recordTracks(vector<Hit> recordArray) const
     file.close();
 }
 
+/**
+ * @brief Record vertex coordinates and multiplicity in a .txt file.
+ * 
+ * @param vertex 
+ */
 void Recorder::recordVertex(Vertex& vertex) const
 {
     ofstream file(fFilePath, std::ios::app);
@@ -119,8 +132,10 @@ void Recorder::beginRecordSimulation(Vertex& vertex, const int nDetectors) const
     createFile << "# Simulated hit points and vertex for a single event " << endl;
     createFile.close();
 
+    // record vertex
     recordVertex(vertex);
 
+    // prepare the file to record hit positions
     ofstream file(fFilePath.c_str(), std::ios::app);
     file << endl << endl << "nLayers:    " << nDetectors << endl;
     file << "DetectorLayers:" << " # beam pipe is included" << endl;

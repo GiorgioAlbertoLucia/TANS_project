@@ -13,9 +13,11 @@
 class Reconstruction
 {
     public:
-        Reconstruction(){};
-        Reconstruction(const char * ConfigFile): fConfigFile(ConfigFile){};
-        virtual ~Reconstruction(){};        
+        Reconstruction(const Reconstruction& reconstruction) = delete;  // delete copy constructor for singleton object
+        void operator=(const Reconstruction& reconstruction) = delete;  // delete operator= for singleton object
+
+        static Recostruction * getInstance(const char * configFile);
+        static void destroy();
     
         void runReconstruction();
 
@@ -25,6 +27,12 @@ class Reconstruction
         
         
     private:
+        Reconstruction(){};
+        Reconstruction(const char * ConfigFile): fConfigFile(ConfigFile){};
+        virtual ~Reconstruction(){}; 
+
+        static Reconstruction* fInstancePtr;
+
         std::string fConfigFile;
        
         vector<double> zVertVec;

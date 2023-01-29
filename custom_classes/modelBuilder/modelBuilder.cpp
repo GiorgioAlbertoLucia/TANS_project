@@ -131,7 +131,7 @@ void ModelBuilder::createDetectorLayout(const char * configFile)
  * kBlue   = 600, kYellow = 400, kMagenta = 616,  kCyan   = 432,  kOrange = 800,
  * kSpring = 820, kTeal   = 840, kAzure   =  860, kViolet = 880,  kPink   = 900
  */
-void ModelBuilder::addParticleTracks(const char * recordFile, unsigned long int color = 1, const int style = 1)
+void ModelBuilder::addParticleTracks(const char * recordFile, unsigned long int color, const int style)
 {
     Yaml::Node recordRoot;
     Yaml::Parse(recordRoot, recordFile);
@@ -201,7 +201,7 @@ void ModelBuilder::draw() const
     fCanvas->cd();
     fSpace->Draw("ogl");
     for(int i=0; i<fLineVectorSize; i++)    fLineVector[i].Draw("same");   
-    fCanvas->Draw();
+    //fCanvas->Draw();
     fCanvas->DrawClone();
 }
 
@@ -212,6 +212,10 @@ void ModelBuilder::draw() const
  */
 void ModelBuilder::saveAs(const char * filePath) const
 {
+    fCanvas->cd();
+    fSpace->Draw("ogl");
+    for(int i=0; i<fLineVectorSize; i++)    fLineVector[i].Draw("same");
+    
     fManager->Export("output/manager.root");
 
     TFile outFile(filePath, "recreate");

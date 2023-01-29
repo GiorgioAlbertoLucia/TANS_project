@@ -23,4 +23,7 @@ void loadMacros(TString myopt="fast")
     // RECONSTRUCTION
     gSystem->CompileMacro("custom_classes/plotter/plotter.cpp",opt.Data());
     gSystem->CompileMacro("custom_classes/reconstruction/reconstruction.cpp",opt.Data());
+
+    // SOFTWARE
+    gSystem->CompileMacro("exe/compileAndRunSoftware.cpp",opt.Data());
 }

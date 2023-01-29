@@ -18,10 +18,35 @@
 #include "../../yaml/Yaml.hpp"
 #include "../recorder/recorder.hpp"
 
+/*   STATIC DATA MEMBER  */
+Simulation * Simulation::fInstancePtr = NULL;
+
 /*      PROTECTED   */
 
 
 /*       PUBLIC    */
+
+/**
+ * @brief Create instance of the singleton object.
+ * 
+ * @param configFile path to the configuration file for the simulation
+ * @return Simulation* 
+ */
+Simulation* Simulation::getInstance(const char * configFile)
+{
+    if(fInstancePtr == NULL)    fInstancePtr = new Simulation(configFile);
+    return fInstancePtr;
+}
+
+/**
+ * @brief Destroy singleton object
+ * 
+ */
+void Simulation::destroy()
+{
+    if(fInstancePtr)            delete fInstancePtr;
+    fInstancePtr = NULL;
+}
 
 /**
  * @brief Runs a simulation for n events. For each event, a vertex is generated and particles are transported through a detector.
@@ -29,7 +54,7 @@
  * 
  * @param nEvents 
  */
-void Simulation::runSimulation(const int nEvents)
+void Simulation::runSimulation(const int nEvents = 100000)
 {
     cout << "--------------------------------------" << endl;
     cout << "Begin simulation..." << endl << endl;

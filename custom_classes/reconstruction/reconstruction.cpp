@@ -20,6 +20,10 @@
 #include "../../yaml/Yaml.hpp"
 #include "reconstruction.hpp"
 
+/*  STATIC DATA MEMBER  */
+Reconstruction * Reconstruction::fInstancePtr = NULL;
+
+/*      PROTECTED       */
 
 /**
  * @brief return z from tracking's line
@@ -37,8 +41,6 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2)
     z2=hit2->getZ();
     return (z2*r1-z1*r2)/(r1-r2);
 }
-
-
 
 /**
  * @brief loops on hits points in order to find vertex's Z
@@ -192,6 +194,30 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
         
     else zVertVecRec.push_back(1000.);
 }*/
+
+/*      PUBLIC      */
+
+/**
+ * @brief Create an instance of the singleton object
+ * 
+ * @param configFile 
+ * @return Reconstruction* 
+ */
+Reconstruction * Reconstruction::getInstance(const char * configFile)
+{
+    if(fInstancePtr == NULL)    fInstancePtr = new Reconstruction(configFile);
+    return fInstancePtr;
+}
+
+/**
+ * @brief Destroy the instance of the singleton object
+ * 
+ */
+void Reconstruction::destroy()
+{
+    if(fInstancePtr)            delete fInstancePtr;
+    fInstancePtr = NULL;
+}
 
 /**
  * @brief read data from tree
