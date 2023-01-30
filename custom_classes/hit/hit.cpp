@@ -11,7 +11,10 @@
 
 ClassImp(Hit)
 
-
+/**
+ * @brief 
+ * 
+ */
 void Hit::smearing()
 {
     fZ += gRandom->Gaus(0., 0.0120);
