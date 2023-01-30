@@ -325,7 +325,7 @@ void Reconstruction::runReconstruction()
     cout << "Drawing plots..." << endl;
     timer.Start();
 
-    Plotter plot;
+    Plotter plot(fConfigFile.c_str());
     plot.addVector(zVertVec,zVertVecRec,zMoltVec);
     plot.runPlots();
     TH1D* histores = new TH1D("histores","Residuii",int(sqrt(nEvents)),-3000.,3000.);

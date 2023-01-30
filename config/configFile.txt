@@ -45,14 +45,16 @@ recording:
 # input files informations
 input:
     distributions:  
-        path:       data/kinem.root     # file storing custom distributions for eta, multiplicity
-        etaName:    heta2               # name of the eta distribution (TH1F)
-        multName:   hm                  # name of the multiplicity distribution (TH1I)
+        path:       data/kinem.root                 # file storing custom distributions for eta, multiplicity
+        etaName:    heta2                           # name of the eta distribution (TH1F)
+        multName:   hm                              # name of the multiplicity distribution (TH1I)
 
 
 # output files informations
 output:
     3Dmodel:
-        path:   output/3Dmodel.root     # file the 3Dmodel will be saved into
-    graphs:
-        path:   output/plots.root
+        path:   output/3Dmodel.root                 # file the 3Dmodel will be saved into
+    residues:
+        path:   output/residuesGraphs.root          # file storing ...
+    reconstruction:
+        path:   output/reconstructionGraphs.root    # file storing ...

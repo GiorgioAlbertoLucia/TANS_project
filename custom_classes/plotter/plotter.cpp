@@ -1,6 +1,7 @@
 #include <Riostream.h>
 #include <string>
 #include <vector>
+
 #include <TH1I.h>
 #include <TH1F.h>
 #include <TH1D.h>
@@ -10,6 +11,7 @@
 #include<TGraphAsymmErrors.h>
 #include<TCanvas.h>
 
+#include "../../yaml/Yaml.hpp"
 #include "plotter.hpp" 
 
 /*    PROTECTED   */
@@ -74,12 +76,12 @@ void setGraph(TGraph* graph, const char * title, const char * xTitle = "x axis",
  * @param efficiencyErr 
  * @param bol 
  */
-void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolution,double *resolutionErr, double *efficiency, double *efficiencyErr, bool bol) 
+void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolution,double *resolutionErr, double *efficiency, double *efficiencyErr, bool bol, string outputPath) 
 {
     const int nHist=arrHisto->GetEntries();
     double mean[nHist];
     double bW=2.;
-    if(bol==true) TFile* output1= new TFile("Residues.root", "recreate");
+    if(bol==true) TFile* output1= new TFile(outputPath.c_str(), "recreate");
     for(int ab=0;ab<nHist;ab++)
     {
       TH1D* hRes=(TH1D*)arrHisto->At(ab);
@@ -164,7 +166,10 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
  */
 void Plotter::runPlots()
 {
-   TFile* output = new TFile("Reconstruction.root", "recreate"); 
+   Yaml::Node root;
+   Yaml::Parse(root, fConfigFile.c_str());
+
+   TFile* output = new TFile(root["output"]["reconstruction"]["path"].As<string>().c_str(), "recreate"); 
    TObjArray* arrHisto = new TObjArray(); 
    
    int nMolt=17;
@@ -199,12 +204,14 @@ void Plotter::runPlots()
         arrHisto->AddAtAndExpand(resHisto,indexh++);
    }
 
+   string residuesPath = root["output"]["residues"]["path"].As<string>();
+
    double resolutionM[indexh];
    double resolutionErrM[indexh];
    double efficiencyM[indexh];
    double efficiencyErrM[indexh];
    bool bol=true;
-   residues(arrHisto,Molt,nEvents,resolutionM,resolutionErrM,efficiencyM,efficiencyErrM,bol);
+   residues(arrHisto,Molt,nEvents,resolutionM,resolutionErrM,efficiencyM,efficiencyErrM,bol, residuesPath);
   
    double errEffMhigh[indexh];
    for(int i=0;i<indexh;i++)
@@ -255,7 +262,7 @@ void Plotter::runPlots()
    double resolutionErrZ[indexh2];
    double efficiencyZ[indexh2];
    double efficiencyErrZ[indexh2];
-   residues(arrHisto2,midZ,nEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol);
+   residues(arrHisto2,midZ,nEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol, residuesPath);
   
 
    double errEffZhigh[indexh2];
