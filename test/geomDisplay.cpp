@@ -12,7 +12,7 @@
 void geomDisplay()
 {
     Yaml::Node root;
-    Yaml::Parse(root, "config/simulationCfg.txt");
+    Yaml::Parse(root, "config/configFile.txt");
 
     cout << endl << "-------------------------------------" << endl;
     cout << "Creating event display..." << endl << endl;
@@ -41,34 +41,34 @@ void geomDisplay()
     space->Draw("ogl");
 
     Yaml::Node recordRoot;
-    Yaml::Parse(recordRoot, "data/recordSimulation.txt");
+    Yaml::Parse(recordRoot, "data/recordReconstruction.txt");
 
     // PARTICLE TRAJECTORY (AS LINES)
     const int multiplicity = recordRoot["Vertex"]["multiplicity"].As<int>();
 
-    TPolyLine3D* lineArray[multiplicity];
-    for(int i=0; i<multiplicity; i++)
-    {
-        lineArray[i] = new TPolyLine3D();
-
-        // set vertex position
-        lineArray[i]->SetPoint(i*multiplicity,
-                               recordRoot["Vertex"]["x"].As<double>(),
-                               recordRoot["Vertex"]["y"].As<double>(),
-                               recordRoot["Vertex"]["z"].As<double>());
-        
-        // set intersection points
-        for(int j=0; j<nDetectors; j++)
-        {
-            lineArray[i]->SetPoint(i*multiplicity+j+1,
-                                   recordRoot["DetectorLayers"][j]["Particles"][i]["x"].As<double>(),
-                                   recordRoot["DetectorLayers"][j]["Particles"][i]["y"].As<double>(),
-                                   recordRoot["DetectorLayers"][j]["Particles"][i]["z"].As<double>());
-        }
-
-        lineArray[i]->SetLineColor(kRed);
-        lineArray[i]->Draw("same");
-    }
+    //TPolyLine3D* lineArray[multiplicity];
+    //for(int i=0; i<multiplicity; i++)
+    //{
+    //    lineArray[i] = new TPolyLine3D();
+//
+    //    // set vertex position
+    //    lineArray[i]->SetPoint(i*multiplicity,
+    //                           recordRoot["Vertex"]["x"].As<double>(),
+    //                           recordRoot["Vertex"]["y"].As<double>(),
+    //                           recordRoot["Vertex"]["z"].As<double>());
+    //    
+    //    // set intersection points
+    //    for(int j=0; j<nDetectors; j++)
+    //    {
+    //        lineArray[i]->SetPoint(i*multiplicity+j+1,
+    //                               recordRoot["DetectorLayers"][j]["Particles"][i]["x"].As<double>(),
+    //                               recordRoot["DetectorLayers"][j]["Particles"][i]["y"].As<double>(),
+    //                               recordRoot["DetectorLayers"][j]["Particles"][i]["z"].As<double>());
+    //    }
+//
+    //    lineArray[i]->SetLineColor(kRed);
+    //    lineArray[i]->Draw("same");
+    //}
 
     TFile outFile(root["outputPaths"]["3DmodelPath"].As<string>().c_str(), "recreate");
     canvas->Write();
