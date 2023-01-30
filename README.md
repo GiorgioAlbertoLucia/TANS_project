@@ -1,4 +1,5 @@
 # Progetto TANS
+<img src="3Dpic.png" width="500" height="500">
 Roberta Ferioli, Giorgio Alberto Lucia 
 
 ## Descrizione
@@ -22,6 +23,23 @@ Dalla directory principale (TANS_project) aprire il terminale di ROOT e digitare
 root [] .x exe/loadMacros.cpp
 root [] .x exe/runSoftware.cpp
 ```
+Il software simulerà 1,000,000 eventi e svolgerà su questi la ricostruzione e l'analisi.
+
+In alternativa, per selezionare il numero di eventi desiderato:
+```
+root [] .x exe/loadMacros.cpp
+root [] .L exe/compileAndRunSoftware.cpp+
+root [] compileAndRunSoftware(<nEvents>, <path to configuration file>);
+```
+
+È ancora possibile, infine, lanciare separatamente simulazione e ricostruzione (è poco pratico, invece, costruire il modello 3D direttamente dal terminale). Per farlo:
+```
+root [] .x exe/loadMacros.cpp
+root [] Simulation * sim = Simulation::getInstance(<path to configuration file>);
+root [] sim->runSimulation(<nEvents>);
+root [] Reconstruction * rec = Reconstruction::getInstance(<path to configuration file>);
+root [] rec->runReconstruction();
+```
 
 ## Output generato
 Il software, al termine dell'esecuzione, presenta all'utente una serie di risultati (grafici relativi alle performance della ricostruzione e rappresentazione 3D per uno degli eventi). 
@@ -29,7 +47,7 @@ Gli stessi risultati vengono anche salvati nella cartella `output` e possono ess
 
 ## Personalizzazione
 La simulazione può essere personalizzata cambiando il file di configurazione. È possibile cambiare liberamente
-(con un po' di buonsenso) i parametri del file di configurazione `config/configFile.txt`.
+(rispettando la sintassi richiesta da `mini-yaml`) i parametri del file di configurazione `config/configFile.txt`.
 
 ### Aggiungere un detector
 Il software può funzionare anche con più di 3 detector (due layer di rivelatori e la beam pipe). Si noti, tuttavia, che la ricostruzione avviene interpolando con rette punti su soli due layer.

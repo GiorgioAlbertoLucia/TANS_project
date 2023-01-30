@@ -18,6 +18,10 @@ void setGraph(TGraph* graph, const char * title, const char * xTitle = "x axis",
   graph->SetMarkerColor(color);
 }
 
+/**
+ * @brief Macro to draw two TGraph on a single canvas and set essential features
+ * 
+ */
 void doubleGraph()
 {
     TFile file1("output/residuesGraphs.root");
