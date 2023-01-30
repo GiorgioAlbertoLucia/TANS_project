@@ -1,3 +1,4 @@
+#include <Riostream.h>
 #include <string>
 
 #include "../../yaml/Yaml.hpp"
@@ -11,29 +12,17 @@
 #include <TPolyLine3D.h>
 #include <TColor.h>
 
-ModelBuilder* ModelBuilder::fInstancePtr = NULL;
-
-TCanvas* ModelBuilder::fCanvas = NULL;
-
-TGeoManager* ModelBuilder::fManager = NULL;
-TGeoVolume* ModelBuilder::fSpace = NULL;
-
-TPolyLine3D* ModelBuilder::fLineVector = NULL;
-int ModelBuilder::fLineVectorSize = 0;
-
-int ModelBuilder::fNPoints = 0;
 
 
-/*  PRIVATE */
+/*  PUBLIC  */
 /**
  * @brief Construct a new Model Builder:: Model Builder object
  * 
  */
-ModelBuilder::ModelBuilder()
+ModelBuilder::ModelBuilder(): fSpace(NULL), fLineVector(NULL), fLineVectorSize(0)
 {
     fCanvas = new TCanvas();
     fManager = new TGeoManager();
-    fNPoints = 0;
 }
 
 /**
@@ -41,27 +30,6 @@ ModelBuilder::ModelBuilder()
  * 
  */
 ModelBuilder::~ModelBuilder()
-{
-
-}
-
-/*  PUBLIC  */
-
-/**
- * @brief Create an instance of the singleton object
- * 
- */
-ModelBuilder* ModelBuilder::getInstance()
-{
-    if(fInstancePtr == NULL)    fInstancePtr = new ModelBuilder();
-    return fInstancePtr;    
-}
-
-/**
- * @brief Destroy singleton object
- * 
- */
-void ModelBuilder::destroy()
 {
     if(fCanvas)                 delete fCanvas;
     fCanvas = NULL;
@@ -71,10 +39,8 @@ void ModelBuilder::destroy()
     fSpace = NULL;
 
     if(fLineVectorSize != 0)    delete []fLineVector;
-
-    if(fInstancePtr)            delete fInstancePtr;
-    fInstancePtr = NULL;
 }
+
 
 /**
  * @brief Initializes top space as a box with dimensions (2x, 2y, 2z)
@@ -130,6 +96,8 @@ void ModelBuilder::createDetectorLayout(const char * configFile)
  * kWhite  = 0,   kBlack  = 1,   kGray    = 920,  kRed    = 632,  kGreen  = 416,
  * kBlue   = 600, kYellow = 400, kMagenta = 616,  kCyan   = 432,  kOrange = 800,
  * kSpring = 820, kTeal   = 840, kAzure   =  860, kViolet = 880,  kPink   = 900
+ * 
+ * @param style TSyle
  */
 void ModelBuilder::addParticleTracks(const char * recordFile, unsigned long int color, const int style)
 {
@@ -163,22 +131,20 @@ void ModelBuilder::addParticleTracks(const char * recordFile, unsigned long int 
         fLineVector[i] = TPolyLine3D();
 
         // set vertex position
-        fLineVector[i].SetPoint(fNPoints,
+        fLineVector[i].SetPoint(0,
                                 recordRoot["Vertex"]["x"].As<double>(),
                                 recordRoot["Vertex"]["y"].As<double>(),
                                 recordRoot["Vertex"]["z"].As<double>());
-        fNPoints++;
         
         // set intersection points
         const int nDetectors = recordRoot["nLayers"].As<int>();
 
         for(int j=0; j<nDetectors; j++)
         {
-            fLineVector[i].SetPoint(fNPoints,
+            fLineVector[i].SetPoint(j+1,
                                     recordRoot["DetectorLayers"][j]["Particles"][i]["x"].As<double>(),
                                     recordRoot["DetectorLayers"][j]["Particles"][i]["y"].As<double>(),
                                     recordRoot["DetectorLayers"][j]["Particles"][i]["z"].As<double>());
-            fNPoints++;
         }
 
         fLineVector[i].SetLineColor(color);
@@ -192,7 +158,7 @@ void ModelBuilder::addParticleTracks(const char * recordFile, unsigned long int 
  */
 void ModelBuilder::deleteTracks()
 {
-    fNPoints = 0;
+    fLineVectorSize = 0;
     delete []fLineVector;
 }
 
@@ -201,8 +167,7 @@ void ModelBuilder::draw() const
     fCanvas->cd();
     fSpace->Draw("ogl");
     for(int i=0; i<fLineVectorSize; i++)    fLineVector[i].Draw("same");   
-    //fCanvas->Draw();
-    fCanvas->DrawClone();
+    fCanvas->Draw();
 }
 
 /**
@@ -215,8 +180,6 @@ void ModelBuilder::saveAs(const char * filePath) const
     fCanvas->cd();
     fSpace->Draw("ogl");
     for(int i=0; i<fLineVectorSize; i++)    fLineVector[i].Draw("same");
-    
-    fManager->Export("output/manager.root");
 
     TFile outFile(filePath, "recreate");
     fCanvas->Write();

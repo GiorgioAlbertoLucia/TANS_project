@@ -19,8 +19,8 @@
 class ModelBuilder
 {
     public:
-        static ModelBuilder * getInstance();
-        static void destroy();
+        ModelBuilder();
+        virtual ~ModelBuilder(); 
 
         void initializeTotalSpace(const double x, const double y, const double z);
         void createDetectorLayout(const char * configFile);
@@ -34,24 +34,13 @@ class ModelBuilder
 
     private:
         // private data members
-        static ModelBuilder* fInstancePtr;
+        TCanvas * fCanvas;
+
+        TGeoManager * fManager;              // manager to create 3D model
+        TGeoVolume * fSpace;                 // total volume of the model
         
-        static TCanvas * fCanvas;
-
-        static TGeoManager * fManager;              // manager to create 3D model
-        static TGeoVolume * fSpace;                 // total volume of the model
-        
-        static TPolyLine3D* fLineVector;            // [fLineVectorSize] vector with lines
-        static int fLineVectorSize;
-
-
-        static int fNPoints;                        // number of points set for tracks
-        
-
-
-        // private methods
-        ModelBuilder();
-        virtual ~ModelBuilder(); 
+        TPolyLine3D* fLineVector;            // [fLineVectorSize] vector with lines
+        int fLineVectorSize;
 
 };
 
