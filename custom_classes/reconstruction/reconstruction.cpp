@@ -50,11 +50,14 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2)
  */
 void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray *hitsArray2)
 {
+    Yaml::Node constants;
+    Yaml::Parse(constants, fConstantsFile.c_str());
+
     double phi = 0.;
-    double deltaPhi = 0.01; 
+    const double deltaPhi = constants["recTolerance"]["deltaPhi"].As<double>(); 
     double ztemp = 0;
     vector<double> zTrackVert;
-    double binW = 0.5;
+    const double binW = constants["recTolerance"]["zBinWidth"].As<double>();
     TH1D* histoHit = new TH1D("histoHit","Vertex's z rec",int(60./binW),-60.*binW,60.*binW);
      
     for(int i=0; i<hitsArray1->GetEntries(); i++)                          
@@ -201,11 +204,12 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
  * @brief Create an instance of the singleton object
  * 
  * @param configFile 
+ * @param constantsFile
  * @return Reconstruction* 
  */
-Reconstruction * Reconstruction::getInstance(const char * configFile)
+Reconstruction * Reconstruction::getInstance(const char * configFile, const char * constantsFile)
 {
-    if(fInstancePtr == NULL)    fInstancePtr = new Reconstruction(configFile);
+    if(fInstancePtr == NULL)    fInstancePtr = new Reconstruction(configFile, constantsFile);
     return fInstancePtr;
 }
 
@@ -234,6 +238,9 @@ void Reconstruction::runReconstruction()
     Yaml::Node root;
     Yaml::Parse(root, fConfigFile.c_str());
 
+    Yaml::Node constants;
+    Yaml::Parse(constants, fConstantsFile.c_str());
+
     TFile hfile(root["tree"]["simulation"]["path"].As<std::string>().c_str());
     TTree *tree = (TTree*)hfile.Get(root["tree"]["simulation"]["name"].As<std::string>().c_str());
     //tree->SetDirectory(0);  // giogio
@@ -250,9 +257,8 @@ void Reconstruction::runReconstruction()
     }
 
     TClonesArray *hitsArray[nlayer];
-    // qui proprio fuori di testa
     for (TClonesArray * &a: hitsArray)  a = new TClonesArray("Hit",100);
-    //for(int yy=0; yy<nlayer; yy++)  *hitsArray[yy] = TClonesArray("Hit",100); 
+    
     Vertex *vertex=new Vertex();
     bv->SetAddress(&vertex);
 
@@ -261,7 +267,6 @@ void Reconstruction::runReconstruction()
           br[b]->SetAddress(&hitsArray[b]);
     }
 
-    // questo te lo metto nella stessa logica di quello che abbiamo fatto per plotter
     const int nEvents = tree->GetEntries();
     zVertVec.reserve(nEvents);          // fix vector sizes
     zMoltVec.reserve(nEvents);
@@ -293,8 +298,8 @@ void Reconstruction::runReconstruction()
                 //smear->Fill(sme-hitptr2->getPhi());
                 
             }
-        
-            int noi=int(gRandom->Rndm()*10);//add noise
+
+            const int noi = int(gRandom->Rndm()*constants["noise"]["nPoints"].As<int>());//add noise
             hitsArray[ll]->Expand(hitsArray[ll]->GetEntries()+noi);
             for(int i=numHits; i<numHits+noi; i++)
             {

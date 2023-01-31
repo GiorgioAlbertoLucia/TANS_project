@@ -7,7 +7,7 @@ void runSoftware(const int nEvents=100000, unsigned int seed=5467)
     sim->runSimulation(nEvents);
 
     // RECONSTRUCTION
-    Reconstruction * rec = Reconstruction::getInstance("config/configFile.txt");
+    Reconstruction * rec = Reconstruction::getInstance("config/configFile.txt", "config/constantsFile.txt");
     rec->runReconstruction();
 
     // 3D MODEL
