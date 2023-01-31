@@ -3,6 +3,6 @@
 
 void testPlotter()
 {
-    Reconstruction * rec = new Reconstruction("config/configFile.txt");
+    Reconstruction * rec = Reconstruction::getInstance("config/configFile.txt");
     rec->runReconstruction();
 }

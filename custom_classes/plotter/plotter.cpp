@@ -81,7 +81,10 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
     const int nHist=arrHisto->GetEntries();
     double mean[nHist];
     double bW=2.;
-    if(bol==true) TFile* output1= new TFile(outputPath.c_str(), "recreate");
+
+    TFile* output1 = NULL;
+    if(bol==true) output1 = new TFile(outputPath.c_str(), "recreate");
+
     for(int ab=0;ab<nHist;ab++)
     {
       TH1D* hRes=(TH1D*)arrHisto->At(ab);
@@ -111,6 +114,7 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
            }
         
         hRes->Draw("E");
+        if(bol) output1->cd();
         hRes->Write();
       
         cout<<"---elemento="<<ab<<" molt="<<Xarray[ab]<<" ----"<<endl;
@@ -155,7 +159,10 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
       if (nEventsArr[ab]>0.) efficiencyErr[ab]=sqrt((entriesIn/(nEventsArr[ab]*nEventsArr[ab])) + entriesIn*entriesIn/(nEventsArr[ab]*nEventsArr[ab]*nEventsArr[ab]) ); //poisson and propagation
       else efficiencyErr[ab]=0.;
       cout<<"efficienza err="<<efficiencyErr[ab]<<endl;
+
+      delete hRes;
     }
+    if(bol) output1->Close();
   }
 
 
@@ -225,6 +232,7 @@ void Plotter::runPlots()
    TCanvas* c1= new TCanvas("c1","Efficiency vs Multiplicity",80,80,1500,1000);
    c1->cd();
    effmolt->Draw("ap");
+   output->cd();
    effmolt->Write();
 
    TGraphErrors *resmolt = new TGraphErrors(indexh,Molt,resolutionM,errMolt,resolutionErrM);
@@ -232,6 +240,7 @@ void Plotter::runPlots()
    TCanvas* c2= new TCanvas("c2","Resolution vs Multiplicity",80,80,1500,1000);
    c2->cd();
    resmolt->Draw("ap");
+   output->cd();
    resmolt->Write();//da scivere a MAsera nel readme, a molteplicità 0 ho messo quelli senza distinzione di molteplicità
 
 
@@ -276,6 +285,7 @@ void Plotter::runPlots()
    TCanvas* c3= new TCanvas("c3","Efficiency vs Vertex Z",80,80,1500,1000);
    c3->cd();
    effZreal->Draw("ap");
+   output->cd();
    effZreal->Write();
 
    TGraphErrors *resZreal = new TGraphErrors(indexh2,midZ,resolutionZ,errZmid,resolutionErrZ);
@@ -283,9 +293,10 @@ void Plotter::runPlots()
    TCanvas* c4= new TCanvas("c4","Resolution vs Vertex Z",80,80,1500,1000);
    c4->cd();
    resZreal->Draw("ap");
+   output->cd();
    resZreal->Write();
 
-   output->Write();
+   //output->Write();
    output->Close();
 
    
