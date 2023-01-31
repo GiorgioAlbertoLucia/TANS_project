@@ -59,7 +59,8 @@
         "Analysis.C": "cpp",
         "ReadTree.C": "cpp",
         "CompileAll.C": "cpp",
-        "Simulation.C": "cpp"
+        "Simulation.C": "cpp",
+        "animation.C": "cpp"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
 }
