@@ -35,8 +35,8 @@ Vertex Event::partGeneration(TH1I& hMultiplicity, TH1F& hEta)
     // to generate new particles, delete the old ones
     if (fPrimaryVertex.getMultiplicity() > 0)   fParticleArray.clear();      
 
-    const int multiplicity = hMultiplicity.GetRandom();         
-    //const int multiplicity = int(gRandom->Rndm()*10);
+    //const int multiplicity = hMultiplicity.GetRandom();         
+    const int multiplicity = 1.;
     fPrimaryVertex = Vertex(gRandom->Gaus(0., 0.01), gRandom->Gaus(0., 0.01), gRandom->Gaus(0., 5.3), multiplicity);
 
     fParticleArray.reserve(fPrimaryVertex.getMultiplicity());
