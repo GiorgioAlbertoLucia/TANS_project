@@ -136,18 +136,24 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
         }
       }
   
-      resolution[ab]=hRes->GetStdDev();
+      resolution[ab]=hRes->GetRMS();
       
-      resolutionErr[ab]=hRes->GetStdDevError();
+      resolutionErr[ab]=hRes->GetRMSError();
      
       mean[ab]=hRes->GetMean();
       
-      const int binMax=hRes->FindBin(mean[ab]+3*resolution[ab]); 
+      /*const int binMax=hRes->FindBin(mean[ab]+3*resolution[ab]); 
       if(bol==true) cout<<"+ 3 sigma ="<<Xarray[ab]<<" ="<<mean[ab]+3*resolution[ab]<<" -3 sigma="<<mean[ab]-3*resolution[ab]<<endl;
       const int binMin=hRes->FindBin(mean[ab]-3*resolution[ab]);
       double entriesIn=0.; 
       if(bol==true) cout<<" max="<<binMax<<" min="<<binMin<<endl;
-      for(int t=binMin;t<binMax;t++)
+      for(int t=binMin;t<=binMax;t++)
+      {
+           entriesIn=entriesIn+hRes->GetBinContent(t);//controllare sta cosa
+           
+      }*/
+      double entriesIn=0.;
+      for(int t=1;t<8001;t++)
       {
            entriesIn=entriesIn+hRes->GetBinContent(t);//controllare sta cosa
            
@@ -263,7 +269,7 @@ void Plotter::runPlots()
    {
     midZ[j]=histoZreal->GetXaxis()->GetBinCenter(j+1);//provare a togliere +1
     errZmid[j]=bW/2;
-    TH1D* resHisto2 =  new TH1D(Form("resHisto%d", j),Form("Hist of Zrec-Ztrue,  Ztrue:_%4.1f",midZ[j]), int(sqrt(histoZreal->GetBinContent(j+1))+1),-2000.,2000.);//qui GetBinCintent prende 0
+    TH1D* resHisto2 =  new TH1D(Form("resHisto%d", j),Form("Hist of Zrec-Ztrue,  Ztrue:_%4.1f",midZ[j]), 8000,-2000.,2000.);//qui GetBinCintent prende 0
     arrHisto2->AddAtAndExpand(resHisto2,indexh2++);
    }
 
