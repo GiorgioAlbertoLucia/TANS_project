@@ -25,9 +25,10 @@
  * @param markerStyle 
  * @param color 
  */
-void setGraph(TGraph* graph, const char * title, const char * xTitle = "x axis", 
+void setGraph(TGraph* graph, const char * name, const char * title, const char * xTitle = "x axis", 
                       const char * yTitle = "y axis", const int markerStyle = 0, const int color = 0)
 {
+  graph->SetName(name);
   graph->SetTitle(title);
   graph->GetXaxis()->SetTitle(xTitle);
   graph->GetYaxis()->SetTitle(yTitle);
@@ -179,8 +180,8 @@ void Plotter::runPlots()
    TFile* output = new TFile(root["output"]["reconstruction"]["path"].As<string>().c_str(), "recreate"); 
    TObjArray* arrHisto = new TObjArray(); 
    
-   int nMolt=17;
-   double Molt[]={1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,12.,15.,20.,30.,40.,50.,65.};
+   int nMolt=16;
+   double Molt[]={2.,3.,4.,5.,6.,7.,8.,9.,10.,12.,15.,20.,30.,40.,50.,65.};
    double errMolt[nMolt]; 
    for(int c=0;c<nMolt;c++)
    {
@@ -228,7 +229,7 @@ void Plotter::runPlots()
    } 
 
    TGraphAsymmErrors *effmolt = new TGraphAsymmErrors(indexh,Molt,efficiencyM,errMolt,errMolt,efficiencyErrM,errEffMhigh);
-   setGraph(effmolt, "Efficiency vs Multiplicity", "Multiplicity", "Effciency", 8, kBlue);
+   setGraph(effmolt,"eff_vs_mult",  "Efficiency vs Multiplicity", "Multiplicity", "Effciency", 8, kBlue);
    TCanvas* c1= new TCanvas("c1","Efficiency vs Multiplicity",80,80,1500,1000);
    c1->cd();
    effmolt->Draw("ap");
@@ -236,7 +237,7 @@ void Plotter::runPlots()
    effmolt->Write();
 
    TGraphErrors *resmolt = new TGraphErrors(indexh,Molt,resolutionM,errMolt,resolutionErrM);
-   setGraph(resmolt, "Resolution vs Multiplicity", "Multiplicity", "Resolution [#mum]", 8, kOrange-3);
+   setGraph(resmolt, "res_vs_mult", "Resolution vs Multiplicity", "Multiplicity", "Resolution [#mum]", 8, kOrange-3);
    TCanvas* c2= new TCanvas("c2","Resolution vs Multiplicity",80,80,1500,1000);
    c2->cd();
    resmolt->Draw("ap");
@@ -281,7 +282,7 @@ void Plotter::runPlots()
     else errEffZhigh[i]=efficiencyErrZ[i];
    } 
    TGraphAsymmErrors *effZreal = new TGraphAsymmErrors(indexh2,midZ,efficiencyZ,errZmid,errZmid,efficiencyErrZ,errEffZhigh); 
-   setGraph(effZreal, "Efficiency vs Vertex Z", "Z_true [cm]", "Efficiency", 8, kGreen);
+   setGraph(effZreal, "eff_vs_z", "Efficiency vs Vertex Z", "Z_true [cm]", "Efficiency", 8, kGreen);
    TCanvas* c3= new TCanvas("c3","Efficiency vs Vertex Z",80,80,1500,1000);
    c3->cd();
    effZreal->Draw("ap");
@@ -289,7 +290,7 @@ void Plotter::runPlots()
    effZreal->Write();
 
    TGraphErrors *resZreal = new TGraphErrors(indexh2,midZ,resolutionZ,errZmid,resolutionErrZ);
-   setGraph(resZreal, "Resolution vs Vertex Z", "Z_true [cm]", "Resolution [#mum]", 8, kRed);
+   setGraph(resZreal, "res_vs_z", "Resolution vs Vertex Z", "Z_true [cm]", "Resolution [#mum]", 8, kRed);
    TCanvas* c4= new TCanvas("c4","Resolution vs Vertex Z",80,80,1500,1000);
    c4->cd();
    resZreal->Draw("ap");

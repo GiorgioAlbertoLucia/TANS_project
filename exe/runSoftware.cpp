@@ -1,4 +1,4 @@
-void runSoftware(const int nEvents=100000, unsigned int seed=5467)
+void runSoftware(const int nEvents=1000000, unsigned int seed=5467)
 {
     gRandom->SetSeed(seed);
 
