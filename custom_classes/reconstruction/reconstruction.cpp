@@ -11,6 +11,7 @@
 #include <TCanvas.h>
 #include <TF1.h>
 #include <TStopwatch.h>
+#include<TGraphErrors.h>
 
 #include "../hit/hit.hpp"
 #include "../pointCC/pointCC.hpp"
@@ -50,6 +51,7 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2)
  */
 void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray *hitsArray2)
 {
+    double Molt[]={2.,3.,4.,5.,6.,7.,8.,9.,10.,12.,15.,20.,30.,40.,50.,65.};
     Yaml::Node constants;
     Yaml::Parse(constants, fConstantsFile.c_str());
 
@@ -115,97 +117,49 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
          zVertVecRec.push_back(som/zTrackVert1.size());
     }
     else 
-    if(binmax>1 && (b>0 || c>0)) 
     {
-        for(unsigned long int aa=0; aa<zTrackVert.size(); aa++)          
+        if(nMaxBin>1 && (b>0 || c>0)) 
         {
-            if(b>0)
+            for(unsigned long int aa=0; aa<zTrackVert.size(); aa++)          
             {
-                if((zTrackVert[aa]<=zMax+3*binW/2)&&(zTrackVert[aa]>=zMax-binW/2)) 
+                if(b>0)
                 {
-                    zTrackVert1.push_back(zTrackVert[aa]);
+                    if((zTrackVert[aa]<=zMax+3*binW/2)&&(zTrackVert[aa]>=zMax-binW/2)) 
+                    {
+                        zTrackVert1.push_back(zTrackVert[aa]);
+                    }
+                }
+                if(c>0)
+                {
+                    if((zTrackVert[aa]<=zMax+binW/2)&&(zTrackVert[aa]>=zMax-3*binW/2)) 
+                    {
+                        zTrackVert1.push_back(zTrackVert[aa]);
+                    }  
                 }
             }
-            if(c>0)
-            {
-                if((zTrackVert[aa]<=zMax+binW/2)&&(zTrackVert[aa]>=zMax-3*binW/2)) 
-                {
-                    zTrackVert1.push_back(zTrackVert[aa]);
-                }  
-            }
+            double som = 0.;
+            for(unsigned long int a=0; a<zTrackVert1.size(); a++) som = som+zTrackVert1[a];
+            zVertVecRec.push_back(som/zTrackVert1.size());
         }
-        double som = 0.;
-        for(unsigned long int a=0; a<zTrackVert1.size(); a++) som = som+zTrackVert1[a];
-        zVertVecRec.push_back(som/zTrackVert1.size());
+        else
+        {
+            zVertVecRec.push_back(1000.);
+          
+        }
     }
-    else zVertVecRec.push_back(1000.);
         
 }
     
-    //----------------------------------------------------
-    /*int size=int(zTrackVert.size());
-    
-    for(int g=0;g<size;g++)
-    {
-        
-        double  temp=0.;
-        for(int w=g+1;w<size;w++)
-        {
-            
-            if(zTrackVert[g]>zTrackVert[w]) 
-            {   
-                
-                temp=zTrackVert[g];
-                zTrackVert[g]=zTrackVert[w];
-                zTrackVert[w]=temp;
-                
-            }
-        }
-    }
-    
-    if(size>0)
-    {   
-      int k=0;
-      int nummax=0;
-      int indmax=0;
-      int num=0;
-      for(int i=0;i<size;i++)
-      {
-        k=i;
-        num=0;
-        
-        while((zTrackVert[k]<=zTrackVert[i]+0.5) && (zTrackVert[k]>=zTrackVert[i]))
-        {
-            num++;
-            k++;
-        }
-        if(num>nummax)
-        { 
-            nummax=num;
-            indmax=i;
-        }
-      }
-        //if((num>0) && (num==nummax)) f++;
-        double som=0.;
-        for(int g=indmax;g<indmax+nummax;g++)
-        {
-            som=som+zTrackVert[g];
-        }
-        zVertVecRec.push_back(som/nummax);
-    }
-      
-        
-    else zVertVecRec.push_back(1000.);
-}*/
+
+
 
 /*      PUBLIC      */
 
 /**
  * @brief Create an instance of the singleton object
  * 
- * @param configFile general configuration file 
- * @param constantsFile configuration file containing constants (as max number of noise points, 
- * tolerance on the phi angle and on the z ccordinate for vertex reconstruction)
+ * @param configFile 
+ * @param constantsFile
  * @return Reconstruction* 
  */
 Reconstruction * Reconstruction::getInstance(const char * configFile, const char * constantsFile)
@@ -225,14 +179,19 @@ void Reconstruction::destroy()
 }
 
 /**
- * @brief Read data from a TTree and perform analysis on primary vertex reconstruction results.
+ * @brief read data from tree
  * 
  */
 void Reconstruction::runReconstruction()
 { 
     cout << "-------------------------------------------" << endl;
     cout << "Begin reconstruction..." << endl;
-
+  
+    for(int i=0;i<16;i++) 
+    {
+        numfail[i]=0.;
+        
+    }
     TStopwatch timer;
     timer.Start();
     
@@ -244,14 +203,14 @@ void Reconstruction::runReconstruction()
 
     TFile hfile(root["tree"]["simulation"]["path"].As<std::string>().c_str());
     TTree *tree = (TTree*)hfile.Get(root["tree"]["simulation"]["name"].As<std::string>().c_str());
-    //tree->SetDirectory(0);  // giogio
+    
 
 
     const int nlayer = root["n_detectors"].As<int>() - 1; // n_detectors counts beam pipe as well
     
     TBranch *br[nlayer];
     TBranch *bv = tree->GetBranch("Vertex");
-    //TH1D* smear = new TH1D("smear","smearing",10000,-0.5,0.5);
+    
     for(int b=0; b<nlayer; b++)
     {
         br[b]=tree->GetBranch(Form("HitsL%d",b+1));
@@ -276,10 +235,10 @@ void Reconstruction::runReconstruction()
     for(int ev=0; ev<nEvents; ev++)
     {
         double sme=0.;
-        if(ev%50000==0)    cout << "Processing event " << ev << "..." << endl;
+        if(ev%30000==0)    cout << "Processing event " << ev << "..." << endl;
         tree->GetEvent(ev);
         zVertVec.push_back(vertex->getZ());
-        
+        double mm=vertex->getMultiplicity(); //da togliere dopo
         zMoltVec.push_back(vertex->getMultiplicity());
 
         for(int ll=1; ll<nlayer; ll++)
@@ -294,10 +253,7 @@ void Reconstruction::runReconstruction()
             for(int i=0;i<numHits;i++)//smearing
             {  
                 Hit *hitptr2 = (Hit*)hitsArray[ll]->At(i);
-                //sme=hitptr2->getPhi();
                 hitptr2->smearing();
-                //smear->Fill(sme-hitptr2->getPhi());
-                
             }
 
             const int noi = int(gRandom->Rndm()*constants["noise"]["nPoints"].As<int>());//add noise
@@ -310,7 +266,7 @@ void Reconstruction::runReconstruction()
         }
 
         vertexReconstruction(hitsArray[0], hitsArray[1]);
-        if(ev==105)   // save event reconstructed tracks
+        if(ev==105)   
         {   
             Recorder * recorder = Recorder::getInstance(root["recording"]["reconstruction"]["path"].As<std::string>().c_str());
             recorder->recordReconstruction(hitsArray[0], hitsArray[1], zVertVec[ev]);
@@ -343,6 +299,7 @@ void Reconstruction::runReconstruction()
         if(zVertVecRec[j]<999.) histores1->Fill(zVertVecRec[j]);
         histores2->Fill(zVertVec[j]);
     }
+ 
     TCanvas* c41= new TCanvas("c41","residues",80,80,1500,1000);
    c41->cd();
    histores->Draw();
