@@ -51,7 +51,6 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2)
  */
 void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray *hitsArray2)
 {
-    double Molt[]={2.,3.,4.,5.,6.,7.,8.,9.,10.,12.,15.,20.,30.,40.,50.,65.};
     Yaml::Node constants;
     Yaml::Parse(constants, fConstantsFile.c_str());
 
