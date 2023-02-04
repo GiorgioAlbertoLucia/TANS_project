@@ -47,7 +47,6 @@ void setGraph(TGraph* graph, const char * name, const char * title, const char *
  void Plotter::addVector(vector<double> &zVertReal1, vector<double> &zVertRec1, vector<double> &moltReal1) // e proprio non va provo con i puntatori
 {
    nEvents=zVertReal1.size();
-   cout<<"nEvents="<<nEvents<<endl;
    zVertReal.reserve(nEvents);
    zVertRec.reserve(nEvents);
    moltReal.reserve(nEvents);
@@ -117,10 +116,7 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
         hRes->Draw("E");
         if(bol) output1->cd();
         hRes->Write();
-      
-        cout<<"---elemento="<<ab<<" molt="<<Xarray[ab]<<" ----"<<endl;
-        cout<<"elemento del vettore"<<nEventsArr[ab]<<endl;
-        cout<<"entrate nell'isto"<<hRes->GetEntries()<<endl;
+    
       }
 
       else
@@ -142,24 +138,23 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
      
       mean[ab]=hRes->GetMean();
       
-      const int binMax=hRes->FindBin(mean[ab]+3*resolution[ab]); 
+      /*const int binMax=hRes->FindBin(mean[ab]+3*resolution[ab]); 
       if(bol==true) cout<<"+ 3 sigma ="<<Xarray[ab]<<" ="<<mean[ab]+3*resolution[ab]<<" -3 sigma="<<mean[ab]-3*resolution[ab]<<endl;
       const int binMin=hRes->FindBin(mean[ab]-3*resolution[ab]);
       double entriesIn=0.; 
-      if(bol==true) cout<<" max="<<binMax<<" min="<<binMin<<endl;
+      
       for(int t=binMin;t<=binMax;t++)
       {
            entriesIn=entriesIn+hRes->GetBinContent(t);//controllare sta cosa
            
-      }
-      /*double entriesIn=0.;
+      }*/
+      double entriesIn=0.;
       for(int t=1;t<8001;t++)
       {
            entriesIn=entriesIn+hRes->GetBinContent(t);//controllare sta cosa
            
-      }*/
+      }
 
-      if(bol==true) cout<<"entriesIn="<<entriesIn<<" n="<<nEventsArr[ab]<<endl;
       if(nEventsArr[ab]>0.) efficiency[ab]=entriesIn/nEventsArr[ab];
       else efficiency[ab]=0.;
       cout<<"efficienza="<<efficiency[ab]<<endl;
