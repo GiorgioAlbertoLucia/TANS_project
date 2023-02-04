@@ -142,7 +142,7 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
      
       mean[ab]=hRes->GetMean();
       
-      /*const int binMax=hRes->FindBin(mean[ab]+3*resolution[ab]); 
+      const int binMax=hRes->FindBin(mean[ab]+3*resolution[ab]); 
       if(bol==true) cout<<"+ 3 sigma ="<<Xarray[ab]<<" ="<<mean[ab]+3*resolution[ab]<<" -3 sigma="<<mean[ab]-3*resolution[ab]<<endl;
       const int binMin=hRes->FindBin(mean[ab]-3*resolution[ab]);
       double entriesIn=0.; 
@@ -151,13 +151,13 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
       {
            entriesIn=entriesIn+hRes->GetBinContent(t);//controllare sta cosa
            
-      }*/
-      double entriesIn=0.;
+      }
+      /*double entriesIn=0.;
       for(int t=1;t<8001;t++)
       {
            entriesIn=entriesIn+hRes->GetBinContent(t);//controllare sta cosa
            
-      }
+      }*/
 
       if(bol==true) cout<<"entriesIn="<<entriesIn<<" n="<<nEventsArr[ab]<<endl;
       if(nEventsArr[ab]>0.) efficiency[ab]=entriesIn/nEventsArr[ab];
