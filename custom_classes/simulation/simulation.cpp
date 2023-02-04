@@ -135,7 +135,9 @@ void Simulation::runSimulation(const int nEvents = 100000)
         }   
         
         tree->Fill();
-        for(int i=0; i<(nDetectors-1); i++)     hitArrayVector[i]->Clear();
+        if(ev%50000==0)  cout << "TClonesArray entries before Clear: " << hitArrayVector[0]->GetEntries() << endl;
+        for(int i=0; i<(nDetectors-1); i++)     hitArrayVector[i]->Clear("C");
+        if(ev%50000==0)  cout << "TClonesArray entries after Clear: " << hitArrayVector[0]->GetEntries() << endl << endl;
         event->clear();
     }
 

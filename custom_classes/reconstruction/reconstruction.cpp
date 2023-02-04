@@ -54,10 +54,10 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
     Yaml::Parse(constants, fConstantsFile.c_str());
 
     double phi = 0.;
-    const double deltaPhi = constants["recTolerance"]["deltaPhi"].As<double>(); 
+    const double deltaPhi = 0.01; //constants["recTolerance"]["deltaPhi"].As<double>(); 
     double ztemp = 0;
     vector<double> zTrackVert;
-    const double binW = constants["recTolerance"]["zBinWidth"].As<double>();
+    const double binW = 0.5; //constants["recTolerance"]["zBinWidth"].As<double>();
     TH1D* histoHit = new TH1D("histoHit","Vertex's z rec",int(60./binW),-60.*binW,60.*binW);
      
     for(int i=0; i<hitsArray1->GetEntries(); i++)                          
@@ -273,9 +273,10 @@ void Reconstruction::runReconstruction()
     zMoltVec.reserve(nEvents);
     zVertVecRec.reserve(nEvents);
 
+    const int noiseMax = int(gRandom->Rndm()*constants["noise"]["nPoints"].As<int>());
+
     for(int ev=0; ev<nEvents; ev++)
     {
-        double sme=0.;
         if(ev%50000==0)    cout << "Processing event " << ev << "..." << endl;
         tree->GetEvent(ev);
         zVertVec.push_back(vertex->getZ());
@@ -294,13 +295,11 @@ void Reconstruction::runReconstruction()
             for(int i=0;i<numHits;i++)//smearing
             {  
                 Hit *hitptr2 = (Hit*)hitsArray[ll]->At(i);
-                //sme=hitptr2->getPhi();
                 hitptr2->smearing();
-                //smear->Fill(sme-hitptr2->getPhi());
-                
             }
 
-            const int noi = int(gRandom->Rndm()*constants["noise"]["nPoints"].As<int>());//add noise
+            //const int noi = //add noise
+            const int noi = int(gRandom->Rndm()*noiseMax);//add noise
             hitsArray[ll]->Expand(hitsArray[ll]->GetEntries()+noi);
             for(int i=numHits; i<numHits+noi; i++)
             {
