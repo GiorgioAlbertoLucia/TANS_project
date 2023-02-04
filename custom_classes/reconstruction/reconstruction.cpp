@@ -187,11 +187,7 @@ void Reconstruction::runReconstruction()
     cout << "-------------------------------------------" << endl;
     cout << "Begin reconstruction..." << endl;
   
-    for(int i=0;i<16;i++) 
-    {
-        numfail[i]=0.;
-        
-    }
+  
     TStopwatch timer;
     timer.Start();
     
