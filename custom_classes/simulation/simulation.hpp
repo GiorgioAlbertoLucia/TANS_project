@@ -9,10 +9,15 @@
 
 #include "../vertex/vertex.hpp"
 
+/**
+ * @brief Singleton class to simulate multiple events and store relevant informations in a TTree
+ * 
+ */
 class Simulation
 {
     public:
         Simulation(const Simulation& simulation) = delete; // delete copy constructor for a singleton class
+        void operator=(const Simulation& simulation) = delete;  // delete operator= for singleton object
 
         static Simulation* getInstance(const char * configFile);
         static void destroy();

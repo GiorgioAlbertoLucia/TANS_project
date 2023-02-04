@@ -45,7 +45,7 @@ void doubleGraph()
     // graphs settings
     string title = root["general"]["title"].As<string>();
     string xAxis = root["general"]["xAxis"].As<string>();
-    string yAxis = root["general"]["yAxis"].As<string>() + " [#mum]";
+    string yAxis = root["general"]["yAxis"].As<string>();// + " [#mum]";
 
     setGraph(graph1, title.c_str(), xAxis.c_str(), yAxis.c_str(), root["graph"][0]["marker"].As<int>(), root["graph"][0]["color"].As<int>());
     setGraph(graph2, title.c_str(), xAxis.c_str(), yAxis.c_str(), root["graph"][1]["marker"].As<int>(), root["graph"][1]["color"].As<int>());
@@ -53,6 +53,7 @@ void doubleGraph()
     // set legend
     TLegend * leg = new TLegend(root["legend"]["xmin"].As<double>(), root["legend"]["ymin"].As<double>(),
                                 root["legend"]["xmax"].As<double>(), root["legend"]["ymax"].As<double>());
+    leg->SetTextSize(root["legend"]["textsize"].As<double>());
     leg->SetHeader(root["legend"]["title"].As<string>().c_str(), "c");
     leg->AddEntry(graph1, root["legend"]["entry1"].As<string>().c_str(), "lep");
     leg->AddEntry(graph2, root["legend"]["entry2"].As<string>().c_str(), "lep");
@@ -61,8 +62,8 @@ void doubleGraph()
     TCanvas * canvas = new TCanvas("canvas", "", root["canvas"]["width"].As<double>(), root["canvas"]["height"].As<double>());
     if(root["canvas"]["grid"].As<bool>()) canvas->SetGrid();
 
-    graph2->Draw();
-    graph1->Draw("same");
+    graph1->Draw();
+    graph2->Draw("same");
     leg->Draw();
 
     // save in file

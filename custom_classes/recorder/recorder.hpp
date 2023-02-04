@@ -8,7 +8,8 @@
 class Recorder
 {
     public:
-        Recorder(const Recorder& recorder) = delete;
+        Recorder(const Recorder& recorder) = delete;            // delete copy constructor for a singleton class
+        void operator=(const Recorder& recorder) = delete;      // delete operator= for singleton object
 
         static Recorder* getInstance(const char * filePath);
         static void destroy();

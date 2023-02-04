@@ -60,7 +60,8 @@
         "ReadTree.C": "cpp",
         "CompileAll.C": "cpp",
         "Simulation.C": "cpp",
-        "animation.C": "cpp"
+        "animation.C": "cpp",
+        "complex": "cpp"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
 }

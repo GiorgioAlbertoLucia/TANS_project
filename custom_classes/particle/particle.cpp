@@ -60,7 +60,9 @@ Particle::~Particle()
 * @param detector 
 * @return Hit 
 */
-Hit Particle::transport(Detector& detector)
+//Hit Particle::transport(Detector& detector)
+//void Particle::transport(const double R, Hit& hit)
+Hit Particle::transport(const double R)
 {
     const double theta = this->evalTheta();
     const double c1 = sin(theta) * cos(fPhi);
@@ -70,7 +72,7 @@ Hit Particle::transport(Detector& detector)
     const double x0 = fLastHP.getX();
     const double y0 = fLastHP.getY();
     const double z0 = fLastHP.getZ();
-    const double R = detector.radius - (detector.width/2);
+    //const double R = detector.radius - (detector.width/2);
     const double Delta = (x0*c1 + y0*c2)*(x0*c1 + y0*c2) - (c1*c1 + c2*c2)*(x0*x0 + y0*y0 - R*R);
 
     const double t = (-(x0*c1 + y0*c2) + sqrt(Delta))/(c1*c1 + c2*c2);
@@ -82,14 +84,10 @@ Hit Particle::transport(Detector& detector)
     if(phi < 0) phi += 2. * TMath::Pi();
 
     // create a hit
-    Hit hit;
-    //if(theta==0)    hit = Hit(0., 0., 14.);
-    //else            
-    hit = Hit(sqrt(x*x + y*y), phi, z0+c3*t);
+    //hit = Hit(sqrt(x*x + y*y), phi, z0+c3*t);
+    Hit hit(sqrt(x*x + y*y), phi, z0+c3*t);
 
-    // update last hit position for the particle 
-    //if(theta==0)    fLastHP = Hit(0., 0., 14.);
-    //else            
+    // update last hit position for the particle
     fLastHP = Hit(sqrt(x*x + y*y), phi, z0+c3*t);
     
     return hit;

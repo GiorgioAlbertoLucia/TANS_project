@@ -5,13 +5,14 @@
 
 # Detector informations
 # (for detector color see: https://root.cern.ch/doc/master/classTColor.html)
+
 n_detectors:  3   # beam pipe included
 
 detectors:
     -   radius:                 3       #cm
         width:                  0.08    #cm
         lenght:                 27      #cm
-        multiple_scattering:    true
+        multiple_scattering:    false
         color:                  424     #kCyan-8
 
     -   radius:                 4       #cm
@@ -55,6 +56,6 @@ output:
     3Dmodel:
         path:   output/3Dmodel.root                 # file the 3Dmodel will be saved into
     residues:
-        path:   output/residuesGraphs_noise100.root          # file storing ...
+        path:   output/residuesGraphs_noise10.root          # file storing ...
     reconstruction:
-        path:   output/reconstructionGraphs_noise100.root    # file storing ...
+        path:   output/reconstructionGraphs_noise10.root    # file storing ...

@@ -203,8 +203,9 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
 /**
  * @brief Create an instance of the singleton object
  * 
- * @param configFile 
- * @param constantsFile
+ * @param configFile general configuration file 
+ * @param constantsFile configuration file containing constants (as max number of noise points, 
+ * tolerance on the phi angle and on the z ccordinate for vertex reconstruction)
  * @return Reconstruction* 
  */
 Reconstruction * Reconstruction::getInstance(const char * configFile, const char * constantsFile)
@@ -224,7 +225,7 @@ void Reconstruction::destroy()
 }
 
 /**
- * @brief read data from tree
+ * @brief Read data from a TTree and perform analysis on primary vertex reconstruction results.
  * 
  */
 void Reconstruction::runReconstruction()
@@ -275,7 +276,7 @@ void Reconstruction::runReconstruction()
     for(int ev=0; ev<nEvents; ev++)
     {
         double sme=0.;
-        if(ev%30000==0)    cout << "Processing event " << ev << "..." << endl;
+        if(ev%50000==0)    cout << "Processing event " << ev << "..." << endl;
         tree->GetEvent(ev);
         zVertVec.push_back(vertex->getZ());
         

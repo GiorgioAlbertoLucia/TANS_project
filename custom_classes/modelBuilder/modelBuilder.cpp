@@ -12,6 +12,7 @@
 #include <TPolyLine3D.h>
 #include <TColor.h>
 #include <TSystem.h>
+#include <TTimer.h>
 
 
 
@@ -100,7 +101,7 @@ void ModelBuilder::createDetectorLayout(const char * configFile)
  * 
  * @param style TSyle
  */
-void ModelBuilder::addParticleTracks(const char * recordFile, unsigned long int color, const int style)
+void ModelBuilder::addParticleTracks(const char * recordFile, unsigned long int color, unsigned long int style)
 {
     Yaml::Node recordRoot;
     Yaml::Parse(recordRoot, recordFile);
@@ -154,6 +155,88 @@ void ModelBuilder::addParticleTracks(const char * recordFile, unsigned long int 
 }
 
 /**
+ * @brief Initializes tracks as TPolyLine3D and adds the vertex position
+ * 
+ * @param recordFile 
+ */
+void ModelBuilder::addVertexPoint(const char * recordFile, unsigned long int color, unsigned long int style)
+{
+    Yaml::Node recordRoot;
+    Yaml::Parse(recordRoot, recordFile);
+
+    const int multiplicity = recordRoot["Vertex"]["multiplicity"].As<int>();
+    const int prevSize = fLineVectorSize;        // previous size of the vector
+
+    if(fLineVectorSize != 0)
+    {
+        TPolyLine3D* temp = new TPolyLine3D[prevSize];
+        for(int i=0; i<prevSize; i++)   temp[i] = fLineVector[i];
+
+        delete []fLineVector;
+        const int newSize = prevSize + multiplicity;
+        fLineVectorSize = newSize;
+        fLineVector = new TPolyLine3D[newSize];
+        for(int i=0; i<prevSize; i++)   fLineVector[i] = temp[i];
+
+        delete []temp;
+    }
+    else
+    {
+        fLineVectorSize = multiplicity;
+        fLineVector = new TPolyLine3D[multiplicity];
+    }
+
+    for(int i=prevSize; i<prevSize+multiplicity; i++)
+    {
+        fLineVector[i] = TPolyLine3D();
+
+        // set vertex position
+        fLineVector[i].SetPoint(0,
+                                recordRoot["Vertex"]["x"].As<double>(),
+                                recordRoot["Vertex"]["y"].As<double>(),
+                                recordRoot["Vertex"]["z"].As<double>());
+        
+        fLineVector[i].SetLineColor(color);
+        fLineVector[i].SetLineStyle(style);
+    }
+
+}
+
+/**
+ * @brief Adds hit points on a given detector
+ * 
+ * @param recordFile 
+ * @param detectorIndex 
+ */
+void ModelBuilder::addTracksOnDetector(const char * recordFile, const int detectorIndex)
+{
+    Yaml::Node recordRoot;
+    Yaml::Parse(recordRoot, recordFile);
+
+    for(int i=0; i<fLineVectorSize; i++)
+    {
+        // set intersection points
+        fLineVector[i].SetPoint(detectorIndex+1,
+                                recordRoot["DetectorLayers"][detectorIndex]["Particles"][i]["x"].As<double>(),
+                                recordRoot["DetectorLayers"][detectorIndex]["Particles"][i]["y"].As<double>(),
+                                recordRoot["DetectorLayers"][detectorIndex]["Particles"][i]["z"].As<double>());
+    }
+}
+
+void animTest()
+{
+    cout << "Up on melancholy hill" << endl;
+}
+
+void ModelBuilder::animateParticleTracks(const char * animFile, const char * recordFile, unsigned long int color, unsigned long int style)
+{
+    TTimer timer(20);
+
+    timer.SetCommand("animTest()");
+    timer.TurnOn();
+}
+
+/**
  * @brief Adds tracks of particles reading from a .txt configuration file. The file must store
  * particle positions in cartesian coordinates. Creates an animation as a .gif file.
  * 
@@ -167,7 +250,8 @@ void ModelBuilder::addParticleTracks(const char * recordFile, unsigned long int 
  * 
  * @param style TSyle
  */
-void ModelBuilder::animateParticleTracks(const char * animFile, const char * recordFile, unsigned long int color, const int style)
+/*
+void ModelBuilder::animateParticleTracks(const char * animFile, const char * recordFile, unsigned long int color, unsigned long int style)
 {
     Yaml::Node recordRoot;
     Yaml::Parse(recordRoot, recordFile);
@@ -234,6 +318,7 @@ void ModelBuilder::animateParticleTracks(const char * animFile, const char * rec
         canvas->Print(Form("%s+", animFile));
     }    
 }
+*/
 
 /**
  * @brief Removes all stored tracks

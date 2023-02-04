@@ -10,6 +10,11 @@
 #include "../hit/hit.hpp"
 #include "../vertex/vertex.hpp"
 
+/**
+ * @brief Singleton class to reconstruct the position of the primary vertex and perform analysis on that
+ * process (print efficiency and resolution graphs, ...).
+ * 
+ */
 class Reconstruction
 {
     public:

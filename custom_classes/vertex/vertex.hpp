@@ -5,7 +5,8 @@
 #include "../pointCC/pointCC.hpp"
 
 /**
- * @brief Class for vertex points. 
+ * @brief Class for vertex points. A vertex is a point in cylindrical coordinated associated with the 
+ * multiplicity of particle generated in that point.
  * 
  */
 class Vertex: public PointCC
@@ -17,11 +18,6 @@ class Vertex: public PointCC
         ~Vertex(){};
 
         int getMultiplicity() const {return fMultiplicity;};
-
-        //void VertexReconstruction(TBranch1, 2, 3);
-
-    protected:
-        //Retta(Punto1, 2) ? -> // returns z coord. of the vertex from two points
 
     private:
         int fMultiplicity;
