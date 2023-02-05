@@ -51,15 +51,16 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2)
  */
 void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray *hitsArray2)
 {
+    
     Yaml::Node constants;
     Yaml::Parse(constants, fConstantsFile.c_str());
 
     double phi = 0.;
-    const double deltaPhi = 0.01; //constants["recTolerance"]["deltaPhi"].As<double>(); 
+    const double deltaPhi = constants["recTolerance"]["deltaPhi"].As<double>(); 
     double ztemp = 0;
     vector<double> zTrackVert;
-    const double binW = 0.5; //constants["recTolerance"]["zBinWidth"].As<double>();
-    TH1D* histoHit = new TH1D("histoHit","Vertex's z rec",int(60./binW),-60.*binW,60.*binW);
+    const double binW = constants["recTolerance"]["zBinWidth"].As<double>();
+    TH1D histoHit("histoHit","Vertex's z rec",int(60./binW),-60.*binW,60.*binW);
      
     for(int i=0; i<hitsArray1->GetEntries(); i++)                          
     {
@@ -76,7 +77,7 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
                 {
                     ztemp = recZvert( hitptr,hitptr1);
                     zTrackVert.push_back(ztemp);
-                    histoHit->Fill(ztemp);
+                    histoHit.Fill(ztemp);
                 }
                 
             }
@@ -84,22 +85,22 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
         }
        
     }
-    int binmax = histoHit->GetMaximumBin();
-    double zMax = histoHit->GetXaxis()->GetBinCenter(binmax);
-    int nEvntsMax=histoHit->GetBinContent(binmax);
+    int binmax = histoHit.GetMaximumBin();
+    double zMax = histoHit.GetXaxis()->GetBinCenter(binmax);
+    int nEvntsMax=histoHit.GetBinContent(binmax);
     int nMaxBin=0;
     int c=0,b=0;
-    for(int rr=1;rr<histoHit->GetNbinsX();rr++)
+    for(int rr=1;rr<histoHit.GetNbinsX();rr++)
     {
-       if(histoHit->GetBinContent(rr)==nEvntsMax)  
+       if(histoHit.GetBinContent(rr)==nEvntsMax)  
        {
          nMaxBin++;
        }
     }
-    if(histoHit->GetBinContent(binmax-1)==nEvntsMax) c++;
-    if(histoHit->GetBinContent(binmax+1)==nEvntsMax) b++;
+    if(histoHit.GetBinContent(binmax-1)==nEvntsMax) c++;
+    if(histoHit.GetBinContent(binmax+1)==nEvntsMax) b++;
     
-    delete histoHit;
+  
 
     vector<double> zTrackVert1;
     if(nMaxBin==1)
@@ -117,18 +118,18 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
     }
     else 
     {
-        if(nMaxBin>1 && (b>0 || c>0)) 
+        if((nMaxBin==2) && (b==1 || c==1)) 
         {
             for(unsigned long int aa=0; aa<zTrackVert.size(); aa++)          
             {
-                if(b>0)
+                if(b==1)
                 {
                     if((zTrackVert[aa]<=zMax+3*binW/2)&&(zTrackVert[aa]>=zMax-binW/2)) 
                     {
                         zTrackVert1.push_back(zTrackVert[aa]);
                     }
                 }
-                if(c>0)
+                if(c==1)
                 {
                     if((zTrackVert[aa]<=zMax+binW/2)&&(zTrackVert[aa]>=zMax-3*binW/2)) 
                     {
@@ -186,7 +187,7 @@ void Reconstruction::runReconstruction()
     cout << "-------------------------------------------" << endl;
     cout << "Begin reconstruction..." << endl;
   
-  
+    
     TStopwatch timer;
     timer.Start();
     
@@ -227,14 +228,11 @@ void Reconstruction::runReconstruction()
     zMoltVec.reserve(nEvents);
     zVertVecRec.reserve(nEvents);
 
-    const int noiseMax = int(gRandom->Rndm()*constants["noise"]["nPoints"].As<int>());
-
     for(int ev=0; ev<nEvents; ev++)
     {
-        if(ev%50000==0)    cout << "Processing event " << ev << "..." << endl;
+        if(ev%30000==0)    cout << "Processing event " << ev << "..." << endl;
         tree->GetEvent(ev);
         zVertVec.push_back(vertex->getZ());
-        double mm=vertex->getMultiplicity(); //da togliere dopo
         zMoltVec.push_back(vertex->getMultiplicity());
 
         for(int ll=1; ll<nlayer; ll++)
@@ -252,8 +250,7 @@ void Reconstruction::runReconstruction()
                 hitptr2->smearing();
             }
 
-            //const int noi = //add noise
-            const int noi = int(gRandom->Rndm()*noiseMax);//add noise
+            const int noi = int(gRandom->Rndm()*constants["noise"]["nPoints"].As<int>());//add noise
             hitsArray[ll]->Expand(hitsArray[ll]->GetEntries()+noi);
             for(int i=numHits; i<numHits+noi; i++)
             {
