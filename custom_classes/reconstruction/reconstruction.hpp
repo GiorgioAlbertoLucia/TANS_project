@@ -27,25 +27,30 @@ class Reconstruction
         void runReconstruction();
 
     protected:
-        void vertexReconstruction(TClonesArray *hitsArray1,TClonesArray *hitsArray2); 
+        void vertexReconstruction(TClonesArray *hitsArray1,TClonesArray *hitsArray2, const int ev); 
         double recZvert(Hit *hit1,Hit *hit2);
         
         
     private:
         Reconstruction(){};
-        Reconstruction(const char * configFile, const char * constantsFile): 
-                fConfigFile(configFile), fConstantsFile(constantsFile) {};
-        virtual ~Reconstruction(){}; 
+        Reconstruction(const char * configFile, const char * constantsFile);
+        virtual ~Reconstruction(); 
 
         static Reconstruction* fInstancePtr;
 
         std::string fConfigFile;
         std::string fConstantsFile;
        
-        vector<double> zVertVec;
-        vector<double> zMoltVec;
-        vector<double> zVertVecRec;
+        //vector<double> zVertVec;
+        //vector<double> zMoltVec;
+        //vector<double> zVertVecRec;
 
+        double * zVertVec;
+        int zVertVecSize;
+        double * zMoltVec;
+        int zMoltVecSize;
+        double * zVertVecRec;
+        int zVertVecRecSize;
 
         
 

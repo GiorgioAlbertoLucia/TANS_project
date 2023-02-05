@@ -24,22 +24,11 @@ class ModelBuilder
 
         void initializeTotalSpace(const double x, const double y, const double z);
         void createDetectorLayout(const char * configFile);
-
-        // draw and animate tracks
         void addParticleTracks(const char * recordFile, unsigned long int color = 1, unsigned long int style = 1);
-        
-        void addVertexPoint(const char * recordFile, unsigned long int color = 1, unsigned long int style = 1);
-        void addTracksOnDetector(const char * recordFile, const int detectorIndex);
-        
-        void animateParticleTracks(const char * animFile, const char * recordFile, unsigned long int color = 1, unsigned long int style = 1);
-        //void animateParticleTracks(const char * animFile, const char * recordFile, unsigned long int color = 1, unsigned long int style = 1);
         void deleteTracks();
-
 
         void draw() const;
         void saveAs(const char * filePath) const;
-
-
 
     private:
         // private data members

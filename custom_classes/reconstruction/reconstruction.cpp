@@ -24,6 +24,30 @@
 /*  STATIC DATA MEMBER  */
 Reconstruction * Reconstruction::fInstancePtr = NULL;
 
+/*       PRIVATE        */
+
+/**
+ * @brief Construct a new Reconstruction:: Reconstruction object
+ * 
+ */
+Reconstruction::Reconstruction(const char * configFile, const char * constantsFile):
+    fConfigFile(configFile), fConstantsFile(constantsFile), zVertVec(NULL), zVertVecSize(0),
+    zMoltVec(NULL), zMoltVecSize(0), zVertVecRec(NULL), zVertVecRecSize(0)
+{
+
+}
+
+/**
+ * @brief Destroy the Reconstruction:: Reconstruction object
+ * 
+ */
+Reconstruction::~Reconstruction()
+{
+    if(zVertVecSize > 0)        delete []zVertVec;
+    if(zMoltVecSize > 0)        delete []zMoltVec;
+    if(zVertVecRecSize > 0)     delete []zVertVecRec;
+}
+
 /*      PROTECTED       */
 
 /**
@@ -36,10 +60,10 @@ Reconstruction * Reconstruction::fInstancePtr = NULL;
 double Reconstruction::recZvert(Hit *hit1,Hit *hit2)
 {
     double r1,z1,r2,z2;
-    r1=hit1->getRadius();
-    r2=hit2->getRadius();
-    z1=hit1->getZ();
-    z2=hit2->getZ();
+    r1 = hit1->getRadius();
+    r2 = hit2->getRadius();
+    z1 = hit1->getZ();
+    z2 = hit2->getZ();
     return (z2*r1-z1*r2)/(r1-r2);
 }
 
@@ -49,7 +73,7 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2)
  * @param hitsArray1 
  * @param hitsArray2 
  */
-void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray *hitsArray2)
+void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray *hitsArray2, const int ev)
 {
     Yaml::Node constants;
     Yaml::Parse(constants, fConstantsFile.c_str());
@@ -57,9 +81,13 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
     double phi = 0.;
     const double deltaPhi = 0.01; //constants["recTolerance"]["deltaPhi"].As<double>(); 
     double ztemp = 0;
+    
     vector<double> zTrackVert;
+    zTrackVert.reserve(hitsArray1->GetEntries());
+
     const double binW = 0.5; //constants["recTolerance"]["zBinWidth"].As<double>();
-    TH1D* histoHit = new TH1D("histoHit","Vertex's z rec",int(60./binW),-60.*binW,60.*binW);
+    
+    TH1D histoHit("histoHit","Vertex's z rec",int(60./binW),-60.*binW,60.*binW);
      
     for(int i=0; i<hitsArray1->GetEntries(); i++)                          
     {
@@ -76,7 +104,7 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
                 {
                     ztemp = recZvert( hitptr,hitptr1);
                     zTrackVert.push_back(ztemp);
-                    histoHit->Fill(ztemp);
+                    histoHit.Fill(ztemp);
                 }
                 
             }
@@ -84,24 +112,26 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
         }
        
     }
-    int binmax = histoHit->GetMaximumBin();
-    double zMax = histoHit->GetXaxis()->GetBinCenter(binmax);
-    int nEvntsMax=histoHit->GetBinContent(binmax);
+    int binmax = histoHit.GetMaximumBin();
+    double zMax = histoHit.GetXaxis()->GetBinCenter(binmax);
+    int nEvntsMax=histoHit.GetBinContent(binmax);
     int nMaxBin=0;
     int c=0,b=0;
-    for(int rr=1;rr<histoHit->GetNbinsX();rr++)
+    
+    for(int rr=1;rr<histoHit.GetNbinsX();rr++)
     {
-       if(histoHit->GetBinContent(rr)==nEvntsMax)  
+       if(histoHit.GetBinContent(rr)==nEvntsMax)  
        {
          nMaxBin++;
        }
     }
-    if(histoHit->GetBinContent(binmax-1)==nEvntsMax) c++;
-    if(histoHit->GetBinContent(binmax+1)==nEvntsMax) b++;
+    if(histoHit.GetBinContent(binmax-1)==nEvntsMax) c++;
+    if(histoHit.GetBinContent(binmax+1)==nEvntsMax) b++;
     
-    delete histoHit;
 
     vector<double> zTrackVert1;
+    zTrackVert1.reserve(zTrackVert.size());
+
     if(nMaxBin==1)
     {
         for(unsigned long int aa=0; aa<zTrackVert.size(); aa++)          
@@ -113,7 +143,8 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
         }
         double som = 0.;
         for(unsigned long int a=0; a<zTrackVert1.size(); a++) som = som+zTrackVert1[a];
-         zVertVecRec.push_back(som/zTrackVert1.size());
+        //zVertVecRec.push_back(som/zTrackVert1.size());
+        zVertVecRec[ev] = som/zTrackVert1.size();
     }
     else 
     {
@@ -138,17 +169,18 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
             }
             double som = 0.;
             for(unsigned long int a=0; a<zTrackVert1.size(); a++) som = som+zTrackVert1[a];
-            zVertVecRec.push_back(som/zTrackVert1.size());
+            //zVertVecRec.push_back(som/zTrackVert1.size());
+            zVertVecRec[ev] = som/zTrackVert1.size();
         }
         else
         {
-            zVertVecRec.push_back(1000.);
+            //zVertVecRec.push_back(1000.);
+            zVertVecRec[ev] = 1000.;
           
         }
     }
         
 }
-    
 
 
 
@@ -199,8 +231,7 @@ void Reconstruction::runReconstruction()
     TFile hfile(root["tree"]["simulation"]["path"].As<std::string>().c_str());
     TTree *tree = (TTree*)hfile.Get(root["tree"]["simulation"]["name"].As<std::string>().c_str());
     
-
-
+    
     const int nlayer = root["n_detectors"].As<int>() - 1; // n_detectors counts beam pipe as well
     
     TBranch *br[nlayer];
@@ -214,7 +245,7 @@ void Reconstruction::runReconstruction()
     TClonesArray *hitsArray[nlayer];
     for (TClonesArray * &a: hitsArray)  a = new TClonesArray("Hit",100);
     
-    Vertex *vertex=new Vertex();
+    Vertex *vertex = new Vertex();
     bv->SetAddress(&vertex);
 
     for(int b=0; b<nlayer; b++)
@@ -223,9 +254,16 @@ void Reconstruction::runReconstruction()
     }
 
     const int nEvents = tree->GetEntries();
-    zVertVec.reserve(nEvents);          // fix vector sizes
-    zMoltVec.reserve(nEvents);
-    zVertVecRec.reserve(nEvents);
+    //zVertVec.reserve(nEvents);          // fix vector sizes
+    //zMoltVec.reserve(nEvents);
+    //zVertVecRec.reserve(nEvents);
+
+    zVertVecSize = nEvents;
+    zMoltVecSize = nEvents;
+    zVertVecRecSize = nEvents;
+    zVertVec = new double[zVertVecSize];
+    zMoltVec = new double[zMoltVecSize];
+    zVertVecRec = new double[zVertVecRecSize];
 
     const int noiseMax = int(gRandom->Rndm()*constants["noise"]["nPoints"].As<int>());
 
@@ -233,9 +271,11 @@ void Reconstruction::runReconstruction()
     {
         if(ev%50000==0)    cout << "Processing event " << ev << "..." << endl;
         tree->GetEvent(ev);
-        zVertVec.push_back(vertex->getZ());
-        double mm=vertex->getMultiplicity(); //da togliere dopo
-        zMoltVec.push_back(vertex->getMultiplicity());
+        //zVertVec.push_back(vertex->getZ());
+        //zMoltVec.push_back(vertex->getMultiplicity());
+
+        zVertVec[ev] = vertex->getZ();
+        zMoltVec[ev] = vertex->getMultiplicity();
 
         for(int ll=1; ll<nlayer; ll++)
         { 
@@ -262,7 +302,7 @@ void Reconstruction::runReconstruction()
             }
         }
 
-        vertexReconstruction(hitsArray[0], hitsArray[1]);
+        vertexReconstruction(hitsArray[0], hitsArray[1], ev);
         if(ev==105)   
         {   
             Recorder * recorder = Recorder::getInstance(root["recording"]["reconstruction"]["path"].As<std::string>().c_str());
@@ -284,9 +324,9 @@ void Reconstruction::runReconstruction()
     cout << "Drawing plots..." << endl;
     timer.Start();
 
-    Plotter plot(fConfigFile.c_str());
-    plot.addVector(zVertVec,zVertVecRec,zMoltVec);
-    plot.runPlots();
+    //Plotter plot(fConfigFile.c_str());
+    //plot.addVector(zVertVec,zVertVecRec,zMoltVec);
+    //plot.runPlots();
     TH1D* histores = new TH1D("histores","Residuii",int(sqrt(nEvents)),-3000.,3000.);
     TH1D* histores1 = new TH1D("histores1","zrec",120,-30.,30.0);
     TH1D* histores2 = new TH1D("histores2","zreal",120,-30.,30.0);

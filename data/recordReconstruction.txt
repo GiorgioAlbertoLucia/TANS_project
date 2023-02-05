@@ -1,7 +1,7 @@
 # Reconstructed hit points and vertex for a single event 
 Vertex:
-    x: -0.00689072 #cm
-    y: 2.41557e-05 #cm
+    x: -0.00908084 #cm
+    y: 8.7325e-05 #cm
     z: -3.25055 #cm
     multiplicity: 6
 
@@ -34,27 +34,27 @@ DetectorLayers: # beam pipe is excluded
                 z: 2.93142 #cm
 
     -   Particles:
-            -   x: -6.99126 #cm
-                y: 0.34976 #cm
-                z: -2.3592 #cm
+            -   x: -6.9915 #cm
+                y: 0.344919 #cm
+                z: -2.34191 #cm
 
-            -   x: 5.30669 #cm
-                y: -4.56498 #cm
-                z: -7.15067 #cm
+            -   x: 5.30683 #cm
+                y: -4.56482 #cm
+                z: -7.12742 #cm
 
-            -   x: 4.33774 #cm
-                y: -5.494 #cm
-                z: -2.82617 #cm
+            -   x: 4.32936 #cm
+                y: -5.50061 #cm
+                z: -2.80059 #cm
 
-            -   x: -6.91204 #cm
-                y: 1.10619 #cm
-                z: -11.866 #cm
+            -   x: -6.91217 #cm
+                y: 1.1054 #cm
+                z: -11.8524 #cm
 
-            -   x: 6.23772 #cm
-                y: -3.17661 #cm
-                z: 9.87561 #cm
+            -   x: 6.23713 #cm
+                y: -3.17776 #cm
+                z: 9.85393 #cm
 
-            -   x: 4.4433 #cm
-                y: 5.40898 #cm
-                z: 7.58144 #cm
+            -   x: 4.44078 #cm
+                y: 5.41105 #cm
+                z: 7.55746 #cm
 

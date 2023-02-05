@@ -61,7 +61,10 @@
         "CompileAll.C": "cpp",
         "Simulation.C": "cpp",
         "animation.C": "cpp",
-        "complex": "cpp"
+        "complex": "cpp",
+        "__hash_table": "cpp",
+        "__split_buffer": "cpp",
+        "unordered_set": "cpp"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
 }
