@@ -44,22 +44,32 @@ void setGraph(TGraph* graph, const char * name, const char * title, const char *
  * @param zVertRec1 
  * @param moltReal1 
  */
- void Plotter::addVector(vector<double> &zVertReal1, vector<double> &zVertRec1, vector<double> &moltReal1) // e proprio non va provo con i puntatori
+ //void Plotter::addVector(vector<double> &zVertReal1, vector<double> &zVertRec1, vector<double> &moltReal1) // e proprio non va provo con i puntatori
+ void Plotter::addVector(double zVertReal1[], double zVertRec1[], double moltReal1[], const int size) // e proprio non va provo con i puntatori
 {
-   nEvents=zVertReal1.size();
+   nEvents = size;
    
-   zVertReal.reserve(nEvents);
-   zVertRec.reserve(nEvents);
-   moltReal.reserve(nEvents);
-   resVec.reserve(nEvents);
+   //zVertReal.reserve(nEvents);
+   //zVertRec.reserve(nEvents);
+   //moltReal.reserve(nEvents);
+   //resVec.reserve(nEvents);
+
+   zVertRealSize = nEvents;
+   zVertRecSize = nEvents;
+   moltRealSize = nEvents;
+   resVecSize = nEvents;
+
+   zVertReal = new double[zVertRealSize];
+   zVertRec = new double[zVertRecSize];
+   moltReal = new double[moltRealSize];
+   resVec = new double[resVecSize];
 
    for(int i=0;i<nEvents;i++)
    {
-    
-        zVertReal.push_back(zVertReal1[i]);
-        zVertRec.push_back(zVertRec1[i]); 
-        moltReal.push_back(moltReal1[i]);
-        resVec.push_back(zVertRec1[i]*10000-zVertReal1[i]*10000);
+        zVertReal[i] = zVertReal1[i];
+        zVertRec[i] = zVertRec1[i]; 
+        moltReal[i] = moltReal1[i];
+        resVec[i] = zVertRec1[i]*10000-zVertReal1[i]*10000;
    }
 }
 

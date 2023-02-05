@@ -226,8 +226,8 @@ void Reconstruction::runReconstruction()
     Yaml::Node root;
     Yaml::Parse(root, fConfigFile.c_str());
 
-    Yaml::Node constants;
-    Yaml::Parse(constants, fConstantsFile.c_str());
+    //Yaml::Node constants;
+    //Yaml::Parse(constants, fConstantsFile.c_str());
 
     TFile hfile(root["tree"]["simulation"]["path"].As<std::string>().c_str());
     TTree *tree = (TTree*)hfile.Get(root["tree"]["simulation"]["name"].As<std::string>().c_str());
@@ -266,9 +266,19 @@ void Reconstruction::runReconstruction()
     zMoltVec = new double[zMoltVecSize];
     zVertVecRec = new double[zVertVecRecSize];
 
+    Detector detectorVector[nlayer];
+    for(int i=0; i<nlayer; i++)
+    {   
+        detectorVector[i] = {root["detectors"][i+1]["radius"].As<double>(),
+                             root["detectors"][i+1]["width"].As<double>(),
+                             root["detectors"][i+1]["lenght"].As<double>(),
+                             root["detectors"][i+1]["multiple_scattering"].As<bool>()};
+    }
+
+
     for(int ev=0; ev<nEvents; ev++)
     {
-        if(ev%30000==0)    cout << "Processing event " << ev << "..." << endl;
+        if(ev%50000==0)    cout << "Processing event " << ev << "..." << endl;
         tree->GetEvent(ev);
         //zVertVec.push_back(vertex->getZ());
         //zMoltVec.push_back(vertex->getMultiplicity());
@@ -276,14 +286,9 @@ void Reconstruction::runReconstruction()
         zVertVec[ev] = vertex->getZ();
         zMoltVec[ev] = vertex->getMultiplicity();
 
-        for(int ll=1; ll<nlayer; ll++)
+        for(int ll=0; ll<nlayer; ll++)
         { 
             const int numHits = hitsArray[ll]->GetEntries();
-        
-            Detector detector = {root["detectors"][ll]["radius"].As<double>(),
-                                 root["detectors"][ll]["width"].As<double>(),
-                                 root["detectors"][ll]["lenght"].As<double>(),
-                                 root["detectors"][ll]["multiple_scattering"].As<bool>(),};
             
             for(int i=0;i<numHits;i++)//smearing
             {  
@@ -291,12 +296,13 @@ void Reconstruction::runReconstruction()
                 hitptr2->smearing();
             }
 
-            const int noi = int(gRandom->Rndm()*constants["noise"]["nPoints"].As<int>());//add noise
+            const int noi = 10;//int(gRandom->Rndm()*constants["noise"]["nPoints"].As<int>());//add noise
             hitsArray[ll]->Expand(hitsArray[ll]->GetEntries()+noi);
             for(int i=numHits; i<numHits+noi; i++)
             {
                 Hit * hit1 = (Hit*)hitsArray[ll]->ConstructedAt(i);
-                hit1->noise(detector);               
+                //hit1->noise(detector);               
+                hit1->noise(detectorVector[ll]);               
             }
         }
 
@@ -322,9 +328,9 @@ void Reconstruction::runReconstruction()
     cout << "Drawing plots..." << endl;
     timer.Start();
 
-    //Plotter plot(fConfigFile.c_str());
-    //plot.addVector(zVertVec,zVertVecRec,zMoltVec);
-    //plot.runPlots();
+    Plotter plot(fConfigFile.c_str());
+    plot.addVector(zVertVec, zVertVecRec, zMoltVec, zVertVecSize);
+    plot.runPlots();
     TH1D* histores = new TH1D("histores","Residuii",int(sqrt(nEvents)),-3000.,3000.);
     TH1D* histores1 = new TH1D("histores1","zrec",120,-30.,30.0);
     TH1D* histores2 = new TH1D("histores2","zreal",120,-30.,30.0);

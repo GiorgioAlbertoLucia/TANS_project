@@ -16,17 +16,28 @@ class Plotter
         
         ~Plotter(){}; 
 
-        void addVector(vector<double> &zVertReal1, vector<double> &zVertRec1, vector<double> &moltReal1); //provare con i puntatori se va male
+        void addVector(double zVertReal1[], double zVertRec1[], double moltReal1[], const int size);
+        //void addVector(vector<double> &zVertReal1, vector<double> &zVertRec1, vector<double> &moltReal1); //provare con i puntatori se va male
         void runPlots();
         void residues(TObjArray* arrHisto,double *Xarray, int nn, double *resolution,double *resolutionErr,double *efficiency,double *efficiencyErr,bool bol, string outputPath);
 
     private:
         string fConfigFile;             // path to the configuration file (is used to choose the output location)
 
-        vector <double> zVertReal;
-        vector <double> zVertRec;
-        vector <double> moltReal;
-        vector <double> resVec;
+        //vector <double> zVertReal;
+        //vector <double> zVertRec;
+        //vector <double> moltReal;
+        //vector <double> resVec;
+
+        double * zVertReal;
+        int zVertRealSize;
+        double * zVertRec;
+        int zVertRecSize;
+        double * moltReal;
+        int moltRealSize;
+        double * resVec;
+        int resVecSize;
+
         int nEvents;
 
 
