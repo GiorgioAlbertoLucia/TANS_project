@@ -47,6 +47,7 @@ void setGraph(TGraph* graph, const char * name, const char * title, const char *
  void Plotter::addVector(vector<double> &zVertReal1, vector<double> &zVertRec1, vector<double> &moltReal1) // e proprio non va provo con i puntatori
 {
    nEvents=zVertReal1.size();
+   
    zVertReal.reserve(nEvents);
    zVertRec.reserve(nEvents);
    moltReal.reserve(nEvents);
@@ -92,18 +93,6 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
       for(int i=0; i<nHist; i++)  nEventsArr[i] = 0.;
       if(bol==true)
       {
-        /*if(ab==0)
-        {
-          for(int i=0;i<n;i++)  
-          {
-            if(zVertRec[i]<999.) hRes->Fill(resVec[i]); 
-            nEventsArr[ab]++;
-
-          }
-        }
-
-        else 
-        {*/
            for(int j=0;j<n;j++)
            { 
               if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1))
@@ -116,7 +105,6 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
         hRes->Draw("E");
         if(bol) output1->cd();
         hRes->Write();
-    
       }
 
       else
@@ -133,34 +121,18 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
       }
   
       resolution[ab]=hRes->GetRMS();
-      
       resolutionErr[ab]=hRes->GetRMSError();
-     
-      mean[ab]=hRes->GetMean();
       
-      /*const int binMax=hRes->FindBin(mean[ab]+3*resolution[ab]); 
-      if(bol==true) cout<<"+ 3 sigma ="<<Xarray[ab]<<" ="<<mean[ab]+3*resolution[ab]<<" -3 sigma="<<mean[ab]-3*resolution[ab]<<endl;
-      const int binMin=hRes->FindBin(mean[ab]-3*resolution[ab]);
-      double entriesIn=0.; 
-      
-      for(int t=binMin;t<=binMax;t++)
-      {
-           entriesIn=entriesIn+hRes->GetBinContent(t);//controllare sta cosa
-           
-      }*/
       double entriesIn=0.;
       for(int t=1;t<8001;t++)
       {
            entriesIn=entriesIn+hRes->GetBinContent(t);//controllare sta cosa
-           
       }
 
       if(nEventsArr[ab]>0.) efficiency[ab]=entriesIn/nEventsArr[ab];
       else efficiency[ab]=0.;
-      cout<<"efficienza="<<efficiency[ab]<<endl;
       if (nEventsArr[ab]>0.) efficiencyErr[ab]=sqrt((entriesIn/(nEventsArr[ab]*nEventsArr[ab])) + entriesIn*entriesIn/(nEventsArr[ab]*nEventsArr[ab]*nEventsArr[ab]) ); //poisson and propagation
       else efficiencyErr[ab]=0.;
-      cout<<"efficienza err="<<efficiencyErr[ab]<<endl;
 
       delete hRes;
     }
@@ -189,27 +161,13 @@ void Plotter::runPlots()
     if (c==0) errMolt[c]=(Molt[c+1]-Molt[c])/2;
     if(c>0) errMolt[c]=(Molt[c]-Molt[c-1])/2;
    }
-
-   int arrN[]={10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10};
    
-
    int indexh=0;
-   int indexh2=0;
-
-   /*for(int gg=0;gg<nMolt;gg++)
-    {
-        for(int hh=0;hh<nEvents;hh++)
-        {
-            if(resVec[hh]<10000 && (moltReal[hh]>Molt[gg]-Molt[gg]*0.1) && (moltReal[hh]<Molt[gg]+Molt[gg]*0.1)) arrN[gg]++;
-        }
-    }*/
-
    for(int i=0;i<nMolt;i++)
    {
         TH1D* resHisto;
-        // check
+        
         resHisto =  new TH1D(Form("resHisto%d", i),Form("Hist of Zrec-Ztrue Molt_%4.1f",Molt[i]), 8000,-2000.,2000.);
-        //resHisto =  new TH1D(Form("resHisto%d", i),Form("Hist of Zrec-Ztrue Molt_%4.1f",Molt[i]), int(sqrt(arrN[i])),-2000.,2000.);
         arrHisto->AddAtAndExpand(resHisto,indexh++);
    }
 
@@ -243,46 +201,37 @@ void Plotter::runPlots()
    c2->cd();
    resmolt->Draw("ap");
    output->cd();
-   resmolt->Write();//da scivere a MAsera nel readme, a molteplicità 0 ho messo quelli senza distinzione di molteplicità
-
-
+   resmolt->Write();
    arrHisto->Clear();
+   indexh=0;
 
    const double bW=2.;
-   
-   TH1D* histoZreal;
-   histoZreal = new TH1D("histoZreal","Z of real vertex",int(60/bW),-31.,29.);
-   const int nbinsX = histoZreal->GetNbinsX();
-   double midZ[nbinsX];
+   double midZ[31];
+   double errZmid[31];
 
-   for(int y=0;y<nEvents;y++) histoZreal->Fill(zVertReal[y]); 
-   
-    
-   double errZmid[nbinsX];
-   TObjArray* arrHisto2 = new TObjArray(); 
-   for(int j=0;j<nbinsX;j++)
+   for(int j=0;j<31;j++)
    {
-    midZ[j]=histoZreal->GetXaxis()->GetBinCenter(j+1);//provare a togliere +1
+    midZ[j]=-31+j*2;
     errZmid[j]=bW/2;
     TH1D* resHisto2 =  new TH1D(Form("resHisto%d", j),Form("Hist of Zrec-Ztrue,  Ztrue:_%4.1f",midZ[j]), 8000,-2000.,2000.);//qui GetBinCintent prende 0
-    arrHisto2->AddAtAndExpand(resHisto2,indexh2++);
+    arrHisto->AddAtAndExpand(resHisto2,indexh++);
    }
 
    bol=false;
-   double resolutionZ[indexh2];
-   double resolutionErrZ[indexh2];
-   double efficiencyZ[indexh2];
-   double efficiencyErrZ[indexh2];
-   residues(arrHisto2,midZ,nEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol, residuesPath);
+   double resolutionZ[indexh];
+   double resolutionErrZ[indexh];
+   double efficiencyZ[indexh];
+   double efficiencyErrZ[indexh];
+   residues(arrHisto,midZ,nEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol, residuesPath);
   
 
-   double errEffZhigh[indexh2];
-   for(int i=0;i<indexh2;i++)
+   double errEffZhigh[indexh];
+   for(int i=0;i<indexh;i++)
    {
     if(efficiencyZ[i]+efficiencyErrZ[i]>=1) errEffZhigh[i]=1-efficiencyZ[i];
     else errEffZhigh[i]=efficiencyErrZ[i];
    } 
-   TGraphAsymmErrors *effZreal = new TGraphAsymmErrors(indexh2,midZ,efficiencyZ,errZmid,errZmid,efficiencyErrZ,errEffZhigh); 
+   TGraphAsymmErrors *effZreal = new TGraphAsymmErrors(indexh,midZ,efficiencyZ,errZmid,errZmid,efficiencyErrZ,errEffZhigh); 
    setGraph(effZreal, "eff_vs_z", "Efficiency vs Vertex Z", "Z_true [cm]", "Efficiency", 8, kGreen);
    TCanvas* c3= new TCanvas("c3","Efficiency vs Vertex Z",80,80,1500,1000);
    c3->cd();
@@ -290,18 +239,14 @@ void Plotter::runPlots()
    output->cd();
    effZreal->Write();
 
-   TGraphErrors *resZreal = new TGraphErrors(indexh2,midZ,resolutionZ,errZmid,resolutionErrZ);
+   TGraphErrors *resZreal = new TGraphErrors(indexh,midZ,resolutionZ,errZmid,resolutionErrZ);
    setGraph(resZreal, "res_vs_z", "Resolution vs Vertex Z", "Z_true [cm]", "Resolution [#mum]", 8, kRed);
    TCanvas* c4= new TCanvas("c4","Resolution vs Vertex Z",80,80,1500,1000);
    c4->cd();
    resZreal->Draw("ap");
    output->cd();
    resZreal->Write();
-
-   //output->Write();
    output->Close();
 
-   
-   
-     
+
 }
