@@ -75,11 +75,12 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2)
  */
 void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray *hitsArray2, const int ev)
 {
+    
     Yaml::Node constants;
     Yaml::Parse(constants, fConstantsFile.c_str());
 
     double phi = 0.;
-    const double deltaPhi = 0.01; //constants["recTolerance"]["deltaPhi"].As<double>(); 
+    const double deltaPhi = constants["recTolerance"]["deltaPhi"].As<double>(); 
     double ztemp = 0;
     
     vector<double> zTrackVert;
@@ -117,7 +118,6 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
     int nEvntsMax=histoHit.GetBinContent(binmax);
     int nMaxBin=0;
     int c=0,b=0;
-    
     for(int rr=1;rr<histoHit.GetNbinsX();rr++)
     {
        if(histoHit.GetBinContent(rr)==nEvntsMax)  
@@ -128,6 +128,7 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
     if(histoHit.GetBinContent(binmax-1)==nEvntsMax) c++;
     if(histoHit.GetBinContent(binmax+1)==nEvntsMax) b++;
     
+  
 
     vector<double> zTrackVert1;
     zTrackVert1.reserve(zTrackVert.size());
@@ -148,18 +149,18 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
     }
     else 
     {
-        if(nMaxBin>1 && (b>0 || c>0)) 
+        if((nMaxBin==2) && (b==1 || c==1)) 
         {
             for(unsigned long int aa=0; aa<zTrackVert.size(); aa++)          
             {
-                if(b>0)
+                if(b==1)
                 {
                     if((zTrackVert[aa]<=zMax+3*binW/2)&&(zTrackVert[aa]>=zMax-binW/2)) 
                     {
                         zTrackVert1.push_back(zTrackVert[aa]);
                     }
                 }
-                if(c>0)
+                if(c==1)
                 {
                     if((zTrackVert[aa]<=zMax+binW/2)&&(zTrackVert[aa]>=zMax-3*binW/2)) 
                     {
@@ -218,7 +219,7 @@ void Reconstruction::runReconstruction()
     cout << "-------------------------------------------" << endl;
     cout << "Begin reconstruction..." << endl;
   
-  
+    
     TStopwatch timer;
     timer.Start();
     
@@ -265,11 +266,9 @@ void Reconstruction::runReconstruction()
     zMoltVec = new double[zMoltVecSize];
     zVertVecRec = new double[zVertVecRecSize];
 
-    const int noiseMax = int(gRandom->Rndm()*constants["noise"]["nPoints"].As<int>());
-
     for(int ev=0; ev<nEvents; ev++)
     {
-        if(ev%50000==0)    cout << "Processing event " << ev << "..." << endl;
+        if(ev%30000==0)    cout << "Processing event " << ev << "..." << endl;
         tree->GetEvent(ev);
         //zVertVec.push_back(vertex->getZ());
         //zMoltVec.push_back(vertex->getMultiplicity());
@@ -292,8 +291,7 @@ void Reconstruction::runReconstruction()
                 hitptr2->smearing();
             }
 
-            //const int noi = //add noise
-            const int noi = int(gRandom->Rndm()*noiseMax);//add noise
+            const int noi = int(gRandom->Rndm()*constants["noise"]["nPoints"].As<int>());//add noise
             hitsArray[ll]->Expand(hitsArray[ll]->GetEntries()+noi);
             for(int i=numHits; i<numHits+noi; i++)
             {
