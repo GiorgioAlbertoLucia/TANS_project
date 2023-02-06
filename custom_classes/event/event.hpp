@@ -26,9 +26,6 @@ class Event: public TObject
 
         Vertex partGeneration(TH1I& hMultiplicity, TH1F& hEta);   
         
-        //TClonesArray partTransport(const double detectorRadius, const bool multipleScattering);
-        //TClonesArray partTransportAndRecording(const double detectorRadius, const bool multipleScattering, const char * recordPath);
-
         TClonesArray partTransportAndRecording(Detector& detector, const char * recordFile);
         TClonesArray partTransport(Detector& detector);
     
@@ -36,7 +33,7 @@ class Event: public TObject
 
     private:
         Vertex fPrimaryVertex;                      // description for ROOT if this becomes a TObject - probably not necessary
-        //std::vector<Particle> fParticleArray;       //
+    
         Particle * fParticleArray;
         int fParticleArraySize;
 
