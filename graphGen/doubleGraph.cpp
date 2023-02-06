@@ -45,7 +45,7 @@ void doubleGraph()
     // graphs settings
     string title = root["general"]["title"].As<string>();
     string xAxis = root["general"]["xAxis"].As<string>();
-    string yAxis = root["general"]["yAxis"].As<string>() + " [#mum]";
+    string yAxis = root["general"]["yAxis"].As<string>();// + " [#mum]";
 
     setGraph(graph1, title.c_str(), xAxis.c_str(), yAxis.c_str(), root["graph"][0]["marker"].As<int>(), root["graph"][0]["color"].As<int>());
     setGraph(graph2, title.c_str(), xAxis.c_str(), yAxis.c_str(), root["graph"][1]["marker"].As<int>(), root["graph"][1]["color"].As<int>());
