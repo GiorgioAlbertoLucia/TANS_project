@@ -1,28 +1,28 @@
 # This is a configuration file for the function doubleGraph
 #
 
-outputPath:             graphGen/eff_vs_mult_custom_unif.root
+outputPath:             graphGen/res_vs_z_10_50.root
 
 graph:
-    -   filePath:       output/reconstructionGraphs_noise0.root
-        name:           eff_vs_mult
+    -   filePath:       output/reconstructionGraphs_noise10.root
+        name:           res_vs_z
         marker:         8
         color:          600
 
-    -   filePath:       output/reconstructionGraphs_unif_noise0.root
-        name:           eff_vs_mult
+    -   filePath:       output/reconstructionGraphs_noise50.root
+        name:           res_vs_z
         marker:         8
         color:          797          
 
 general:
-    title:              Efficiency vs Multiplicity
-    xAxis:              Multiplicity
-    yAxis:              Efficiency
+    title:              Resolution vs Simulated Z Coordinate
+    xAxis:              Z
+    yAxis:              Resolution
 
 legend:
-    title:              Efficiency vs Multiplicity
-    entry1:             Multiplicity distribution: custom
-    entry2:             Multiplicity distribution: uniform
+    title:              Resolution vs Simulated Z Coordinate
+    entry1:             Max noise hits generated = 10
+    entry2:             Max noise hits generated = 50
     xmin:               0.35
     xmax:               0.65
     ymin:               0.1
