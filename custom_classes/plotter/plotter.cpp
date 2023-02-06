@@ -107,7 +107,7 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
            { 
               if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1))
               {
-                if(zVertRec[ii]<1999) nEventsArr[ab]++;
+                if(zVertRec[j]<1999) nEventsArr[ab]++;
                 if (zVertRec[j]<999.) hRes->Fill(resVec[j]);
               } 
            }
