@@ -180,9 +180,7 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
     }
         
 }
-
-
-
+    
 /*      PUBLIC      */
 
 /**
@@ -323,19 +321,27 @@ void Reconstruction::runReconstruction()
     cout << endl << "-----------------------------" << endl;
     cout << "Drawing plots..." << endl;
     timer.Start();
+    
+    TH1D* histores = new TH1D("histores","Residuii",int(sqrt(fNEvents)),-3000.,3000.);
+    TH1D* histores1 = new TH1D("histores1","zrec",120,-30.,30.0);
+    TH1D* historeal = new TH1D("historeal","zreal",120,-30.,30.0);
+        for(int j=0;j<fNEvents;j++)
+    {
+        if(zVertVecRec[j]<999.) histores->Fill((zVertVecRec[j]*10000-zVertVec[j]*10000));
+        if(zVertVecRec[j]<999.) histores1->Fill(zVertVecRec[j]);
+        historeal->Fill(zVertVec[j]);
+    }
+    sigma=historeal->GetRMS();
+    mean=historeal->GetMean();
+    for(int j=0;j<fNEvents;j++)
+    {
+        if(abs(zVertVec[j]-mean)>3*sigma) zVertVecRec[j]=2000.;
+    }
 
     Plotter plot(fConfigFile.c_str());
     plot.addVector(zVertVec, zVertVecRec, zMoltVec, fNEvents);
     plot.runPlots();
-    TH1D* histores = new TH1D("histores","Residuii",int(sqrt(fNEvents)),-3000.,3000.);
-    TH1D* histores1 = new TH1D("histores1","zrec",120,-30.,30.0);
-    TH1D* histores2 = new TH1D("histores2","zreal",120,-30.,30.0);
-    for(int j=0;j<fNEvents;j++)
-    {
-        if(zVertVecRec[j]<999.) histores->Fill((zVertVecRec[j]*10000-zVertVec[j]*10000));
-        if(zVertVecRec[j]<999.) histores1->Fill(zVertVecRec[j]);
-        histores2->Fill(zVertVec[j]);
-    }
+    
  
     TCanvas* c41= new TCanvas("c41","residues",80,80,1500,1000);
    c41->cd();
@@ -345,7 +351,7 @@ void Reconstruction::runReconstruction()
    histores1->Draw();
     TCanvas* c61= new TCanvas("c61","real",80,80,1500,1000);
    c61->cd();
-   histores2->Draw();
+   historeal->Draw();
 
     timer.Stop();
     cout << endl;
