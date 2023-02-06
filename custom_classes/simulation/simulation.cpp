@@ -113,7 +113,7 @@ void Simulation::runSimulation(const int nEvents = 100000)
         if(ev==105)        // record hits from single event in a .txt file 
         {
             string recordSimPath = root["recording"]["simulation"]["path"].As<std::string>();
-            cout << "\t(Recording first event hits for a 3D model in " << recordSimPath << ")" << endl;
+            cout << "\t(Recording single event hits for a 3D model in " << recordSimPath << ")" << endl;
 
             Recorder * recorder = Recorder::getInstance(recordSimPath.c_str());
             recorder->beginRecordSimulation(vertex, nDetectors);

@@ -47,7 +47,7 @@ void setGraph(TGraph* graph, const char * name, const char * title, const char *
  //void Plotter::addVector(vector<double> &zVertReal1, vector<double> &zVertRec1, vector<double> &moltReal1) // e proprio non va provo con i puntatori
  void Plotter::addVector(double zVertReal1[], double zVertRec1[], double moltReal1[], const int size) // e proprio non va provo con i puntatori
 {
-   int fNEvents = size;
+   fNEvents = size;
    
    //zVertReal.reserve(nEvents);
    //zVertRec.reserve(nEvents);
@@ -227,7 +227,7 @@ void Plotter::runPlots()
    double resolutionErrZ[indexh];
    double efficiencyZ[indexh];
    double efficiencyErrZ[indexh];
-   residues(arrHisto,midZ,fNEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol, residuesPath);
+   residues(arrHisto,midZ,fNEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol,residuesPath);
   
 
    double errEffZhigh[indexh];

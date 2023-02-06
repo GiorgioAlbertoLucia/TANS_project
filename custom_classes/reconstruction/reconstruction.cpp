@@ -90,7 +90,7 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
             for(int j=0; j<hitsArray2->GetEntries(); j++)
             {
                 Hit * hitptr1 = (Hit*)hitsArray2->At(j);
-                if((hitptr1->getPhi() < phi + deltaPhi) && (hitptr1->getPhi() > phi - deltaPhi) && (abs(hitptr1->getZ()) < 13.5) && (hitptr1->getZ() > -13.5))
+                if((hitptr1->getPhi() < phi + deltaPhi) && (hitptr1->getPhi() > phi - deltaPhi) && (hitptr1->getZ() < 13.5) && (hitptr1->getZ() > -13.5))
                 {
                     ztemp = recZvert(hitptr, hitptr1);
                     zTrackVert.push_back(ztemp);
@@ -143,7 +143,6 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
         }
         //zVertVecRec.push_back(som/zTrackVert1.size());
         zVertVecRec[ev] = som/numin;
-        return;
     }
     else 
     {
@@ -170,7 +169,6 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
             }
             //zVertVecRec.push_back(som/zTrackVert1.size());
             zVertVecRec[ev] = som/numin;
-            return;
         }
         else
         {
@@ -325,7 +323,7 @@ void Reconstruction::runReconstruction()
     TH1D* histores = new TH1D("histores","Residuii",int(sqrt(fNEvents)),-3000.,3000.);
     TH1D* histores1 = new TH1D("histores1","zrec",120,-30.,30.0);
     TH1D* historeal = new TH1D("historeal","zreal",120,-30.,30.0);
-        for(int j=0;j<fNEvents;j++)
+    for(int j=0;j<fNEvents;j++)
     {
         if(zVertVecRec[j]<999.) histores->Fill((zVertVecRec[j]*10000-zVertVec[j]*10000));
         if(zVertVecRec[j]<999.) histores1->Fill(zVertVecRec[j]);
