@@ -102,7 +102,7 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
            { 
               if((moltReal[j]>Xarray[ab]-Xarray[ab]*0.1)&&(moltReal[j]<Xarray[ab]+Xarray[ab]*0.1))
               {
-                if(zVertRec[ii]<1999) nEventsArr[ab]++;
+                if(zVertRec[j]<1999) nEventsArr[ab]++;
                 if (zVertRec[j]<999.) hRes->Fill(resVec[j]);
               } 
            }
@@ -183,7 +183,7 @@ void Plotter::runPlots()
    double efficiencyM[indexh];
    double efficiencyErrM[indexh];
    bool bol=true;
-   residues(arrHisto,Molt,nEvents,resolutionM,resolutionErrM,efficiencyM,efficiencyErrM,bol, residuesPath);
+   residues(arrHisto,Molt,fNEvents,resolutionM,resolutionErrM,efficiencyM,efficiencyErrM,bol, residuesPath);
   
    double errEffMhigh[indexh];
    for(int i=0;i<indexh;i++)
@@ -227,7 +227,7 @@ void Plotter::runPlots()
    double resolutionErrZ[indexh];
    double efficiencyZ[indexh];
    double efficiencyErrZ[indexh];
-   residues(arrHisto,midZ,nEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol, residuesPath);
+   residues(arrHisto,midZ,fNEvents,resolutionZ,resolutionErrZ,efficiencyZ,efficiencyErrZ,bol, residuesPath);
   
 
    double errEffZhigh[indexh];

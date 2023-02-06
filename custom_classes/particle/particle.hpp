@@ -21,9 +21,7 @@ class Particle
 
         inline double evalTheta() const {return 2. * atan(exp(-fEta));};
 
-        //void transport(const double R, Hit& hit);
         Hit transport(const double R);
-        //Hit transport(Detector& detector);
         void multipleScattering();
         
         

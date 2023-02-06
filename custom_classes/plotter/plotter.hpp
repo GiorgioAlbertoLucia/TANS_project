@@ -29,12 +29,12 @@ class Plotter
         //vector <double> moltReal;
         //vector <double> resVec;
 
-        double * zVertReal;
-        double * zVertRec;
-        double * moltReal;
-        double * resVec;
+        double * zVertReal;             // [fNEvents]
+        double * zVertRec;              // [fNEvents]
+        double * moltReal;              // [fNEvents]
+        double * resVec;                // [fNEvents]
 
-        int fNEvents;
+        int fNEvents;                   // number of events (size of all arrays)
 
 
 
