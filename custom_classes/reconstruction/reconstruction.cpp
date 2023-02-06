@@ -331,6 +331,7 @@ void Reconstruction::runReconstruction()
         if(zVertVecRec[j]<999.) histores1->Fill(zVertVecRec[j]);
         historeal->Fill(zVertVec[j]);
     }
+    
     double sigma=historeal->GetRMS();
     double mean=historeal->GetMean();
     for(int j=0;j<fNEvents;j++)
