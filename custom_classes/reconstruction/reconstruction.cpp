@@ -321,7 +321,7 @@ void Reconstruction::runReconstruction()
     cout << endl << "-----------------------------" << endl;
     cout << "Drawing plots..." << endl;
     timer.Start();
-    
+
     TH1D* histores = new TH1D("histores","Residuii",int(sqrt(fNEvents)),-3000.,3000.);
     TH1D* histores1 = new TH1D("histores1","zrec",120,-30.,30.0);
     TH1D* historeal = new TH1D("historeal","zreal",120,-30.,30.0);
@@ -331,8 +331,8 @@ void Reconstruction::runReconstruction()
         if(zVertVecRec[j]<999.) histores1->Fill(zVertVecRec[j]);
         historeal->Fill(zVertVec[j]);
     }
-    sigma=historeal->GetRMS();
-    mean=historeal->GetMean();
+    double sigma=historeal->GetRMS();
+    double mean=historeal->GetMean();
     for(int j=0;j<fNEvents;j++)
     {
         if(abs(zVertVec[j]-mean)>3*sigma) zVertVecRec[j]=2000.;
