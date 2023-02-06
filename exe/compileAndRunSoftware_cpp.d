@@ -62,6 +62,7 @@ exe/compileAndRunSoftware_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/
 exe/compileAndRunSoftware_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/custom_classes/pointCC/pointCC.hpp
 exe/compileAndRunSoftware_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/custom_classes/detector/detector.hpp
 exe/compileAndRunSoftware_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/custom_classes/reconstruction/reconstruction.hpp
+exe/compileAndRunSoftware_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TH1D.h
 exe/compileAndRunSoftware_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/custom_classes/modelBuilder/modelBuilder.hpp
 exe/compileAndRunSoftware_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TFile.h
 exe/compileAndRunSoftware_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/Compression.h

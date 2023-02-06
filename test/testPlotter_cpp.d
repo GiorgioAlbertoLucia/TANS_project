@@ -39,5 +39,24 @@
 ./test/testPlotter_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/./custom_classes/detector/detector.hpp
 ./test/testPlotter_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/./custom_classes/vertex/vertex.hpp
 ./test/testPlotter_cpp.so: /Users/giogi/Documents/TANS_project/TANS_project/./custom_classes/reconstruction/reconstruction.hpp
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TH1D.h
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TH1.h
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TAxis.h
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TNamed.h
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TAttAxis.h
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TArrayD.h
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TArray.h
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TAttLine.h
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TAttFill.h
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TAttMarker.h
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TArrayC.h
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TArrayS.h
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TArrayI.h
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TArrayF.h
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/Foption.h
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/ROOT/EExecutionPolicy.hxx
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TVectorFfwd.h
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TVectorDfwd.h
+./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/TFitResultPtr.h
 ./test/testPlotter_cpp.so: /usr/local/Cellar/root/6.26.04_1/include/root/RVersion.h /usr/local/Cellar/root/6.26.04_1/include/root/RConfig.h /usr/local/Cellar/root/6.26.04_1/include/root/TClass.h /usr/local/Cellar/root/6.26.04_1/include/root/TDictAttributeMap.h /usr/local/Cellar/root/6.26.04_1/include/root/TInterpreter.h /usr/local/Cellar/root/6.26.04_1/include/root/TROOT.h /usr/local/Cellar/root/6.26.04_1/include/root/TBuffer.h /usr/local/Cellar/root/6.26.04_1/include/root/TMemberInspector.h /usr/local/Cellar/root/6.26.04_1/include/root/TError.h /usr/local/Cellar/root/6.26.04_1/include/root/RtypesImp.h /usr/local/Cellar/root/6.26.04_1/include/root/TIsAProxy.h /usr/local/Cellar/root/6.26.04_1/include/root/TFileMergeInfo.h /usr/local/Cellar/root/6.26.04_1/include/root/TCollectionProxyInfo.h /usr/local/bin/rootcling
 testPlotter_cpp__ROOTBUILDVERSION= 6.26/04
