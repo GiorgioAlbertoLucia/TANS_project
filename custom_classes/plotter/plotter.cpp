@@ -47,24 +47,19 @@ void setGraph(TGraph* graph, const char * name, const char * title, const char *
  //void Plotter::addVector(vector<double> &zVertReal1, vector<double> &zVertRec1, vector<double> &moltReal1) // e proprio non va provo con i puntatori
  void Plotter::addVector(double zVertReal1[], double zVertRec1[], double moltReal1[], const int size) // e proprio non va provo con i puntatori
 {
-   nEvents = size;
+   fNEvents = size;
    
    //zVertReal.reserve(nEvents);
    //zVertRec.reserve(nEvents);
    //moltReal.reserve(nEvents);
    //resVec.reserve(nEvents);
 
-   zVertRealSize = nEvents;
-   zVertRecSize = nEvents;
-   moltRealSize = nEvents;
-   resVecSize = nEvents;
+   zVertReal = new double[fNEvents];
+   zVertRec = new double[fNEvents];
+   moltReal = new double[fNEvents];
+   resVec = new double[fNEvents];
 
-   zVertReal = new double[zVertRealSize];
-   zVertRec = new double[zVertRecSize];
-   moltReal = new double[moltRealSize];
-   resVec = new double[resVecSize];
-
-   for(int i=0;i<nEvents;i++)
+   for(int i=0;i<fNEvents;i++)
    {
         zVertReal[i] = zVertReal1[i];
         zVertRec[i] = zVertRec1[i]; 

@@ -30,15 +30,11 @@ class Plotter
         //vector <double> resVec;
 
         double * zVertReal;
-        int zVertRealSize;
         double * zVertRec;
-        int zVertRecSize;
         double * moltReal;
-        int moltRealSize;
         double * resVec;
-        int resVecSize;
 
-        int nEvents;
+        int fNEvents;
 
 
 
