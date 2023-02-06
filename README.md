@@ -49,6 +49,9 @@ Gli stessi risultati vengono anche salvati nella cartella `output` e possono ess
 La simulazione può essere personalizzata cambiando il file di configurazione. È possibile cambiare liberamente
 (rispettando la sintassi richiesta da `mini-yaml`) i parametri del file di configurazione `config/configFile.txt`.
 
+### Distribuzione uniforme per la molteplicità
+È possibile utilizzare una distribuzione uniforme per la generazione della molteplicità per i singoli eventi. Per farlo, sostituire, nel file `config/configFile.txt`, il file da cui viene estratta la distribuzione (`data/kinem.root`.) con `data/kinemUnif.root`.
+
 ### Aggiungere un detector
 Il software può funzionare anche con più di 3 detector (due layer di rivelatori e la beam pipe). Si noti, tuttavia, che la ricostruzione avviene interpolando con rette punti su soli due layer.
 Un detector va aggiunto al file di configurazione sotto gli altri detector (o tra questi, in base al raggio) come segue:

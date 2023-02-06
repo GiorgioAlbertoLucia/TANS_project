@@ -1,15 +1,15 @@
 # This is a configuration file for the function doubleGraph
 #
 
-outputPath:             graphGen/eff_vs_mult_10_100.root
+outputPath:             graphGen/eff_vs_mult_0_10.root
 
 graph:
-    -   filePath:       output/reconstructionGraphs_noise10.root
+    -   filePath:       output/reconstructionGraphs_noise0.root
         name:           eff_vs_mult
         marker:         8
         color:          600
 
-    -   filePath:       output/reconstructionGraphs_noise100.root
+    -   filePath:       output/reconstructionGraphs_noise10.root
         name:           eff_vs_mult
         marker:         8
         color:          797          
@@ -21,8 +21,8 @@ general:
 
 legend:
     title:              Efficiency vs Multiplicity
-    entry1:             Max noise hits generated = 10
-    entry2:             Max noise hits generated = 100
+    entry1:             Max noise hits generated = 0
+    entry2:             Max noise hits generated = 10
     xmin:               0.35
     xmax:               0.65
     ymin:               0.1
