@@ -3,8 +3,9 @@ void loadMacros(TString myopt="fast")
     TString opt;
     if(myopt.Contains("force"))   opt = "kfg";
     else                          opt = "kg";
-
+  
     // BASE CLASSES
+    gSystem->CompileMacro("custom_classes/pointCC/pointCC.cpp",opt.Data());
     gSystem->CompileMacro("custom_classes/hit/hit.cpp",opt.Data());
     gSystem->CompileMacro("custom_classes/particle/particle.cpp",opt.Data());
 

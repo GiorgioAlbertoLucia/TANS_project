@@ -16,7 +16,7 @@ graph:
 
 general:
     title:              Resolution vs Simulated Z Coordinate
-    xAxis:              Z
+    xAxis:              Z [cm] 
     yAxis:              Resolution
 
 legend:

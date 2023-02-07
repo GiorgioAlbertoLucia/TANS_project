@@ -63,4 +63,5 @@ Un detector va aggiunto al file di configurazione sotto gli altri detector (o tr
         color:                  424     #kCyan-8
 ```
 (NOTA: gli spazi sono rilevanti per la lettura tramite il parser. Per maggiori informazioni sulla sintassi, si faccia riferimento a https://github.com/jimmiebergmann/mini-yaml)
+Si aggiorni, poi, il numero di layer totali.
 

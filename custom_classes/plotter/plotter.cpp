@@ -130,8 +130,10 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
 
       if(nEventsArr[ab]>0.) efficiency[ab]=entriesIn/nEventsArr[ab];
       else efficiency[ab]=0.;
-      if (nEventsArr[ab]>0.) efficiencyErr[ab]=sqrt((entriesIn/(nEventsArr[ab]*nEventsArr[ab])) + entriesIn*entriesIn/(nEventsArr[ab]*nEventsArr[ab]*nEventsArr[ab]) ); //poisson and propagation
+      if (nEventsArr[ab]>0.) efficiencyErr[ab]=pow(efficiency[ab]*(1-efficiency[ab])/nEventsArr[ab],0.5);
       else efficiencyErr[ab]=0.;
+      if(nEventsArr[ab]>0 && (1/nEventsArr[ab]>efficiencyErr[ab])) efficiencyErr[ab]=1/nEventsArr[ab];
+
 
       delete hRes;
     }
