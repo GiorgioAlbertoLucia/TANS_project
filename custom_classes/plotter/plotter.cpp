@@ -211,10 +211,10 @@ void Plotter::runPlots()
    indexh=0;
 
    const double bW=2.;
-   double midZ[17];
-   double errZmid[17];
+   double midZ[18];
+   double errZmid[18];
 
-   for(int j=0;j<=17;j++)
+   for(int j=0;j<18;j++)
    {
     midZ[j]=-17+j*2;
     errZmid[j]=bW/2;
