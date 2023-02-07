@@ -7,6 +7,10 @@
 #include "../vertex/vertex.hpp"
 #include "../detector/detector.hpp"
 
+/**
+ * @brief Particle generated after a collision
+ * 
+ */
 class Particle
 {
     public:
@@ -19,6 +23,11 @@ class Particle
         inline double getEta() const {return fEta;};
         inline Hit getLastHP() const {return fLastHP;};
 
+        /**
+         * @brief 
+         * 
+         * @return double polar angle evaluated from pseudorapidity
+         */
         inline double evalTheta() const {return 2. * atan(exp(-fEta));};
 
         Hit transport(const double R);
@@ -29,10 +38,11 @@ class Particle
         void rotate(const double phiRot, const double thetaRot, double (&vec)[3]);
 
     private:
-        double fPhi;
-        double fEta;
+        // direction of the particle . Coordinate system has z axis aling the beam pipe
+        double fPhi;    // azimuthal angle
+        double fEta;    // psudorapidity
 
-        Hit fLastHP;  // last hit position
+        Hit fLastHP;    // last hit position
 
         
 

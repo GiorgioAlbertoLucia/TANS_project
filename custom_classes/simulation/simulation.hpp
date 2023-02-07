@@ -16,8 +16,8 @@
 class Simulation
 {
     public:
-        Simulation(const Simulation& simulation) = delete; // delete copy constructor for a singleton class
-        void operator=(const Simulation& simulation) = delete;  // delete operator= for singleton object
+        Simulation(const Simulation& simulation) = delete;          // delete copy constructor for a singleton class
+        void operator=(const Simulation& simulation) = delete;      // delete operator= for singleton object
 
         static Simulation* getInstance(const char * configFile);
         static void destroy();
@@ -32,8 +32,7 @@ class Simulation
         ~Simulation(){};
 
         static Simulation *fInstancePtr;    // static pointer to the instance of the class
-
-        std::string fConfigFile;            //  path to the configuration file used
+        std::string fConfigFile;            // path to the configuration file
 
 
 };

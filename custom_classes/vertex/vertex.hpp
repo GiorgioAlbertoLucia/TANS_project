@@ -20,7 +20,7 @@ class Vertex: public PointCC
         int getMultiplicity() const {return fMultiplicity;};
 
     private:
-        int fMultiplicity;
+        int fMultiplicity;          // particle multiplicity
 };
 
 #endif

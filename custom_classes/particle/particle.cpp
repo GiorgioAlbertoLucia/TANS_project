@@ -8,6 +8,13 @@
 
 /* PROTECTED */
 
+/**
+ * @brief Rotates a vector in cartesian coordinate in the 3D space by an azimuthal angle phi and a polar angle theta
+ * 
+ * @param phi 
+ * @param theta 
+ * @param vec 
+ */
 void Particle::rotate(const double phi, const double theta, double (&vec)[3])
 {
     double rotMat[3][3] =  {{-sin(phi), -cos(phi)*cos(theta),   cos(phi)*sin(theta)},
@@ -57,7 +64,7 @@ Particle::~Particle()
 * @brief Creates a Hit (position and layer) of this particle on given detector assuming the particle will
 * move along a straight line from its starting position (in fLastHP)
 * 
-* @param detector 
+* @param R radius of the detector
 * @return Hit 
 */
 Hit Particle::transport(const double R)
@@ -93,8 +100,7 @@ Hit Particle::transport(const double R)
 /**
 * @brief Multiple scattering through a detector. In the simplest approximation, only the direction of the particle 
 * will be updated. 
-* 
-* @param detector 
+*  
 */
 void Particle::multipleScattering()
 {

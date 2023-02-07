@@ -25,11 +25,14 @@ class Recorder
         double recZvert(Hit * hit1, Hit * hit2) const;
 
     private:
-        static Recorder* fInstancePtr;   // pointer to the instance of the class
-        string fFilePath;                // file to record into
-        
+        // private constructor and destructor for a singleton class
+        Recorder(){};
         Recorder(const char * filePath): fFilePath(filePath) {};
         virtual ~Recorder(){};
+        
+        static Recorder* fInstancePtr;                          // pointer to the instance of the class
+        string fFilePath;                                       // file to record into
+        
 
 };
 

@@ -33,22 +33,19 @@ class Reconstruction
         
         
     private:
+        // private constructor and destructor 
         Reconstruction(){};
         Reconstruction(const char * configFile);
         virtual ~Reconstruction(); 
 
-        static Reconstruction* fInstancePtr;
+        static Reconstruction* fInstancePtr;        // static pointer to the instance of the class
 
-        std::string fConfigFile;
-       
-        //vector<double> zVertVec;
-        //vector<double> zMoltVec;
-        //vector<double> zVertVecRec;
+        std::string fConfigFile;                    // path to the configuration file
 
-        double * zVertVec;
-        double * zMoltVec;
-        double * zVertVecRec;
-        int fNEvents;                // size of all arrays
+        double * zVertVec;                          // [fNEvents] array storing simulated vertex z coordinate
+        double * zMoltVec;                          // [fNEvents] array storing multiplicity of each event
+        double * zVertVecRec;                       // [fNEvents] array storing reconstructed vertex z coordinate
+        int fNEvents;                               // size of all arrays
 
         
 

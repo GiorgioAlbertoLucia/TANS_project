@@ -14,7 +14,10 @@
 #include "../vertex/vertex.hpp"
 #include "../particle/particle.hpp"
 
-
+/**
+ * @brief Class to simulate an event 
+ * 
+ */
 class Event: public TObject
 {
     public:
@@ -32,10 +35,10 @@ class Event: public TObject
         void clear();
 
     private:
-        Vertex fPrimaryVertex;                      // description for ROOT if this becomes a TObject - probably not necessary
+        Vertex fPrimaryVertex;                      // primary vertex of interaction
     
-        Particle * fParticleArray;
-        int fParticleArraySize;
+        Particle * fParticleArray;                  // [fParticleArraySize] array of particles created during the collision
+        int fParticleArraySize;                     // size of the array of particles
 
         ClassDef(Event, 1)
 

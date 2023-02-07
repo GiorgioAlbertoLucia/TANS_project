@@ -1,60 +1,36 @@
 # Reconstructed hit points and vertex for a single event 
 Vertex:
-    x: -0.00533655 #cm
-    y: 1.45998e-05 #cm
+    x: 0.00254028 #cm
+    y: -4.1112e-05 #cm
     z: -3.25055 #cm
-    multiplicity: 6
+    multiplicity: 3
 
 
 nLayers:    2
 DetectorLayers: # beam pipe is excluded
     -   Particles:
-            -   x: -3.99488 #cm
-                y: 0.20227 #cm
-                z: -2.74138 #cm
+            -   x: -3.99508 #cm
+                y: 0.198256 #cm
+                z: -2.73809 #cm
 
-            -   x: 3.0343 #cm
-                y: -2.60635 #cm
-                z: -5.46868 #cm
+            -   x: 3.03534 #cm
+                y: -2.60513 #cm
+                z: -5.4791 #cm
 
-            -   x: 2.48303 #cm
-                y: -3.13601 #cm
-                z: -2.98127 #cm
-
-            -   x: -3.94945 #cm
-                y: 0.633893 #cm
-                z: -8.15921 #cm
-
-            -   x: 3.56577 #cm
-                y: -1.81253 #cm
-                z: 4.23631 #cm
-
-            -   x: 2.53832 #cm
-                y: 3.09143 #cm
-                z: 2.9217 #cm
+            -   x: 2.47848 #cm
+                y: -3.13961 #cm
+                z: -3.01671 #cm
 
     -   Particles:
-            -   x: -6.99129 #cm
-                y: 0.349175 #cm
-                z: -2.3449 #cm
+            -   x: -12.9842 #cm
+                y: 0.639843 #cm
+                z: -1.59733 #cm
 
-            -   x: 5.30662 #cm
-                y: -4.56506 #cm
-                z: -7.14499 #cm
+            -   x: 9.85196 #cm
+                y: -8.48168 #cm
+                z: -10.4776 #cm
 
-            -   x: 4.32387 #cm
-                y: -5.50492 #cm
-                z: -2.80997 #cm
-
-            -   x: -6.91196 #cm
-                y: 1.10669 #cm
-                z: -11.8606 #cm
-
-            -   x: 6.23662 #cm
-                y: -3.17876 #cm
-                z: 9.84087 #cm
-
-            -   x: 4.43793 #cm
-                y: 5.41339 #cm
-                z: 7.58194 #cm
+            -   x: 8.03163 #cm
+                y: -10.2222 #cm
+                z: -2.44083 #cm
 

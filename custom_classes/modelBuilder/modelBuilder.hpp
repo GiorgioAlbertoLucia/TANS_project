@@ -12,7 +12,7 @@
 #include <TPolyLine3D.h>
 
 /**
- * @brief Singleton class to create a 3D event display using ROOT Framework.
+ * @brief Class to create a 3D event display using ROOT Framework.
  * Information of detectors and particle tracks should be passed as configuration files.
  * 
  */
@@ -31,14 +31,13 @@ class ModelBuilder
         void saveAs(const char * filePath) const;
 
     private:
-        // private data members
-        TCanvas * fCanvas;
+        TCanvas * fCanvas;                   // canvas where the 3D model is displayed
 
         TGeoManager * fManager;              // manager to create 3D model
         TGeoVolume * fSpace;                 // total volume of the model
         
         TPolyLine3D* fLineVector;            // [fLineVectorSize] vector with lines
-        int fLineVectorSize;
+        int fLineVectorSize;                 // number of lines in the vector
 
 };
 

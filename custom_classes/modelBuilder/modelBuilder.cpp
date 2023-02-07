@@ -164,6 +164,10 @@ void ModelBuilder::deleteTracks()
     delete []fLineVector;
 }
 
+/**
+ * @brief Draws the canvas and all objects created (geometry and lines)
+ * 
+ */
 void ModelBuilder::draw() const
 {
     fCanvas->cd();

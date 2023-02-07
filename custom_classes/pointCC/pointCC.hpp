@@ -4,7 +4,7 @@
 #include <cmath>
 
 /**
- * @brief point in a 3d space in cylindric coordinates
+ * @brief Point in a 3d space in cylindric coordinates
  * 
  */
 class PointCC
@@ -20,14 +20,6 @@ class PointCC
 
         inline double getX() const {return (fR * cos(fPhi));};
         inline double getY() const {return (fR * sin(fPhi));};
-
-        /**
-         * @brief Vector addition
-         * 
-         * @param point 
-         * @return PointCC 
-         */
-        //PointCC operator+(const PointCC& point);
 
     protected:
         double fR;

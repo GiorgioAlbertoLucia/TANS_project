@@ -50,7 +50,7 @@ Reconstruction::~Reconstruction()
 /*      PROTECTED       */
 
 /**
- * @brief return z from tracking's line
+ * @brief Returns z from tracking's line
  * 
  * @param hit1 
  * @param hit2 
@@ -67,7 +67,7 @@ double Reconstruction::recZvert(Hit *hit1,Hit *hit2)
 }
 
 /**
- * @brief loops on hits points in order to find vertex's Z
+ * @brief Finds vertex z coordinate for a single event by looping through all hit points on two detectors
  * 
  * @param hitsArray1 
  * @param hitsArray2 
@@ -141,7 +141,6 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
                 numin++;
             }
         }
-        //zVertVecRec.push_back(som/zTrackVert1.size());
         zVertVecRec[ev] = som/numin;
     }
     else 
@@ -167,12 +166,10 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
                     }  
                 }
             }
-            //zVertVecRec.push_back(som/zTrackVert1.size());
             zVertVecRec[ev] = som/numin;
         }
         else
         {
-            //zVertVecRec.push_back(1000.);
             zVertVecRec[ev] = 1000.;
         }
     }
@@ -185,7 +182,6 @@ void Reconstruction::vertexReconstruction(TClonesArray *hitsArray1, TClonesArray
  * @brief Create an instance of the singleton object
  * 
  * @param configFile 
- * @param constantsFile
  * @return Reconstruction* 
  */
 Reconstruction * Reconstruction::getInstance(const char * configFile)
@@ -205,7 +201,8 @@ void Reconstruction::destroy()
 }
 
 /**
- * @brief read data from tree
+ * @brief Reconstruct primary vertex position for all the events, create and save TGraphs for efficiency 
+ * and resolution of the process as well as its residues.
  * 
  */
 void Reconstruction::runReconstruction()
@@ -246,9 +243,6 @@ void Reconstruction::runReconstruction()
     }
 
     fNEvents = tree->GetEntries();
-    //zVertVec.reserve(nEvents);          // fix vector sizes
-    //zMoltVec.reserve(nEvents);
-    //zVertVecRec.reserve(nEvents);
 
     zVertVec = new double[fNEvents];
     zMoltVec = new double[fNEvents];
@@ -266,14 +260,16 @@ void Reconstruction::runReconstruction()
     const double binW = root["recTolerance"]["zBinWidth"].As<double>();
     const double deltaPhi = root["recTolerance"]["deltaPhi"].As<double>(); 
     const int noiseMax = root["noise"]["nPoints"].As<int>();
+
+    const int firstRecLayer = root["reconstructionLayer"][0].As<int>();
+    const int secondRecLayer = root["reconstructionLayer"][1].As<int>();
+
     TH1D * histoHit = new TH1D("histoHit","Vertex's z rec",int(60./binW),-60.*binW,60.*binW);
 
     for(int ev=0; ev<fNEvents; ev++)
     {
         if(ev%50000==0)    cout << "Processing event " << ev << "..." << endl;
         tree->GetEvent(ev);
-        //zVertVec.push_back(vertex->getZ());
-        //zMoltVec.push_back(vertex->getMultiplicity());
 
         zVertVec[ev] = vertex->getZ();
         zMoltVec[ev] = vertex->getMultiplicity();
@@ -292,8 +288,7 @@ void Reconstruction::runReconstruction()
             hitsArray[ll]->Expand(hitsArray[ll]->GetEntries()+noi);
             for(int i=numHits; i<numHits+noi; i++)
             {
-                Hit * hit1 = (Hit*)hitsArray[ll]->ConstructedAt(i);
-                //hit1->noise(detector);               
+                Hit * hit1 = (Hit*)hitsArray[ll]->ConstructedAt(i);       
                 hit1->noise(detectorVector[ll]);               
             }
         }
@@ -302,7 +297,7 @@ void Reconstruction::runReconstruction()
         if(ev==105)   
         {   
             Recorder * recorder = Recorder::getInstance(root["recording"]["reconstruction"]["path"].As<std::string>().c_str());
-            recorder->recordReconstruction(hitsArray[0], hitsArray[1], zVertVec[ev]);
+            recorder->recordReconstruction(hitsArray[firstRecLayer], hitsArray[secondRecLayer], zVertVec[ev]);
             recorder->destroy();
         }
         for(int i=0; i<nlayer; i++) hitsArray[i]->Clear();
@@ -356,5 +351,5 @@ void Reconstruction::runReconstruction()
     cout << endl;
     cout << "Process ended." << endl;
     cout << "Real time: " << timer.RealTime() << " s" << endl;
-    cout << "CPU time: " << timer.CpuTime()  << " s" << endl;
+    cout << "CPU time: " << timer.CpuTime()  << " s" << endl << endl;
 }

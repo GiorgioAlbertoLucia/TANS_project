@@ -38,21 +38,15 @@ void setGraph(TGraph* graph, const char * name, const char * title, const char *
 
 
 /**
- * @brief  copy vectors in plotter DM
+ * @brief  Initialize Plotter data member importing vector with data to plot
  * 
  * @param zVertReal1 
  * @param zVertRec1 
  * @param moltReal1 
  */
- //void Plotter::addVector(vector<double> &zVertReal1, vector<double> &zVertRec1, vector<double> &moltReal1) // e proprio non va provo con i puntatori
- void Plotter::addVector(double zVertReal1[], double zVertRec1[], double moltReal1[], const int size) // e proprio non va provo con i puntatori
+ void Plotter::addVector(double zVertReal1[], double zVertRec1[], double moltReal1[], const int size) 
 {
    fNEvents = size;
-   
-   //zVertReal.reserve(nEvents);
-   //zVertRec.reserve(nEvents);
-   //moltReal.reserve(nEvents);
-   //resVec.reserve(nEvents);
 
    zVertReal = new double[fNEvents];
    zVertRec = new double[fNEvents];
@@ -71,16 +65,16 @@ void setGraph(TGraph* graph, const char * name, const char * title, const char *
 
 
 /**
- * @brief histos for residues, calculation of resolution and efficiency. 
+ * @brief Creates histograms for residues and evaluates resolution and efficiency. 
  * 
- * @param arrHisto 
- * @param Xarray 
- * @param nn 
- * @param resolution 
- * @param resolutionErr 
- * @param efficiency 
- * @param efficiencyErr 
- * @param bol 
+ * @param arrHisto array of empty histograms
+ * @param Xarray array with values on the x axis 
+ * @param n 
+ * @param resolution array to store resolution values
+ * @param resolutionErr array to store resolution error values
+ * @param efficiency array to store efficiency values
+ * @param efficiencyErr array to store efficiency error values
+ * @param bol true -> Xarray is multiplicity; false-> Xarray is vertex z coordinate
  */
 void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolution,double *resolutionErr, double *efficiency, double *efficiencyErr, bool bol, string outputPath) 
 {
@@ -141,13 +135,17 @@ void Plotter::residues(TObjArray* arrHisto,double *Xarray, int n,double *resolut
 
       delete hRes;
     }
-    if(bol) output1->Close();
+    if(bol) 
+    {
+      output1->Close();
+      cout << "Output file has been saved at " << outputPath << endl;
+    }
   }
 
 
 
 /**
- * @brief create and save Graph of resolution and efficiency vs Ztrue and Moltiplicity of vertex
+ * @brief Creates and saves TGraphs of resolution and efficiency vs zTrue and multiplicity of the vertex
  * 
  */
 void Plotter::runPlots()
@@ -251,7 +249,9 @@ void Plotter::runPlots()
    resZreal->Draw("ap");
    output->cd();
    resZreal->Write();
+
    output->Close();
+   cout << "Output file has been saved at " << root["output"]["reconstruction"]["path"].As<string>() << endl;
 
 
 }

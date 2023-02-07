@@ -12,7 +12,8 @@
 ClassImp(Hit)
 
 /**
- * @brief 
+ * @brief Adds smearing to the hit (changes the Z and Phi coordinate with random values from a gaussian distribution
+ * with mean = 0.).
  * 
  */
 void Hit::smearing()
@@ -26,7 +27,7 @@ void Hit::smearing()
  * (z coordinate is generated from a uniform distribution on the detector lenght, 
  * the azimuthal angle is generated from a uniform distribution in [0, 2π])
  * 
- * @param detectorRadius 
+ * @param detector detector on which noise effects generate a hit 
  */
 void Hit::noise(Detector& detector)
 {

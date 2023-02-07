@@ -56,7 +56,6 @@ Vertex Event::partGeneration(TH1I& hMultiplicity, TH1F& hEta)
  * @param recordFile 
  * @return TClonesArray 
  */
-//TClonesArray Event::partTransport(const double detectorRadius, const bool multipleScattering)
 TClonesArray Event::partTransport(Detector& detector)
 {
     const int multiplicity = fPrimaryVertex.getMultiplicity();

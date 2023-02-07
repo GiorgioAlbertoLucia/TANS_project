@@ -6,7 +6,7 @@ Vertex:
     multiplicity: 9
 
 
-nLayers:    3
+nLayers:    4
 DetectorLayers: # beam pipe is included
     -   Particles:
             -   x: -2.9963 #cm
@@ -118,4 +118,41 @@ DetectorLayers: # beam pipe is included
             -   x: 4.43838 #cm
                 y: 5.41302 #cm
                 z: 7.57566 #cm
+
+    -   Particles:
+            -   x: -12.9841 #cm
+                y: 0.643561 #cm
+                z: -1.57726 #cm
+
+            -   x: -12.9996 #cm
+                y: -0.0964583 #cm
+                z: -35.264 #cm
+
+            -   x: 9.85007 #cm
+                y: -8.48387 #cm
+                z: -10.486 #cm
+
+            -   x: 5.87998 #cm
+                y: 11.5942 #cm
+                z: 29.3644 #cm
+
+            -   x: 7.54665 #cm
+                y: 10.5853 #cm
+                z: -42.3865 #cm
+
+            -   x: 8.03604 #cm
+                y: -10.2187 #cm
+                z: -2.44333 #cm
+
+            -   x: -12.8368 #cm
+                y: 2.05351 #cm
+                z: -19.2225 #cm
+
+            -   x: 11.5831 #cm
+                y: -5.90183 #cm
+                z: 21.1087 #cm
+
+            -   x: 8.2373 #cm
+                y: 10.0572 #cm
+                z: 16.8641 #cm
 

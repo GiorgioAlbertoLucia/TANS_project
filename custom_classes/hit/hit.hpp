@@ -9,7 +9,10 @@
 #include "../pointCC/pointCC.hpp"
 #include "../detector/detector.hpp"
 
-
+/**
+ * @brief Intersection point between the path of a particle and a detector where the particle is detected.
+ * 
+ */
 class Hit: public TObject, public PointCC
 {
     public:
