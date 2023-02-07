@@ -211,12 +211,12 @@ void Plotter::runPlots()
    indexh=0;
 
    const double bW=2.;
-   double midZ[31];
-   double errZmid[31];
+   double midZ[17];
+   double errZmid[17];
 
-   for(int j=0;j<31;j++)
+   for(int j=0;j<=17;j++)
    {
-    midZ[j]=-31+j*2;
+    midZ[j]=-17+j*2;
     errZmid[j]=bW/2;
     TH1D* resHisto2 =  new TH1D(Form("resHisto%d", j),Form("Hist of Zrec-Ztrue,  Ztrue:_%4.1f",midZ[j]), 8000,-2000.,2000.);//qui GetBinCintent prende 0
     arrHisto->AddAtAndExpand(resHisto2,indexh++);

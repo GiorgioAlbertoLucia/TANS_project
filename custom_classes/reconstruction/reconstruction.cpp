@@ -314,14 +314,10 @@ void Reconstruction::runReconstruction()
     cout << endl << "-----------------------------" << endl;
     cout << "Drawing plots..." << endl;
     timer.Start();
-
-    TH1D* histores = new TH1D("histores","Residuii",int(sqrt(fNEvents)),-3000.,3000.);
-    TH1D* histores1 = new TH1D("histores1","zrec",120,-30.,30.0);
+    
     TH1D* historeal = new TH1D("historeal","zreal",120,-30.,30.0);
     for(int j=0;j<fNEvents;j++)
     {
-        if(zVertVecRec[j]<999.) histores->Fill((zVertVecRec[j]*10000-zVertVec[j]*10000));
-        if(zVertVecRec[j]<999.) histores1->Fill(zVertVecRec[j]);
         historeal->Fill(zVertVec[j]);
     }
     
@@ -335,17 +331,6 @@ void Reconstruction::runReconstruction()
     Plotter plot(fConfigFile.c_str());
     plot.addVector(zVertVec, zVertVecRec, zMoltVec, fNEvents);
     plot.runPlots();
-    
- 
-    TCanvas* c41= new TCanvas("c41","residues",80,80,1500,1000);
-   c41->cd();
-   histores->Draw();
-   TCanvas* c51= new TCanvas("c51","rec",80,80,1500,1000);
-   c51->cd();
-   histores1->Draw();
-    TCanvas* c61= new TCanvas("c61","real",80,80,1500,1000);
-   c61->cd();
-   historeal->Draw();
 
     timer.Stop();
     cout << endl;
