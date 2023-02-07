@@ -29,7 +29,7 @@ In alternativa, per selezionare il numero di eventi desiderato:
 ```
 root [] .x exe/loadMacros.cpp
 root [] .L exe/compileAndRunSoftware.cpp+
-root [] compileAndRunSoftware(<nEvents>, <path to configuration file>);
+root [] compileAndRunSoftware(<nEvents>, <seed>);
 ```
 
 È ancora possibile, infine, lanciare separatamente simulazione e ricostruzione (è poco pratico, invece, costruire il modello 3D direttamente dal terminale). Per farlo:
