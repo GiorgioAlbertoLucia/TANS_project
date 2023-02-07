@@ -1,0 +1,2 @@
+Directory to store output files. 
+This file is used to force GitHub to upload the directory during a commit.
