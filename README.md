@@ -28,7 +28,6 @@ Il software simulerà 1,000,000 eventi e svolgerà su questi la ricostruzione e 
 In alternativa, per selezionare il numero di eventi desiderato:
 ```
 root [] .x exe/loadMacros.cpp
-root [] .L exe/compileAndRunSoftware.cpp+
 root [] compileAndRunSoftware(<nEvents>, <seed>);
 ```
 
