@@ -4,7 +4,7 @@
 #include "../custom_classes/reconstruction/reconstruction.hpp"
 #include "../custom_classes/modelBuilder/modelBuilder.hpp"
 
-void compielAndRunSoftware(const int nEvents=100000, unsigned int seed=5467)
+void compileAndRunSoftware(const int nEvents=100000, unsigned int seed=5467)
 {
     gRandom->SetSeed(seed);
 
