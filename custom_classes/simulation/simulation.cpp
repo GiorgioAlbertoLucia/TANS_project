@@ -81,17 +81,6 @@ void Simulation::runSimulation(const int nEvents = 100000)
         detectorVector.push_back(detector);
     }
 
-    // initialize ttree
-    TTree * tree = new TTree(root["tree"]["simulation"]["name"].As<std::string>().c_str(), 
-                             root["tree"]["simulation"]["name"].As<std::string>().c_str());
-    
-    tree->Branch("Vertex", &vertex);
-
-    TClonesArray * hitArrayVector[nDetectors-1];    // skip beam pipe
-    for (TClonesArray * &a: hitArrayVector)  a = new TClonesArray("Hit");
-
-    for(int i=0; i<nDetectors-1; i++)   tree->Branch(Form("HitsL%d", i+1), &hitArrayVector[i]);
-
     // get distributions from files
     cout << "Reading distributions from " << root["input"]["distributions"]["path"].As<std::string>() << endl;
     TFile inFile(root["input"]["distributions"]["path"].As<std::string>().c_str());
@@ -102,6 +91,18 @@ void Simulation::runSimulation(const int nEvents = 100000)
     hMultiplicity->SetDirectory(0);
     hEta->SetDirectory(0);
     inFile.Close();
+    
+    // open file and initialize ttree
+    TFile outFile(root["tree"]["simulation"]["path"].As<std::string>().c_str(), "recreate");
+    TTree * tree = new TTree(root["tree"]["simulation"]["name"].As<std::string>().c_str(), 
+                             root["tree"]["simulation"]["name"].As<std::string>().c_str());
+    
+    tree->Branch("Vertex", &vertex);
+
+    TClonesArray * hitArrayVector[nDetectors-1];    // skip beam pipe
+    for (TClonesArray * &a: hitArrayVector)  a = new TClonesArray("Hit");
+
+    for(int i=0; i<nDetectors-1; i++)   tree->Branch(Form("HitsL%d", i+1), &hitArrayVector[i]);
 
     // generate events
     for(int ev=0; ev<nEvents; ev++)
@@ -153,18 +154,17 @@ void Simulation::runSimulation(const int nEvents = 100000)
     cout << "Writing data in a file..." << endl;
     timer.Start();
     
-    TFile outFile(root["tree"]["simulation"]["path"].As<std::string>().c_str(), "recreate");
-    tree->Write();
+    outFile.Write();
 
     timer.Stop();
     cout << "TTree stored in " << root["tree"]["simulation"]["path"].As<std::string>() << endl;
     cout << "Real time: " << timer.RealTime() << " s" << endl;
     cout << "CPU time: " << timer.CpuTime()  << " s" << endl;
     cout << "File size: " << outFile.GetBytesWritten()*1e-6 << " MB" << endl << endl;
-
+    
+    delete tree;
     outFile.Close();
 
     delete event;
-    delete tree;
 }
 
